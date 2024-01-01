@@ -76,7 +76,7 @@ android {
 
     namespace "com.dashx"
     defaultConfig {
-        applicationId "com.dashx"
+        applicationId "com.dashx.user"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
