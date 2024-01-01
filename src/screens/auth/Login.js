@@ -21,7 +21,8 @@ import endpoints from '../../../assets/endpoints/endpoints';
 import InputField from '../../component/InputField';
 
 export default Login = ({navigation}) => {
-  const {login, playerId, user} = useContext(AuthContext);
+  const {saveToken, saveUser, colorScheme, login} = useContext(AuthContext);
+  const appearance = colorScheme;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const canProceed = email.length > 5 && password.length > 0;
@@ -94,167 +95,165 @@ export default Login = ({navigation}) => {
     <>
       <View
         style={{
-          backgroundColor: colors.white,
-          width: '100%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: 24,
-          paddingVertical: 20,
+          flex: 1,
+          backgroundColor: colors[appearance].background,
         }}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{}}>
-          <ArrowBack width={20} height={20} />
-        </TouchableOpacity>
-        <Text
-          style={{
-            fontSize: 16,
-            alignSelf: 'center',
-            flex: 1,
-            textAlign: 'center',
-            marginRight: 20,
-            color: colors.black,
-            fontFamily: 'Inter-Regular',
-          }}>
-          Sign in
-        </Text>
-      </View>
-      <ScrollView
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical: 16,
-        }}>
-        <Text
-          style={{
-            fontFamily: 'Inter-Regular',
-            fontSize: 32,
-            color: colors[appearance].textDark,
-          }}>
-          Welcome
-        </Text>
-
         <View
           style={{
-            marginTop: 30,
             flexDirection: 'row',
+            backgroundColor: colors[appearance].primary,
+            height: 50,
             alignItems: 'center',
-            marginLeft: 15,
-          }}>
-          <View
-            style={{
-              height: 25,
-              width: 25,
-              borderRadius: 15,
-              borderWidth: 5,
-              borderColor: colors[appearance].primary,
-            }}
-          />
-          <Text
-            style={{
-              fontFamily: 'Inter-SemiBold',
-              fontSize: 16,
-              color: colors[appearance].textDark,
-              marginLeft: 15,
-            }}>
-            Sign in.
-          </Text>
-        </View>
-
-        <InputField
-          theme={appearance}
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Enter e-mail"
-          containerStyle={styles.input}
-        />
-        <PasswordInput
-          theme={appearance}
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          containerStyle={styles.input}
-        />
-
-        <TouchableOpacity>
-          <Text
-            style={{
-              fontFamily: 'Inter-SemiBold',
-              fontSize: 14,
-              color: colors[appearance].primary,
-              marginTop: 16,
-              marginLeft: 35,
-            }}>
-            Forgot password?
-          </Text>
-        </TouchableOpacity>
-
-        <Button
-          title="Sign In"
-          buttonStyle={{
-            marginTop: 30,
-            marginHorizontal: 20,
-            borderRadius: 30,
-          }}
-          loading={processing}
-          enabled={canProceed && !processing}
-          textColor={colors[appearance].textDark}
-          buttonColor={colors[appearance].primary}
-          onPress={() => {
-            // navigation.navigate(authRouts.otpVerification)
-          }}
-        />
-
-        <Text
-          style={{
-            fontFamily: 'Inter-Regular',
-            fontSize: 14,
-            color: colors[appearance].textDark,
-            textAlign: 'center',
-            marginTop: 20,
-            fontStyle: 'italic',
-          }}>
-          Already have an account?
-          <Text
-            onPress={() => {
-              navigation.navigate(authRouts.login);
-            }}
-            style={{
-              color: colors[appearance].primary,
-              fontWeight: 'bold',
-            }}>
-            {' '}
-            Sign Up
-          </Text>
-        </Text>
-
-        <Text
-          style={{
-            fontFamily: 'Inter-Regular',
-            fontSize: 14,
-            color: colors[appearance].textDark,
-            textAlign: 'center',
-            marginTop: 30,
-            fontStyle: 'italic',
+            width: '100%',
             paddingHorizontal: 20,
           }}>
-          By continuing, you agree to Dash X
+          <Image
+            source={require('../../../assets/images/logo.png')}
+            style={{
+              width: 70,
+              resizeMode: 'contain',
+            }}
+          />
+        </View>
+        <ScrollView
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 16,
+          }}>
           <Text
             style={{
-              color: colors[appearance].primary,
-              fontWeight: 'bold',
+              fontFamily: 'Inter-Regular',
+              fontSize: 32,
+              color: colors[appearance].textDark,
             }}>
-            {' '}
-            Conditions of use{' '}
-          </Text>{' '}
-          and
-          <Text
-            style={{
-              color: colors[appearance].primary,
-              fontWeight: 'bold',
-            }}>
-            {' '}
-            Privacy Notice
+            Welcome
           </Text>
-        </Text>
-      </ScrollView>
+
+          <View
+            style={{
+              marginTop: 30,
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 15,
+            }}>
+            <View
+              style={{
+                height: 25,
+                width: 25,
+                borderRadius: 15,
+                borderWidth: 5,
+                borderColor: colors[appearance].primary,
+              }}
+            />
+            <Text
+              style={{
+                fontFamily: 'Inter-SemiBold',
+                fontSize: 16,
+                color: colors[appearance].textDark,
+                marginLeft: 15,
+              }}>
+              Sign in.
+            </Text>
+          </View>
+
+          <InputField
+            theme={appearance}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Enter e-mail"
+            containerStyle={styles.input}
+          />
+          <PasswordInput
+            theme={appearance}
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            containerStyle={styles.input}
+          />
+
+          <TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: 'Inter-SemiBold',
+                fontSize: 14,
+                color: colors[appearance].primary,
+                marginTop: 16,
+                marginLeft: 35,
+              }}>
+              Forgot password?
+            </Text>
+          </TouchableOpacity>
+
+          <Button
+            title="Sign In"
+            buttonStyle={{
+              marginTop: 30,
+              marginHorizontal: 20,
+              borderRadius: 30,
+            }}
+            loading={processing}
+            enabled={canProceed && !processing}
+            textColor={colors[appearance].textDark}
+            buttonColor={colors[appearance].primary}
+            onPress={() => {
+              // navigation.navigate(authRouts.otpVerification)
+            }}
+          />
+
+          <Text
+            style={{
+              fontFamily: 'Inter-Regular',
+              fontSize: 14,
+              color: colors[appearance].textDark,
+              textAlign: 'center',
+              marginTop: 20,
+              fontStyle: 'italic',
+            }}>
+            Already have an account?
+            <Text
+              onPress={() => {
+                navigation.navigate(authRouts.signUp);
+              }}
+              style={{
+                color: colors[appearance].primary,
+                fontWeight: 'bold',
+              }}>
+              {' '}
+              Sign Up
+            </Text>
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: 'Inter-Regular',
+              fontSize: 14,
+              color: colors[appearance].textDark,
+              textAlign: 'center',
+              marginTop: 30,
+              fontStyle: 'italic',
+              paddingHorizontal: 20,
+            }}>
+            By continuing, you agree to Dash X
+            <Text
+              style={{
+                color: colors[appearance].primary,
+                fontWeight: 'bold',
+              }}>
+              {' '}
+              Conditions of use{' '}
+            </Text>{' '}
+            and
+            <Text
+              style={{
+                color: colors[appearance].primary,
+                fontWeight: 'bold',
+              }}>
+              {' '}
+              Privacy Notice
+            </Text>
+          </Text>
+        </ScrollView>
+      </View>
     </>
   );
 };
@@ -314,5 +313,10 @@ const styles = StyleSheet.create({
   createAccountButton: {
     borderRadius: 8,
     height: 55,
+  },
+
+  input: {
+    marginTop: 20,
+    marginHorizontal: 20,
   },
 });

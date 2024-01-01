@@ -170,6 +170,16 @@ export default SignUp = ({navigation}) => {
           placeholder="Enter e-mail"
           containerStyle={styles.input}
         />
+
+        <InputField
+          theme={appearance}
+          value={phone}
+          onChangeText={setPhone}
+          placeholder="Phone"
+          keyboardType="numeric"
+          maxLength={11}
+          containerStyle={styles.input}
+        />
         <PasswordInput
           theme={appearance}
           value={password}
