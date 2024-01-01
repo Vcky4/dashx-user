@@ -171,18 +171,20 @@ export default Login = ({navigation}) => {
             containerStyle={styles.input}
           />
 
-          <TouchableOpacity>
-            <Text
-              style={{
-                fontFamily: 'Inter-SemiBold',
-                fontSize: 14,
-                color: colors[appearance].primary,
-                marginTop: 16,
-                marginLeft: 35,
-              }}>
-              Forgot password?
-            </Text>
-          </TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+          navigation.navigate(authRouts.forgotPassword)
+        }}>
+          <Text
+            style={{
+              fontFamily: 'Inter-SemiBold',
+              fontSize: 14,
+              color: colors[appearance].primary,
+              marginTop: 16,
+              marginLeft: 35,
+            }}>
+            Forgot password?
+          </Text>
+        </TouchableOpacity>
 
           <Button
             title="Sign In"
