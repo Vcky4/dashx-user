@@ -37,60 +37,57 @@ export default SignUp = ({navigation}) => {
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // const signUpUser = async () => {
-  //     setProcessing(true)
-  //     const response = await fetch(endpoints.baseUrl + endpoints.register, {
-  //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-  //         headers: {
-  //             'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify(
-  //             {
-  //                 "firstName": firstName,
-  //                 "lastName": lastName,
-  //                 "email": email,
-  //                 "password": password,
-  //                 "city": city,
-  //                 "gender": gender,
-  //                 "phone": phone
-  //             }
-  //         ) // body data type must match "Content-Type" header
-  //     });
-  //     response.json()
-  //         .then((data) => {
-  //             console.log(data); // JSON data parsed by `data.json()` call
-  //             setProcessing(false)
-  //             if (response.ok) {
-  //                 Toast.show({
-  //                     type: 'success',
-  //                     text1: 'SignUp successful',
-  //                     text2: data.message
-  //                 })
-  //                 saveUser(data.user)
-  //                 navigation.navigate(authRouts.otpVerification, { token: data.data.accessToken })
-  //             } else {
-  //                 Toast.show({
-  //                     type: 'error',
-  //                     text1: 'SignUp failed',
-  //                     text2: data.message
-  //                 });
-  //                 // navigation.navigate(authRouts.otpVerification, { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGE4MDczOWY3NGE2NDdmM2Q5N2YyYmYiLCJyb2xlIjoiUklERVIiLCJnZW5lcmF0b3IiOiIyMDIzMDcwNzEzMzgxN09BQkpNTlBWIiwiaWF0IjoxNjg4NzMzNDk3LCJleHAiOjE2ODg4MTk4OTd9.quJHfi-_YMVGrvc7e40ycvHLuB_wynf1LBxPxaIlvGk' })
-  //                 console.log('response: ', response)
-  //                 console.log('SignUp error:', data)
-  //             }
-
-  //         })
-  //         .catch((error) => {
-  //             setProcessing(false)
-  //             Toast.show({
-  //                 type: 'error',
-  //                 text1: 'SignUp failed',
-  //                 text2: error.message
-  //             });
-  //             console.log('response: ', response)
-  //             console.log('SignUp error:', error);
-  //         })
-  // }
+  const signUpUser = async () => {
+    setProcessing(true);
+    const response = await fetch(endpoints.baseUrl + endpoints.register, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        name: firstName,
+        password: password,
+        phone: phone,
+      }), // body data type must match "Content-Type" header
+    });
+    response
+      .json()
+      .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+        setProcessing(false);
+        if (response.ok) {
+          Toast.show({
+            type: 'success',
+            text1: 'SignUp successful',
+            text2: data.message,
+          });
+          saveUser(data.user);
+        //   navigation.navigate(authRouts.otpVerification, {
+        //     token: data.data.accessToken,
+        //   });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'SignUp failed',
+            text2: data.message,
+          });
+          // navigation.navigate(authRouts.otpVerification, { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGE4MDczOWY3NGE2NDdmM2Q5N2YyYmYiLCJyb2xlIjoiUklERVIiLCJnZW5lcmF0b3IiOiIyMDIzMDcwNzEzMzgxN09BQkpNTlBWIiwiaWF0IjoxNjg4NzMzNDk3LCJleHAiOjE2ODg4MTk4OTd9.quJHfi-_YMVGrvc7e40ycvHLuB_wynf1LBxPxaIlvGk' })
+          console.log('response: ', response);
+          console.log('SignUp error:', data);
+        }
+      })
+      .catch(error => {
+        setProcessing(false);
+        Toast.show({
+          type: 'error',
+          text1: 'SignUp failed',
+          text2: error.message,
+        });
+        console.log('response: ', response);
+        console.log('SignUp error:', error);
+      });
+  };
   return (
     <View
       style={{
