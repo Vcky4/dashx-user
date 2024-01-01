@@ -26,49 +26,30 @@ export default Intro = ({navigation}) => {
         flex: 1,
         backgroundColor: colors[appearance].background,
       }}>
-      <Image
-        style={styles.image}
-        source={require('../../../assets/images/onb.png')}
-      />
-      <TouchableOpacity
-        onPress={() => {220
-          if (page === 2) {
-            // navigation.navigate(authRouts.LOGIN)
-          } else {
-            setPage(page + 1);
-          }
-        }}
-        style={{
-          position: 'absolute',
-          bottom: height * 0.26,
-          right: 12,
-          zIndex: 10,
-        }}>
-        <ImageBackground
-          style={{
-            width: 40,
-            height: 40,
-            resizeMode: 'contain',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          source={
-            page === 0
-              ? require('../../../assets/images/loader.png')
-              : page === 1
-              ? require('../../../assets/images/loader1.png')
-              : require('../../../assets/images/loader2.png')
-          }>
-          <Image
-            style={{
-              width: 30,
-              height: 30,
-              resizeMode: 'contain',
-            }}
-            source={require('../../../assets/images/Icon_arrow.png')}
-          />
-        </ImageBackground>
-      </TouchableOpacity>
+           <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => {
+                        if (page === 2) {
+                            // navigation.navigate(authRouts.LOGIN)
+                        } else {
+                            setPage(page + 1)
+                        }
+                    }}
+             style={{
+                position: 'absolute',
+                zIndex: 10,
+                right: 0,
+            }}>
+                <Image
+                    style={styles.image}
+                    source={page === 0
+                        ? require("../../../assets/images/sli.png")
+                        : page === 1
+                            ? require("../../../assets/images/sli1.png")
+                            : require("../../../assets/images/sli2.png")}
+                />
+            </TouchableOpacity>
+
       <Swiper
         loop={false}
         showsPagination={false}
@@ -219,6 +200,7 @@ export default Intro = ({navigation}) => {
         style={{
           flexDirection: 'row',
           justifyContent: 'flex-end',
+          zIndex: 100,
         }}>
         <TouchableOpacity
           onPress={() => {
@@ -249,9 +231,6 @@ const styles = StyleSheet.create({
   image: {
     width: height * 0.093,
     height: height,
-    position: 'absolute',
-    // top: 0,
-    right: 0,
     resizeMode: 'contain',
   },
   page: {
