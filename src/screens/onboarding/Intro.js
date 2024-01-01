@@ -31,7 +31,7 @@ export default Intro = ({navigation}) => {
         source={require('../../../assets/images/onb.png')}
       />
       <TouchableOpacity
-        onPress={() => {
+        onPress={() => {220
           if (page === 2) {
             // navigation.navigate(authRouts.LOGIN)
           } else {
@@ -40,7 +40,7 @@ export default Intro = ({navigation}) => {
         }}
         style={{
           position: 'absolute',
-          bottom: 220,
+          bottom: height * 0.26,
           right: 12,
           zIndex: 10,
         }}>
@@ -81,7 +81,7 @@ export default Intro = ({navigation}) => {
               height: width * 0.9,
               resizeMode: 'contain',
               alignSelf: 'center',
-              marginTop: height * 0.1,
+            //   marginTop: height * 0.1,
             }}
             source={require('../../../assets/images/delivery2.png')}
           />
@@ -90,7 +90,7 @@ export default Intro = ({navigation}) => {
               fontSize: 20,
               fontWeight: 'bold',
               color: colors[appearance].textDark,
-              marginTop: height * 0.1,
+              marginTop: height * 0.08,
               marginBottom: 10,
               marginStart: 20,
               width: width * 0.5,
@@ -118,7 +118,7 @@ export default Intro = ({navigation}) => {
               height: width * 0.9,
               resizeMode: 'contain',
               alignSelf: 'center',
-              marginTop: height * 0.1,
+            //   marginTop: height * 0.1,
             }}
             source={require('../../../assets/images/delivery1.png')}
           />
@@ -127,7 +127,7 @@ export default Intro = ({navigation}) => {
               fontSize: 20,
               fontWeight: 'bold',
               color: colors[appearance].textDark,
-              marginTop: height * 0.1,
+              marginTop: height * 0.08,
               marginBottom: 10,
               marginStart: 20,
               width: width * 0.5,
@@ -154,7 +154,7 @@ export default Intro = ({navigation}) => {
               height: width * 0.9,
               resizeMode: 'contain',
               alignSelf: 'center',
-              marginTop: height * 0.1,
+            //   marginTop: height * 0.1,
             }}
             source={require('../../../assets/images/delivery3.png')}
           />
@@ -163,7 +163,7 @@ export default Intro = ({navigation}) => {
               fontSize: 20,
               fontWeight: 'bold',
               color: colors[appearance].textDark,
-              marginTop: height * 0.1,
+              marginTop: height * 0.08,
               marginBottom: 10,
               marginStart: 20,
               width: width * 0.5,
