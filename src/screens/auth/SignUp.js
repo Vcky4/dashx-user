@@ -5,25 +5,25 @@ import Toast from 'react-native-toast-message';
 import colors from "../../../assets/colors/colors";
 import { AuthContext } from "../../../context/AuthContext";
 import endpoints from "../../../assets/endpoints/endpoints";
+import InputField from "../../component/InputField";
+import PasswordInput from "../../component/PasswordInput";
+import Button from "../../component/Button";
+import authRouts from "../../navigation/routs/authRouts";
 
 
 export default SignUp = ({ navigation }) => {
-    const { saveToken, saveUser } = useContext(AuthContext)
+    const { saveToken, saveUser, colorScheme } = useContext(AuthContext)
+    const appearance = colorScheme
     const [phone, setPhone] = useState("")
     const [password, setPassword] = useState("")
     const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
-    const [city, setCity] = useState("")
-    const [gender, setGender] = useState("MALE")
     let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     const canProceed =
-        phone?.length > 9 &&
+        // phone?.length > 9 &&
         password?.length > 0 &&
-        firstName?.length > 0 &&
-        lastName?.length > 0 &&
-        emailRegex.test(email) &&
-        city?.length > 0
+        firstName?.split(' ').length > 1 &&
+        emailRegex.test(email)
     const [processing, setProcessing] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -82,12 +82,149 @@ export default SignUp = ({ navigation }) => {
     //         })
     // }
     return (
-        <View>
+        <View style={{
+            flex: 1,
+            backgroundColor: colors[appearance].background
+        }}>
+            <View style={{
+                flexDirection: 'row',
+                backgroundColor: colors[appearance].primary,
+                height: 50,
+                alignItems: 'center',
+                width: '100%',
+                paddingHorizontal: 20
+            }}>
+                <Image
+                    source={require('../../../assets/images/logo.png')}
+                    style={{
+                        width: 70,
+                        resizeMode: 'contain'
+                    }}
+                />
+            </View>
+
+            <ScrollView style={{
+                paddingHorizontal: 20,
+                paddingVertical: 16,
+            }}>
+                <Text style={{
+                    fontFamily: 'Inter-Regular',
+                    fontSize: 32,
+                    color: colors[appearance].textDark,
+                }}>Welcome</Text>
+
+                <View style={{
+                    marginTop: 30,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 15,
+                }}>
+                    <View style={{
+                        height: 25,
+                        width: 25,
+                        borderRadius: 15,
+                        borderWidth: 5,
+                        borderColor: colors[appearance].primary,
+                    }} />
+                    <Text style={{
+                        fontFamily: 'Inter-SemiBold',
+                        fontSize: 16,
+                        color: colors[appearance].textDark,
+                        marginLeft: 15,
+                    }}>Create account.</Text>
+                </View>
+
+                <InputField
+                    theme={appearance}
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    placeholder="Full Name"
+                    containerStyle={styles.input}
+                />
+                <InputField
+                    theme={appearance}
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder="Enter e-mail"
+                    containerStyle={styles.input}
+                />
+                <PasswordInput
+                    theme={appearance}
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder="Password"
+                    containerStyle={styles.input}
+                />
+
+                <TouchableOpacity>
+                    <Text style={{
+                        fontFamily: 'Inter-SemiBold',
+                        fontSize: 14,
+                        color: colors[appearance].primary,
+                        marginTop: 16,
+                        marginLeft: 35
+                    }}>Forgot password?</Text>
+                </TouchableOpacity>
+
+
+                <Button
+                    title="Sign Up"
+                    buttonStyle={{
+                        marginTop: 30,
+                        marginHorizontal: 20,
+                        borderRadius: 30,
+                    }}
+                    loading={processing}
+                    enabled={canProceed && !processing}
+                    textColor={colors[appearance].textDark}
+                    buttonColor={colors[appearance].primary}
+                    onPress={() => {
+                        // navigation.navigate(authRouts.otpVerification)
+                    }}
+                />
+
+                <Text style={{
+                    fontFamily: 'Inter-Regular',
+                    fontSize: 14,
+                    color: colors[appearance].textDark,
+                    textAlign: 'center',
+                    marginTop: 20,
+                    fontStyle: 'italic'
+                }}>Already have an account?
+                    <Text
+                        onPress={() => {
+                            navigation.navigate(authRouts.login)
+                        }}
+                        style={{
+                            color: colors[appearance].primary,
+                            fontWeight: 'bold',
+                        }}>  Sign in</Text></Text>
+
+                <Text style={{
+                    fontFamily: 'Inter-Regular',
+                    fontSize: 14,
+                    color: colors[appearance].textDark,
+                    textAlign: 'center',
+                    marginTop: 30,
+                    fontStyle: 'italic',
+                    paddingHorizontal: 20
+                }}>By continuing, you agree to Dash X
+                    <Text style={{
+                        color: colors[appearance].primary,
+                        fontWeight: 'bold',
+                    }}> Conditions of use </Text> and<Text style={{
+                        color: colors[appearance].primary,
+                        fontWeight: 'bold',
+                    }}> Privacy Notice</Text></Text>
+            </ScrollView>
 
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-
+    input: {
+        marginTop: 20,
+        marginHorizontal: 20,
+    }
 });
