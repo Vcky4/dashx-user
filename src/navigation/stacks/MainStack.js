@@ -19,22 +19,25 @@ import WalletScreen from '../../screens/home/Wallet';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {AuthContext} from '../../../context/AuthContext';
 import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
+
 function bottomData2(currentRoute) {
+  const {colorScheme} = useContext(AuthContext);
   return [
     {
       icon: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#000'}
+          tintColor={colors[colorScheme].textDark}
           source={require('../../../assets/images/home.png')}
         />
       ),
       iconFilled: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#B847EF'}
+          tintColor={colors[colorScheme].primary}
           source={require('../../../assets/images/home.png')}
         />
       ),
@@ -44,7 +47,7 @@ function bottomData2(currentRoute) {
       icon: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#000'}
+          tintColor={colors[colorScheme].textDark}
           source={require('../../../assets/images/wallet.png')}
         />
       ),
@@ -52,7 +55,7 @@ function bottomData2(currentRoute) {
       iconFilled: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#B847EF'}
+          tintColor={colors[colorScheme].primary}
           source={require('../../../assets/images/wallet.png')}
         />
       ),
@@ -63,14 +66,14 @@ function bottomData2(currentRoute) {
       icon: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#000'}
+          tintColor={colors[colorScheme].textDark}
           source={require('../../../assets/images/chat.png')}
         />
       ),
       iconFilled: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#B847EF'}
+          tintColor={colors[colorScheme].primary}
           source={require('../../../assets/images/chat.png')}
         />
       ),
@@ -80,14 +83,14 @@ function bottomData2(currentRoute) {
       icon: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#000'}
+          tintColor={colors[colorScheme].textDark}
           source={require('../../../assets/images/profile.png')}
         />
       ),
       iconFilled: (
         <Image
           style={{width: 40, height: 40}}
-          tintColor={'#B847EF'}
+          tintColor={colors[colorScheme].primary}
           source={require('../../../assets/images/profile.png')}
         />
       ),
@@ -116,9 +119,8 @@ const BottomNavStack = ({route, navigation}) => {
     };
   }, []);
 
-  const [isModalVisible, setModalVisible] = useState(false);
-  const {user, token, userType, toggleUserType, logout} =
-    useContext(AuthContext);
+  const {saveToken, saveUser, colorScheme, login} = useContext(AuthContext);
+  const appearance = colorScheme;
   return (
     <>
       <View
@@ -130,9 +132,7 @@ const BottomNavStack = ({route, navigation}) => {
         }}>
         <Tab.Navigator
           screenOptions={{
-            contentStyle: {
-              backgroundColor: 'white',
-            },
+            contentStyle: {backgroundColor: colors[appearance].background},
           }}
           initialRouteName={
             // userType === USER_TYPE.USER
@@ -141,14 +141,13 @@ const BottomNavStack = ({route, navigation}) => {
             // : VendorRouts.vendorHome
           }>
           <Tab.Screen
-            name={mainRouts.wallet}
-            component={WalletScreen}
-            options={{headerShown: false}}
-          />
-
-          <Tab.Screen
             name={mainRouts.home}
             component={Home}
+            options={{headerShown: false}}
+          />
+          <Tab.Screen
+            name={mainRouts.wallet}
+            component={WalletScreen}
             options={{headerShown: false}}
           />
 
@@ -172,7 +171,7 @@ const BottomNavStack = ({route, navigation}) => {
             flexDirection: 'row',
             paddingHorizontal: 24,
             paddingVertical: 16,
-            backgroundColor: 'transparent',
+            backgroundColor: colors[appearance].background,
             justifyContent: 'space-between',
             width: '100%',
           }}>
