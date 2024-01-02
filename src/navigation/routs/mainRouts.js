@@ -3,6 +3,8 @@ const mainRouts = {
     history: 'History',
     settings: 'Settings',
     chat: 'Chat',
+    wallet:'Wallet',
+    profile:'Profile',
     help: 'Help',
     updateVehicle: 'updateVehicle',
 }
