@@ -9,7 +9,7 @@ export default Splash = () => {
         <View style={styles.container}>
             <Image
                 style={styles.image}
-                source={require("../../../assets/images/splash.png")}
+                source={require("../../../assets/images/splashs.png")}
             />
         </View>
     );

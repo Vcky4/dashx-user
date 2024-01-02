@@ -5,7 +5,9 @@ const endpoints = {
     login: '/user/login',
     signup: '/user/signup',
     forgotPassword: '/user/forgot/password',
-    
+    otpverification: '/user/confirmcode',
+    resetPassword: '/user/reset/password'
+
 
 
 }

@@ -18,7 +18,7 @@ import {AuthContext} from '../../../context/AuthContext';
 const {width, height} = Dimensions.get('window');
 export default Intro = ({navigation}) => {
   const {colorScheme, onboard} = useContext(AuthContext);
-  const appearance = colorScheme;
+  const appearance = 'light';
   const [page, setPage] = useState(0);
   return (
     <View
@@ -26,29 +26,31 @@ export default Intro = ({navigation}) => {
         flex: 1,
         backgroundColor: colors[appearance].background,
       }}>
-           <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => {
-                        if (page === 2) {
-                            // navigation.navigate(authRouts.LOGIN)
-                        } else {
-                            setPage(page + 1)
-                        }
-                    }}
-             style={{
-                position: 'absolute',
-                zIndex: 10,
-                right: 0,
-            }}>
-                <Image
-                    style={styles.image}
-                    source={page === 0
-                        ? require("../../../assets/images/sli.png")
-                        : page === 1
-                            ? require("../../../assets/images/sli1.png")
-                            : require("../../../assets/images/sli2.png")}
-                />
-            </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => {
+          if (page === 2) {
+            // navigation.navigate(authRouts.LOGIN)
+          } else {
+            setPage(page + 1);
+          }
+        }}
+        style={{
+          position: 'absolute',
+          zIndex: 10,
+          right: 0,
+        }}>
+        <Image
+          style={styles.image}
+          source={
+            page === 0
+              ? require('../../../assets/images/sli.png')
+              : page === 1
+              ? require('../../../assets/images/sli1.png')
+              : require('../../../assets/images/sli2.png')
+          }
+        />
+      </TouchableOpacity>
 
       <Swiper
         loop={false}
@@ -62,7 +64,7 @@ export default Intro = ({navigation}) => {
               height: width * 0.9,
               resizeMode: 'contain',
               alignSelf: 'center',
-            //   marginTop: height * 0.1,
+              //   marginTop: height * 0.1,
             }}
             source={require('../../../assets/images/delivery2.png')}
           />
@@ -99,7 +101,7 @@ export default Intro = ({navigation}) => {
               height: width * 0.9,
               resizeMode: 'contain',
               alignSelf: 'center',
-            //   marginTop: height * 0.1,
+              //   marginTop: height * 0.1,
             }}
             source={require('../../../assets/images/delivery1.png')}
           />
@@ -135,7 +137,7 @@ export default Intro = ({navigation}) => {
               height: width * 0.9,
               resizeMode: 'contain',
               alignSelf: 'center',
-            //   marginTop: height * 0.1,
+              //   marginTop: height * 0.1,
             }}
             source={require('../../../assets/images/delivery3.png')}
           />

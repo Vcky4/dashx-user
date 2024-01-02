@@ -70,8 +70,10 @@ export default Login = ({navigation}) => {
             text1: 'Login successful',
             text2: data.message,
           });
-          login(data.data.accessToken, data.data.user);
+          saveUser(data.data);
+          saveToken(data.data.token);
         } else {
+            setProcessing(false);
           Toast.show({
             type: 'error',
             text1: 'Login failed',
@@ -171,20 +173,21 @@ export default Login = ({navigation}) => {
             containerStyle={styles.input}
           />
 
-        <TouchableOpacity onPress={() => {
-          navigation.navigate(authRouts.forgotPassword)
-        }}>
-          <Text
-            style={{
-              fontFamily: 'Inter-SemiBold',
-              fontSize: 14,
-              color: colors[appearance].primary,
-              marginTop: 16,
-              marginLeft: 35,
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(authRouts.forgotPassword);
             }}>
-            Forgot password?
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: 'Inter-SemiBold',
+                fontSize: 14,
+                color: colors[appearance].primary,
+                marginTop: 16,
+                marginLeft: 35,
+              }}>
+              Forgot password?
+            </Text>
+          </TouchableOpacity>
 
           <Button
             title="Sign In"
@@ -198,6 +201,7 @@ export default Login = ({navigation}) => {
             textColor={colors[appearance].textDark}
             buttonColor={colors[appearance].primary}
             onPress={() => {
+              loginUser();
               // navigation.navigate(authRouts.otpVerification)
             }}
           />

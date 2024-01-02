@@ -39,7 +39,7 @@ export default SignUp = ({navigation}) => {
 
   const signUpUser = async () => {
     setProcessing(true);
-    const response = await fetch(endpoints.baseUrl + endpoints.register, {
+    const response = await fetch(endpoints.baseUrl + endpoints.signup, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Content-Type': 'application/json',
@@ -62,11 +62,10 @@ export default SignUp = ({navigation}) => {
             text1: 'SignUp successful',
             text2: data.message,
           });
-          saveUser(data.user);
-        //   navigation.navigate(authRouts.otpVerification, {
-        //     token: data.data.accessToken,
-        //   });
+          //   saveUser(data.user);
+          navigation.navigate(authRouts.otpVerification);
         } else {
+          setProcessing(false);
           Toast.show({
             type: 'error',
             text1: 'SignUp failed',
@@ -207,6 +206,7 @@ export default SignUp = ({navigation}) => {
           textColor={colors[appearance].textDark}
           buttonColor={colors[appearance].primary}
           onPress={() => {
+            signUpUser();
             // navigation.navigate(authRouts.otpVerification)
           }}
         />
