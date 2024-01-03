@@ -125,7 +125,7 @@ export default SignUp = ({navigation}) => {
           Welcome
         </Text>
 
-        <View
+        {/* <View
           style={{
             marginTop: 30,
             flexDirection: 'row',
@@ -150,7 +150,7 @@ export default SignUp = ({navigation}) => {
             }}>
             Create account.
           </Text>
-        </View>
+        </View> */}
 
         <InputField
           theme={appearance}

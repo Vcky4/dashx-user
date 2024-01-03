@@ -32,192 +32,147 @@ export default Home = ({navigation}) => {
   //check if ready
   // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: colors[appearance].background,
-      }}>
+    <>
       <View
         style={{
-          flexDirection: 'row',
-          backgroundColor: colors[appearance].primary,
-          height: 50,
-          alignItems: 'center',
-          width: '100%',
-          justifyContent: 'center',
-          paddingHorizontal: 20,
+          flex: 1,
+          backgroundColor: colors[appearance].background,
         }}>
-        <Text
-          style={{
-            fontFamily: 'Inter-Regular',
-            fontSize: 24,
-            color: colors.light.white,
-          }}>
-          {user.name}
-        </Text>
-      </View>
-      <ScrollView
-        style={{
-          paddingHorizontal: 33,
-          paddingVertical: 16,
-        }}>
-        <View style={{flexDirection: 'row'}}>
-          <Text
-            style={{
-              fontFamily: 'Inter-Bold',
-              fontSize: 24,
-              color: colors[appearance].textDark,
-            }}>
-            Wallet: {'  '}
-            <Text>₦ 4,589.55</Text>
-          </Text>
-        </View>
-
         <View
           style={{
-            paddingVertical: 20,
-            borderWidth: 1,
-            borderRadius: 15,
-            borderColor: '#A10F7E',
             flexDirection: 'row',
+            backgroundColor: colors[appearance].primary,
+            height: 50,
             alignItems: 'center',
+            width: '100%',
+            justifyContent: 'center',
             paddingHorizontal: 20,
-            marginTop: 10,
           }}>
-          <TrackOrder fill={colors[appearance].textDark} />
           <Text
             style={{
               fontFamily: 'Inter-Regular',
               fontSize: 24,
-              paddingStart: 25,
-              color: colors[appearance].textDark,
+              color: colors.light.white,
             }}>
-            Track orders
+            {user.name}
           </Text>
         </View>
-
-        <View
+        <ScrollView
           style={{
-            paddingVertical: 6,
-            borderWidth: 1,
-            borderRadius: 15,
-            borderColor: '#A10F7E',
-            paddingHorizontal: 10,
-            marginTop: 31,
+            paddingHorizontal: 18,
+            paddingVertical: 16,
           }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <View
+          <View style={{flexDirection: 'row'}}>
+            <Text
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
+                fontFamily: 'Inter-Bold',
+                fontSize: 24,
+                color: colors[appearance].textDark,
               }}>
-              <Text
-                style={{
-                  fontFamily: 'Inter-Medium',
-                  fontSize: 16,
-
-                  color: colors[appearance].textDark,
-                }}>
-                1
-              </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
-                  tintColor={colors[appearance].textDark}
-                  style={{height: 20, width: 20}}
-                  source={require('../../../assets/images/call.png')}
-                />
-                <Text
-                  style={{
-                    fontFamily: 'Inter-Medium',
-                    fontSize: 16,
-
-                    color: colors[appearance].textDark,
-                  }}>
-                  08166565462
-                </Text>
-              </View>
-            </View>
+              Wallet: {'  '}
+              <Text>₦ 4,589.55</Text>
+            </Text>
           </View>
 
           <View
             style={{
-              width: '100%',
+              paddingVertical: 20,
+              borderWidth: 1,
+              borderRadius: 15,
+              borderColor: '#A10F7E',
               flexDirection: 'row',
               alignItems: 'center',
+              paddingHorizontal: 20,
               marginTop: 10,
             }}>
-            <View
-              style={{
-                height: 18,
-                width: 18,
-                backgroundColor: '#A10F7E',
-                borderRadius: 20,
-                marginEnd: 7,
-                marginTop: 10,
-              }}></View>
-
+            <TrackOrder fill={colors[appearance].textDark} />
             <Text
               style={{
                 fontFamily: 'Inter-Regular',
-                fontSize: 15,
-
+                fontSize: 20,
+                paddingStart: 25,
                 color: colors[appearance].textDark,
               }}>
-              {user.name}
+              Track orders
             </Text>
           </View>
-          <View style={{flexDirection: 'row', width: '100%'}}>
+        </ScrollView>
+      </View>
 
-            <View
+      <View
+        style={{
+          width: '100%',
+          borderRadius: 15,
+          borderWidth: 1,
+          borderColor: colors.light.white,
+          backgroundColor: '#E6CEF2',
+          paddingTop: 20,
+          justifyContent: 'center',
+        }}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate(mainRouts.AddDispatch);
+          }}
+          style={{
+            backgroundColor: colors[appearance].primary,
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            borderRadius: 15,
+            width: 180,
+            alignSelf: 'center',
+          }}>
+          <Text
+            style={{
+              fontFamily: 'Inter-Regular',
+              fontSize: 15,
+
+              color: colors.light.white,
+            }}>
+            Add Dispatch
+          </Text>
+        </TouchableOpacity>
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: '#fff',
+            marginTop: 21,
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderRadius: 10,
+            paddingHorizontal: 10,
+          }}>
+          <View
+            style={{
+              height: 10,
+              width: 10,
+              backgroundColor: '#21EB00',
+              marginEnd: 5,
+              borderRadius: 10,
+            }}></View>
+          <Text
+            numberOfLines={1}
+            style={{
+              fontFamily: 'Inter-Medium',
+              fontSize: 16,
+              color: colors.dark.black,
+              maxWidth: '80%',
+            }}>
+            My Location:{' '}
+            <Text
               style={{
-                height: 60,
-                width: 4,
-                backgroundColor: '#000',
-                marginStart: 7,
-
-                marginTop: 7,
-              }}></View>
-
-            <Text style={{paddingStart: 10, maxWidth: '70%', color: '#868686'}}>
-              kilometre 55, Lekki - Epe Expressway Sangotedo Ibeju-Lekki
+                fontFamily: 'Inter-Regular',
+                fontSize: 16,
+                color: colors.dark.black,
+              }}>
+              25, Ogeretedo Street, Dopemu,Agege
             </Text>
-        
-          </View>
-
-          <View style={{flexDirection: 'row'}}>
-            <View
-              style={{
-                height: 18,
-                width: 18,
-                backgroundColor: '#31D0AA',
-                borderRadius: 20,
-                marginEnd: 7,
-                marginTop: 7,
-              }}></View>
-
-            <View style={{}}>
-              <Text
-                style={{
-                  fontFamily: 'Inter-Regular',
-                  fontSize: 15,
-                  color: colors[appearance].textDark,
-                }}>
-                Frank Bambi
-              </Text>
-              <Text style={{paddingStart: 4, color: '#868686'}}>
-                kilometre 55, Lekki - Epe Expressway Sangotedo Ibeju-Lekki
-              </Text>
-            </View>
-          </View>
+          </Text>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </>
   );
 };
 

@@ -19,6 +19,7 @@ import WalletScreen from '../../screens/home/Wallet';
 import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {AuthContext} from '../../../context/AuthContext';
 import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
+import AddDispatch from '../../screens/home/AddDispatch';
 
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -99,12 +100,8 @@ function bottomData2(currentRoute) {
   ];
 }
 const BottomNavStack = ({route, navigation}) => {
-  const currentRoute = getFocusedRouteNameFromRoute(route) ?? mainRouts.explore;
+  const currentRoute = getFocusedRouteNameFromRoute(route) ?? mainRouts.home;
   const [keyboardStatus, setKeyboardStatus] = useState(false);
-  // useEffect(() => {
-  //   navigation.navigate(mainRouts.Notification);
-  //   console.log('got it', notificationPayload);
-  // }, [notificationPayload]);
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
@@ -134,12 +131,7 @@ const BottomNavStack = ({route, navigation}) => {
           screenOptions={{
             contentStyle: {backgroundColor: colors[appearance].background},
           }}
-          initialRouteName={
-            // userType === USER_TYPE.USER
-            //   ?
-            mainRouts.home
-            // : VendorRouts.vendorHome
-          }>
+          initialRouteName={mainRouts.home}>
           <Tab.Screen
             name={mainRouts.home}
             component={Home}
@@ -235,7 +227,11 @@ export default AuthPassed = () => {
         component={Home}
         options={{headerShown: false}}
       /> */}
-      {/* <Stack.Screen name={profileRouts.editProfile} component={EditProfile} options={{ headerShown: false }} /> */}
+      <Stack.Screen
+        name={mainRouts.AddDispatch}
+        component={AddDispatch}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
