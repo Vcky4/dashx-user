@@ -13,6 +13,7 @@ const common = {
   textHash: '#455154',
   border: '#F8F8F9',
   warning: '#FFD9E9',
+  subText: '#868686'
 };
 
 

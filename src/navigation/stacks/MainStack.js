@@ -20,6 +20,8 @@ import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {AuthContext} from '../../../context/AuthContext';
 import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import AddDispatch from '../../screens/home/AddDispatch';
+import RecieverScreen from '../../screens/home/RecieverScreen';
+import SenderDetailScreen from '../../screens/home/SenderDetailScreen';
 
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -230,6 +232,17 @@ export default AuthPassed = () => {
       <Stack.Screen
         name={mainRouts.AddDispatch}
         component={AddDispatch}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={mainRouts.reciever}
+        component={RecieverScreen}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={mainRouts.senderDetails}
+        component={SenderDetailScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

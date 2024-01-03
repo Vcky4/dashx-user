@@ -78,7 +78,7 @@ export default AddDispatch = ({navigation}) => {
 
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(mainRouts.AddDispatch);
+                navigation.navigate(mainRouts.senderDetails);
               }}
               style={{
                 backgroundColor: colors[appearance].black,
@@ -211,7 +211,7 @@ export default AddDispatch = ({navigation}) => {
             }}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(mainRouts.AddDispatch);
+                navigation.navigate(mainRouts.reciever);
               }}
               style={{
                 backgroundColor: colors[appearance].black,
@@ -256,26 +256,23 @@ export default AddDispatch = ({navigation}) => {
                 kilometre 55, Lekki - Epe Expressway Sangotedo Ibeju-Lekki
               </Text>
             </View>
-      
-
-
           </View>
           <Button
-              title="Confirm"
-              buttonStyle={{
-                marginTop: 60,
-                marginHorizontal: 20,
-                borderRadius: 30,
-              }}
-              loading={processing}
-              enabled={canProceed && !processing}
-              textColor={colors[appearance].textDark}
-              buttonColor={colors[appearance].primary}
-              onPress={() => {
-                signUpUser();
-                // navigation.navigate(authRouts.otpVerification)
-              }}
-            />
+            title="Confirm"
+            buttonStyle={{
+              marginTop: 60,
+              marginHorizontal: 20,
+              borderRadius: 30,
+            }}
+            loading={processing}
+            enabled={canProceed && !processing}
+            textColor={colors[appearance].textDark}
+            buttonColor={colors[appearance].primary}
+            onPress={() => {
+              signUpUser();
+              // navigation.navigate(authRouts.otpVerification)
+            }}
+          />
         </ScrollView>
       </View>
     </>
