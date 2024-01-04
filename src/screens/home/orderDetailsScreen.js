@@ -56,7 +56,7 @@ export default Home = ({navigation, route}) => {
           Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({
-          userid: user.userDetails._id,
+          userid: user?.userDetails?._id,
           orderid: item._id,
         }), // body data type must match "Content-Type" header
       },
@@ -170,7 +170,7 @@ export default Home = ({navigation, route}) => {
 
                   color: colors.light.white,
                 }}>
-                Picked-up
+                {order.order.order_status}
                 {/* {item?.order_status.charAt(0).toUpperCase() +
               item?.order_status.slice(1).toLowerCase()} */}
               </Text>

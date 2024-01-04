@@ -11,8 +11,10 @@ const mainRouts = {
   senderDetails: 'senderDetails',
   reciever: 'recieverDetails',
   dispatchDetails: 'dispatchDetails',
-  profile:'profile'
-
+  profile: 'profile',
+  wallet: 'wallet',
+  withdrawal: 'withdrawal',
+  deposit: 'deposit',
 };
 
 export default mainRouts;

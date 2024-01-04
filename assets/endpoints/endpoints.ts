@@ -11,7 +11,9 @@ const endpoints = {
     order: '/user/retrieve/all/order',
     retriveSingleorder: '/user/retrieve/single/order',
     retrievePrice: '/user/retrieve/price',
-    retrieveOrder: '/user/retrieve/all/order'
+    retrieveOrder: '/user/retrieve/all/order',
+    profile: '/user/update/profile',
+    getProfile: '/user/profile'
 
 }
 

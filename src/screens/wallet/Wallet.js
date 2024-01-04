@@ -84,7 +84,7 @@ export default Wallet = ({ navigation }) => {
                         }}>+ Deposit</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.navigate(mainRouts.withdrawal)}
+                    <TouchableOpacity onPress={() => navigation.navigate(mainRouts.withdraw)}
                         style={{
                             backgroundColor: colors[colorScheme].primary,
                             paddingHorizontal: 16,

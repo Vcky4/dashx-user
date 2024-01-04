@@ -10,6 +10,9 @@ import SenderDetailScreen from '../../screens/home/SenderDetailScreen';
 import DrawerContent from './DrawerContent';
 import orderDetailsScreen from '../../screens/home/orderDetailsScreen';
 import Profile from '../../screens/profile/Profile';
+import Withdraw from '../../screens/wallet/Withdraw';
+import Deposit from '../../screens/wallet/Deposit';
+import Wallet from '../../screens/wallet/Wallet';
 
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -69,6 +72,24 @@ const AuthPassed = () => {
       <Stack.Screen
         name={mainRouts.profile}
         component={Profile}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={mainRouts.wallet}
+        component={Wallet}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={mainRouts.withdrawal}
+        component={Withdraw}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={mainRouts.deposit}
+        component={Deposit}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

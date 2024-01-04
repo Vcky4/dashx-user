@@ -127,7 +127,7 @@ export default Home = ({navigation}) => {
               fontSize: 24,
               color: colors.light.white,
             }}>
-            {user.userDetails.name}
+            {user?.userDetails?.name}
           </Text>
         </View>
         <FlatList
@@ -141,7 +141,7 @@ export default Home = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  color: colors.dark.white,
+                  color: colors.dark.black,
                   fontFamily: 'Inter-Medium',
                   fontSize: 25,
                 }}>
@@ -157,7 +157,7 @@ export default Home = ({navigation}) => {
               item={item}
               index={index + 1}
               onPress={() => {
-                if (item?.order_status == 'pickup') {
+                if (item?.order_status !== 'pickup' || 'pending') {
                   navigation.navigate(mainRouts.dispatchDetails, {
                     item: item,
                   });
@@ -236,7 +236,7 @@ export default Home = ({navigation}) => {
                 fontSize: 16,
                 color: colors.dark.black,
               }}>
-              {user.userDetails.address}
+              {user?.userDetails?.address}
             </Text>
           </Text>
         </View>

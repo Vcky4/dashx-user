@@ -85,7 +85,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                       fontFamily: 'Inter-Bold',
                       overflow: 'hidden',
                     }}>
-                    {user.userDetails.name}
+                    {user?.userDetails?.name}
                   </Text>
                   <Text
                     style={{
@@ -178,7 +178,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
             <TouchableOpacity
               style={{marginTop: 30}}
               onPress={() =>
-                props.navigation.navigate(profileRouts.orderHistory)
+                props.navigation.navigate(mainRoute.wallet)
               }>
               <View style={styles.itemWrapper}>
                 <Image
