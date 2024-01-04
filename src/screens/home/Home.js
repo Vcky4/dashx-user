@@ -37,7 +37,7 @@ export default Home = ({navigation}) => {
   // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;\
 
   const retrieveOrder = async () => {
-     setRefreshing(true);
+    setRefreshing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.retrieveOrder, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
@@ -54,7 +54,7 @@ export default Home = ({navigation}) => {
         console.log(data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
-           setRefreshing(false);
+          setRefreshing(false);
           setOrder(data.data);
         } else {
           // Toast.show({
@@ -80,7 +80,6 @@ export default Home = ({navigation}) => {
   useEffect(() => {
     retrieveOrder();
   }, []);
-
 
   return (
     <>
@@ -128,13 +127,18 @@ export default Home = ({navigation}) => {
             </View>
           }
           refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={retrieveOrder}
-            />
+            <RefreshControl refreshing={refreshing} onRefresh={retrieveOrder} />
           }
           renderItem={({item, index}) => (
-            <OrderItem item={item} index={index + 1} />
+            <OrderItem
+              item={item}
+              index={index + 1}
+              onPress={() => {
+                if ( item?.order_status == 'pickup') {
+                  navigation.navigate(mainRouts.dispatchDetails);
+                }
+              }}
+            />
           )}
         />
       </View>

@@ -63,7 +63,6 @@ export default SnderDetails = ({
   const [searchLocation, setSearchLocation] = useState('');
   const [listofLocation, setListofLocation] = useState([]);
 
-  
   const [locationData, setLocationData] = useState({
     lat: 5.01,
     lng: 7.9,
@@ -108,7 +107,7 @@ export default SnderDetails = ({
             onPress={() => {
               goBack();
             }}>
-            <BackArrow />
+            <BackArrow fill={'#000'} />
           </TouchableOpacity>
           <Text
             style={{

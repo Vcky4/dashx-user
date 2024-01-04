@@ -23,6 +23,7 @@ import AddDispatch from '../../screens/home/AddDispatch';
 import RecieverScreen from '../../screens/home/RecieverScreen';
 import SenderDetailScreen from '../../screens/home/SenderDetailScreen';
 import DrawerContent from './DrawerContent';
+import orderDetailsScreen from '../../screens/home/orderDetailsScreen';
 
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -131,6 +132,12 @@ export default AuthPassed = () => {
       <Stack.Screen
         name={mainRouts.senderDetails}
         component={SenderDetailScreen}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name={mainRouts.dispatchDetails}
+        component={orderDetailsScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

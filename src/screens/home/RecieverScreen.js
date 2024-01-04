@@ -106,7 +106,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
             onPress={() => {
               goBack();
             }}>
-            <BackArrow />
+            <BackArrow fill={'#000'} />
           </TouchableOpacity>
           <Text
             style={{

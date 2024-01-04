@@ -8,8 +8,9 @@ const mainRouts = {
   help: 'Help',
   updateVehicle: 'updateVehicle',
   AddDispatch: 'AddDispatch',
-  senderDetails:'senderDetails',
-  reciever:'recieverDetails',
+  senderDetails: 'senderDetails',
+  reciever: 'recieverDetails',
+  dispatchDetails: 'dispatchDetails',
 };
 
 export default mainRouts;

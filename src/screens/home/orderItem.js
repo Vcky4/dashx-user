@@ -20,7 +20,7 @@ import Car from '../../../assets/icons/sedan.svg';
 import Van from '../../../assets/icons/containertruck.svg';
 import Truck from '../../../assets/icons/truck.svg';
 
-export default OrderItem = ({item, index}) => {
+export default OrderItem = ({item, index, onPress}) => {
   const {saveToken, saveUser, colorScheme, token, login, user} =
     useContext(AuthContext);
   const appearance = colorScheme;
@@ -37,7 +37,11 @@ export default OrderItem = ({item, index}) => {
     return vehicle ? vehicle.icon : null;
   };
   return (
-    <View
+    <TouchableOpacity
+      onPress={() => {
+        onPress();
+      }}
+      activeOpacity={item?.order_status == 'pickup' ? 0.5 : 1}
       style={{
         paddingVertical: 6,
         borderWidth: 1,
@@ -215,11 +219,12 @@ export default OrderItem = ({item, index}) => {
           style={{
             height: 2,
             width: '75%',
-            backgroundColor: item?.order_status == 'pickup'
-            ? '#31D0AA'
-            : item?.order_status == 'Accepted'
-            ? '#A10F7E'
-            : '#868686',
+            backgroundColor:
+              item?.order_status == 'pickup'
+                ? '#31D0AA'
+                : item?.order_status == 'Accepted'
+                ? '#A10F7E'
+                : '#868686',
             marginHorizontal: 10,
           }}></View>
 
@@ -229,6 +234,6 @@ export default OrderItem = ({item, index}) => {
           source={require('../../../assets/images/delivery.png')}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
