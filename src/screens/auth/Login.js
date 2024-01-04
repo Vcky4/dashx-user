@@ -223,6 +223,8 @@ export default Login = ({navigation}) => {
               style={{
                 color: colors[appearance].primary,
                 fontWeight: 'bold',
+                fontSize:18,
+                fontFamily:'Inter-Regular'
               }}>
               {' '}
               Sign Up
@@ -323,6 +325,6 @@ const styles = StyleSheet.create({
 
   input: {
     marginTop: 20,
-    marginHorizontal: 20,
+  
   },
 });

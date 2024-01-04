@@ -6,9 +6,12 @@ const endpoints = {
     signup: '/user/signup',
     forgotPassword: '/user/forgot/password',
     otpverification: '/user/confirmcode',
-    resetPassword: '/user/reset/password'
-
-
+    resetPassword: '/user/reset/password',
+    addDispatch: '/user/add/order',
+    order: '/user/retrieve/all/order',
+    retriveSingleorder: '/user/retrieve/single/order',
+    retrievePrice: '/user/retrieve/price',
+    retrieveOrder: '/user/retrieve/all/order'
 
 }
 

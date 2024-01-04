@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useRef} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   Animated,
+  FlatList,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -19,6 +20,11 @@ import InputField from '../../component/InputField';
 import PasswordInput from '../../component/PasswordInput';
 import Button from '../../component/Button';
 import authRouts from '../../navigation/routs/authRouts';
+import Bottomsheet from 'react-native-raw-bottom-sheet';
+import SearchAddress from '../../../utils/SearchAddress';
+import getCurrentPosition from '../../../utils/getCurrentPosition';
+import getPlaceDetails from '../../../utils/getPlaceDetails';
+import getStateAndCity from '../../../utils/getStateAndCity';
 
 export default SignUp = ({navigation}) => {
   const {saveToken, saveUser, colorScheme} = useContext(AuthContext);
@@ -26,7 +32,13 @@ export default SignUp = ({navigation}) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
+  const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searchLocation, setSearchLocation] = useState('');
+  const [listofLocation, setListofLocation] = useState([]);
+  const bottomSheetRef = useRef();
+
   let emailRegex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const canProceed =
@@ -36,6 +48,33 @@ export default SignUp = ({navigation}) => {
     emailRegex.test(email);
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const [locationData, setLocationData] = useState({
+    lat: 5.01,
+    lng: 7.9,
+  });
+
+  useEffect(() => {
+    getCurrentPosition(callback => {
+      if (callback?.position?.coords) {
+        setLocationData(prevState => ({
+          ...prevState,
+          lat: callback.position.coords.latitude,
+          lng: callback.position.coords.longitude,
+        }));
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+
+    SearchAddress(searchLocation, locationData.lat, locationData.lng, data => {
+      setListofLocation(data);
+    });
+
+    setLoading(false);
+  }, [searchLocation]);
 
   const signUpUser = async () => {
     setProcessing(true);
@@ -49,6 +88,7 @@ export default SignUp = ({navigation}) => {
         name: firstName,
         password: password,
         phone: phone,
+        address: address,
       }), // body data type must match "Content-Type" header
     });
     response
@@ -176,6 +216,50 @@ export default SignUp = ({navigation}) => {
           maxLength={11}
           containerStyle={styles.input}
         />
+
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderRadius: 30,
+            borderWidth: 1,
+            paddingVertical: 10,
+            paddingHorizontal: 10,
+            marginTop: 20,
+            borderColor:
+              address.length > 2
+                ? colors[appearance].primary
+                : colors[appearance].subText,
+          }}
+          onPress={() => {
+            bottomSheetRef.current.open();
+          }}>
+          <Text
+            style={{
+              fontFamily: 'Inter-Regular',
+              fontSize: 16,
+              paddingStart: 10,
+              color: colors[appearance].textDark,
+            }}>
+            {address.length > 0 ? address : 'Sender Address'}
+          </Text>
+          {/* <InputField
+                theme={appearance}
+                value={requestData.address}
+                // onChangeText={text =>
+                //   setRequestData(prevState => ({
+                //     ...prevState,
+                //     address: text,
+                //   }))
+                // }
+                placeholder="Sender Address"
+                containerStyle={styles.input}
+                editable={false}
+                leftComponet={
+                  <AddressIcon fill={colors[appearance].textDark} />
+                }
+              /> */}
+        </TouchableOpacity>
         <PasswordInput
           theme={appearance}
           value={password}
@@ -228,6 +312,8 @@ export default SignUp = ({navigation}) => {
             style={{
               color: colors[appearance].primary,
               fontWeight: 'bold',
+              fontSize: 18,
+              fontFamily: 'Inter-Regular',
             }}>
             {' '}
             Sign in
@@ -264,6 +350,118 @@ export default SignUp = ({navigation}) => {
           </Text>
         </Text>
       </ScrollView>
+
+      <Bottomsheet
+        height={400}
+        animationType="fade"
+        ref={bottomSheetRef}
+        closeOnDragDown={false}
+        closeOnPressMask={true}
+        closeOnPressBack={true}
+        onClose={() => {}}
+        customStyles={{
+          wrapper: {},
+          draggableIcon: {
+            backgroundColor: colors.primary,
+            width: 50,
+            height: 5,
+          },
+          container: {
+            // backgroundColor: 'rgba(158, 176, 162, 0.5)',
+            backgroundColor: colors[appearance].background,
+            alignItems: 'center',
+            paddingBottom: 50,
+            borderTopEndRadius: 10,
+            borderTopStartRadius: 10,
+          },
+        }}>
+        <>
+          <KeyboardAvoidingView
+            style={{paddingHorizontal: 16, width: '100%', flex: 1}}>
+            <Text
+              style={{
+                fontFamily: 'Jost-Medium',
+                fontSize: 18,
+                paddingTop: 20,
+                color: colors.black,
+              }}>
+              Search Location
+            </Text>
+            <InputField
+              theme={appearance}
+              value={searchLocation}
+              onChangeText={setSearchLocation}
+              placeholder="Search"
+              containerStyle={styles.input}
+            />
+
+            {loading ? (
+              <ActivityIndicator
+                animating={loading}
+                hidesWhenStopped={true}
+                size={'large'}
+              />
+            ) : (
+              <FlatList
+                data={listofLocation}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingTop: 100,
+                    }}>
+                    <Text
+                      style={{
+                        color: colors.Brand,
+                        fontFamily: 'Jost-Medium',
+                        fontSize: 16,
+                      }}>
+                      Search your location{' '}
+                    </Text>
+                  </View>
+                }
+                renderItem={({item}) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      getPlaceDetails(item.description, data => {
+                        // receiverlong: data[0]?.geometry?.location?.lng,
+                        // receiverlat: data[0]?.geometry?.location?.lat,
+                        setAddress(
+                          data[0]?.formatted_address.split(/,(.*)/s)[0] +
+                            data[0]?.formatted_address.split(/,(.*)/s)[1],
+                        );
+                      });
+
+                      // getStateAndCity(item.place_id, data => {
+                      //   setRequestData(prevState => ({
+                      //     ...prevState,
+                      //     state: data.state,
+                      //     city: data.city,
+                      //   }));
+                      // });
+                      setSearchLocation('');
+                      bottomSheetRef.current.close();
+                    }}>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter-Regular',
+                        fontSize: 16,
+                        color: colors[appearance].textDark,
+                        flex: 0.9,
+                        marginTop: 12,
+                      }}>
+                      {item?.description.split(/,(.*)/s)[0]}{' '}
+                      {item?.description.split(/,(.*)/s)[1]?.trim()}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            )}
+          </KeyboardAvoidingView>
+        </>
+      </Bottomsheet>
     </View>
   );
 };
@@ -271,6 +469,5 @@ export default SignUp = ({navigation}) => {
 const styles = StyleSheet.create({
   input: {
     marginTop: 20,
-    marginHorizontal: 20,
   },
 });

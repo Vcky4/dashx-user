@@ -33,10 +33,12 @@ import InputField from '../../component/InputField';
 import Bottomsheet from 'react-native-raw-bottom-sheet';
 import getCurrentPosition from '../../../utils/getCurrentPosition';
 import SearchAddress from '../../../utils/SearchAddress';
+import getPlaceDetails from '../../../utils/getPlaceDetails';
+import getStateAndCity from '../../../utils/getStateAndCity';
 
 var Sound = require('react-native-sound');
 
-export default Home = ({navigation}) => {
+export default Home = ({goBack, requestData, setRequestData}) => {
   const {saveToken, saveUser, colorScheme, login, user} =
     useContext(AuthContext);
   const appearance = colorScheme;
@@ -50,12 +52,13 @@ export default Home = ({navigation}) => {
   const [searchLocation, setSearchLocation] = useState('');
   const [listofLocation, setListofLocation] = useState([]);
   const [processing, setProcessing] = useState(false);
-  const canProceed =
-    firstName.length > 2 &&
-    Phone.length == 11 &&
-    Address.length > 4 &&
-    State.length > 5 &&
-    LandMark.length > 5;
+
+  //   const canProceed =
+  //     requestData.fullname.length > 2 &&
+  //      requestData.phone.length == 11&&
+  //   requestData.address.length > 2&&
+  //   requestData.state.length > 1&&
+  //   requestData.ProductName > 1
 
   const [locationData, setLocationData] = useState({
     lat: 5.01,
@@ -101,7 +104,7 @@ export default Home = ({navigation}) => {
           }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+              goBack();
             }}>
             <BackArrow />
           </TouchableOpacity>
@@ -122,7 +125,7 @@ export default Home = ({navigation}) => {
             paddingHorizontal: 18,
             paddingVertical: 16,
           }}>
-          <View>
+          <View style={{paddingBottom: 50}}>
             <Text
               style={{
                 fontFamily: 'Inter-Regular',
@@ -134,8 +137,10 @@ export default Home = ({navigation}) => {
             </Text>
             <InputField
               theme={appearance}
-              value={firstName}
-              onChangeText={setFirstName}
+              value={requestData.fullname}
+              onChangeText={text =>
+                setRequestData(prevState => ({...prevState, fullname: text}))
+              }
               placeholder="Full Name"
               containerStyle={styles.input}
               leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
@@ -152,8 +157,11 @@ export default Home = ({navigation}) => {
             </Text>
             <InputField
               theme={appearance}
-              value={Phone}
-              onChangeText={setPhone}
+              value={requestData.Phone}
+              maxLength={11}
+              onChangeText={text =>
+                setRequestData(prevState => ({...prevState, Phone: text}))
+              }
               placeholder="Phone Number"
               containerStyle={styles.input}
               leftComponet={<PhoneIcon fill={colors[appearance].textDark} />}
@@ -169,20 +177,49 @@ export default Home = ({navigation}) => {
               Sender Address
             </Text>
             <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderRadius: 30,
+                borderWidth: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                borderColor:
+                  requestData.address.length > 2
+                    ? colors[appearance].primary
+                    : colors[appearance].subText,
+              }}
               onPress={() => {
                 bottomSheetRef.current.open();
               }}>
-              <InputField
+              <AddressIcon fill={colors[appearance].textDark} />
+              <Text
+                style={{
+                  fontFamily: 'Inter-Regular',
+                  fontSize: 16,
+                  paddingStart: 10,
+                  color: colors[appearance].textDark,
+                }}>
+                {requestData.address.length > 0
+                  ? requestData.address
+                  : 'Sender Address'}
+              </Text>
+              {/* <InputField
                 theme={appearance}
-                value={Address}
-                onChangeText={setAddress}
+                value={requestData.address}
+                // onChangeText={text =>
+                //   setRequestData(prevState => ({
+                //     ...prevState,
+                //     address: text,
+                //   }))
+                // }
                 placeholder="Sender Address"
                 containerStyle={styles.input}
                 editable={false}
                 leftComponet={
                   <AddressIcon fill={colors[appearance].textDark} />
                 }
-              />
+              /> */}
             </TouchableOpacity>
 
             <Text
@@ -194,14 +231,46 @@ export default Home = ({navigation}) => {
               }}>
               State
             </Text>
-            <InputField
-              theme={appearance}
-              value={State}
-              onChangeText={setState}
-              placeholder="State"
-              containerStyle={styles.input}
-              leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
-            />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderRadius: 30,
+                borderWidth: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                borderColor:
+                  requestData.state.length > 2
+                    ? colors[appearance].primary
+                    : colors[appearance].subText,
+              }}>
+              <AddressIcon fill={colors[appearance].textDark} />
+              <Text
+                style={{
+                  fontFamily: 'Inter-Regular',
+                  fontSize: 16,
+                  paddingStart: 10,
+                  color: colors[appearance].textDark,
+                }}>
+                {requestData.state.length > 0 ? requestData.state : 'State'}
+              </Text>
+              {/* <InputField
+                theme={appearance}
+                value={requestData.address}
+                // onChangeText={text =>
+                //   setRequestData(prevState => ({
+                //     ...prevState,
+                //     address: text,
+                //   }))
+                // }
+                placeholder="Sender Address"
+                containerStyle={styles.input}
+                editable={false}
+                leftComponet={
+                  <AddressIcon fill={colors[appearance].textDark} />
+                }
+              /> */}
+            </View>
 
             <Text
               style={{
@@ -212,10 +281,13 @@ export default Home = ({navigation}) => {
               }}>
               Landmark (optional)
             </Text>
+
             <InputField
               theme={appearance}
-              value={LandMark}
-              onChangeText={setLandMark}
+              value={requestData.landMark}
+              onChangeText={text =>
+                setRequestData(prevState => ({...prevState, landMark: text}))
+              }
               placeholder="Landmark"
               containerStyle={styles.input}
               leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
@@ -228,11 +300,12 @@ export default Home = ({navigation}) => {
                 marginHorizontal: 20,
                 borderRadius: 30,
               }}
-              loading={processing}
-              enabled={canProceed && !processing}
+              loading={false}
+              enabled={true}
               textColor={colors[appearance].textDark}
               buttonColor={colors[appearance].primary}
               onPress={() => {
+                goBack();
                 // signUpUser();
                 // navigation.navigate(authRouts.otpVerification)
               }}
@@ -320,14 +393,12 @@ export default Home = ({navigation}) => {
                           address:
                             data[0]?.formatted_address.split(/,(.*)/s)[0] +
                             data[0]?.formatted_address.split(/,(.*)/s)[1],
-                          latitude: data[0]?.geometry?.location?.lat,
-                          longitude: data[0]?.geometry?.location?.lng,
+                            receiverlong: data[0]?.geometry?.location?.lng,
+                            receiverlat: data[0]?.geometry?.location?.lat,
                         }));
                       });
 
                       getStateAndCity(item.place_id, data => {
-                        console.log('data', data.state, data.city);
-
                         setRequestData(prevState => ({
                           ...prevState,
                           state: data.state,

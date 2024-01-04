@@ -23,6 +23,11 @@ import Car from '../../../assets/icons/sedan.svg';
 import Van from '../../../assets/icons/containertruck.svg';
 import Truck from '../../../assets/icons/truck.svg';
 import Button from '../../component/Button';
+import SenderDetailScreen from './SenderDetailScreen';
+import RecieverScreen from './RecieverScreen';
+import Toast from 'react-native-toast-message';
+import distance from '../../../utils/getDistance';
+import getCurrentPosition from '../../../utils/getCurrentPosition';
 
 var Sound = require('react-native-sound');
 
@@ -36,26 +41,218 @@ export default AddDispatch = ({navigation}) => {
     {name: 'Van', id: 3, icon: <Van />},
     {name: 'Truck', id: 4, icon: <Truck />},
   ];
-  const {saveToken, saveUser, colorScheme, login, user} =
+  const {saveToken, saveUser, token, colorScheme, login, user} =
     useContext(AuthContext);
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [processing, setProcessing] = useState(false);
   const canProceed = selectedItem?.name?.length > 2;
   const appearance = colorScheme;
+  const [step, setStep] = useState(1);
+
+  const [requestData, setRequestData] = useState({
+    fullname: '',
+    Phone: '',
+    address: '',
+    state: '',
+    LandMark: '',
+    ProductName: '',
+    city: '',
+    senderlong: '',
+    senderlat: '',
+  });
+
+  const [requestData2, setRequestData2] = useState({
+    fullname: '',
+    Phone: '',
+    address: '',
+    state: '',
+    LandMark: '',
+    ProductName: '',
+    city: '',
+    receiverlong: '',
+    receiverlat: '',
+  });
+
+  const setName = text => {
+    setRequestData({...requestData, fullname: text});
+  };
+
+  const [locationData, setLocationData] = useState({
+    lat: 5.01,
+    lng: 7.9,
+  });
+
+  const [price, setPrice] = useState([]);
+
+  useEffect(() => {
+    getCurrentPosition(callback => {
+      if (callback?.position?.coords) {
+        setLocationData(prevState => ({
+          ...prevState,
+          lat: callback.position.coords.latitude,
+          lng: callback.position.coords.longitude,
+        }));
+      }
+    });
+  }, []);
+
+  const retreivePrice = async () => {
+    const response = await fetch(endpoints.baseUrl + endpoints.retrievePrice, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        userid: user.userDetails_id,
+      }), // body data type must match "Content-Type" header
+    });
+    response
+      .json()
+      .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+
+        if (response.ok) {
+          setPrice(data.data);
+        } else {
+          // Toast.show({
+          //   type: 'error',
+          //   text1: 'Login failed',
+          //   text2: data.message,
+          // });
+          console.log('response: ', response);
+          console.log('Login error:', data.message);
+        }
+      })
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'Login failed',
+          text2: error.message,
+        });
+        console.log('Login error:', error);
+      });
+  };
+
+  useEffect(() => {
+    retreivePrice();
+  }, []);
+
+  const getdistance = distance(
+    locationData.lat,
+    locationData.lng,
+    requestData2.receiverlat,
+    requestData2.receiverlong,
+    'km',
+  );
+  const delivery_fee =
+    getdistance * price[0]?.price_per_km &&
+    price[0].price_per_km + selectedItem?.price;
+  //   console.log("test",delivery_fee);
+  const AddDispatch = async () => {
+    setProcessing(true);
+    const response = await fetch(endpoints.baseUrl + endpoints.addDispatch, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        userid: user.userDetails._id,
+        vehicle_type: selectedItem?.name,
+        delivery_fee: delivery_fee,
+        sendername: requestData.fullname,
+        productname: requestData.ProductName,
+        senderaddress: requestData.address,
+        sendercity: requestData.city,
+        senderphone: requestData.Phone,
+        senderlandmark: requestData.LandMark,
+        receivername: requestData2.fullname,
+        receiverphone: requestData2.Phone,
+        receiveraddress: requestData2.address,
+        receivercity: requestData2.city,
+        receiverlandmark: requestData2.LandMark,
+        senderlong: requestData.senderlong.toString(),
+        senderlat: requestData.senderlat.toString(),
+        receiverlat: requestData2.receiverlat.toString(),
+        receiverlong: requestData2.receiverlong.toString(),
+      }), // body data type must match "Content-Type" header
+    });
+    response
+      .json()
+      .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+        setProcessing(false);
+        if (response.ok) {
+          Toast.show({
+            type: 'success',
+            text1: 'DisPatch successful',
+            text2: data.message,
+          });
+          setRequestData({
+            fullname: '',
+            Phone: '',
+            address: '',
+            state: '',
+            LandMark: '',
+            ProductName: '',
+            city: '',
+            senderlong: '',
+            senderlat: '',
+          });
+          setRequestData2({
+            fullname: '',
+            Phone: '',
+            address: '',
+            state: '',
+            LandMark: '',
+            ProductName: '',
+            city: '',
+            receiverlat: '',
+            receiverlong: '',
+          });
+        } else {
+          setProcessing(false);
+          // Toast.show({
+          //   type: 'error',
+          //   text1: 'Login failed',
+          //   text2: data.message,
+          // });
+
+          console.log('response: ', response);
+          console.log('Login error:', data.message);
+        }
+      })
+      .catch(error => {
+        setProcessing(false);
+        Toast.show({
+          type: 'error',
+          text1: 'Login failed',
+          text2: error.message,
+        });
+        console.log('Login error:', error);
+      });
+  };
+
   return (
-    <>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors[appearance].background,
+      }}>
       <View
         style={{
           flex: 1,
           backgroundColor: colors[appearance].background,
+          display: step === 1 ? 'flex' : 'none',
         }}>
         <View
           style={{
             backgroundColor: colors[appearance].primary,
             borderBottomEndRadius: 15,
             borderBottomLeftRadius: 15,
-            paddingTop: 40,
+            paddingTop: 20,
             paddingBottom: 26,
           }}>
           <View
@@ -73,12 +270,12 @@ export default AddDispatch = ({navigation}) => {
                 fontSize: 20,
                 color: colors[appearance].textDark,
               }}>
-              {user.name}
+              {user.userDetails.name}
             </Text>
 
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(mainRouts.senderDetails);
+                setStep(2);
               }}
               style={{
                 backgroundColor: colors[appearance].black,
@@ -89,7 +286,7 @@ export default AddDispatch = ({navigation}) => {
                 paddingVertical: 10,
                 borderRadius: 35,
                 width: 180,
-                marginTop: 10,
+                marginTop: 15,
                 alignSelf: 'center',
               }}>
               <Text
@@ -119,7 +316,9 @@ export default AddDispatch = ({navigation}) => {
                 fontSize: 14,
                 color: colors[appearance].textDark,
               }}>
-              kilometre 55, Lekki - Epe Expressway Sangotedo Ibeju-Lekki
+              {requestData.address
+                ? requestData.address
+                : user.userDetails.address}
             </Text>
           </View>
         </View>
@@ -161,7 +360,10 @@ export default AddDispatch = ({navigation}) => {
               <TouchableOpacity
                 onPress={() => {
                   console.log('Item Pressed:', item);
-                  setSelectedItem(item);
+                  setSelectedItem({
+                    ...item,
+                    price: price[0][item.name.toLowerCase()],
+                  });
                 }}
                 key={item.id}
                 style={{
@@ -174,7 +376,7 @@ export default AddDispatch = ({navigation}) => {
                   borderRadius: 10,
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginStart: 12,
+                  margin: 5,
                 }}>
                 <View
                   style={{
@@ -192,8 +394,18 @@ export default AddDispatch = ({navigation}) => {
                     fontFamily: 'Inter-Medium',
                     fontSize: 16,
                     color: '#565656',
+                    marginTop: 10,
                   }}>
                   {item?.name}
+                </Text>
+
+                <Text
+                  style={{
+                    fontFamily: 'Inter-Medium',
+                    fontSize: 16,
+                    color: '#565656',
+                  }}>
+                  ₦{price[0] && price[0][item.name.toLowerCase()]}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -211,7 +423,7 @@ export default AddDispatch = ({navigation}) => {
             }}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate(mainRouts.reciever);
+                setStep(3);
               }}
               style={{
                 backgroundColor: colors[appearance].black,
@@ -253,7 +465,9 @@ export default AddDispatch = ({navigation}) => {
                   fontSize: 14,
                   color: colors[appearance].black,
                 }}>
-                kilometre 55, Lekki - Epe Expressway Sangotedo Ibeju-Lekki
+                {requestData2.address.length > 1
+                  ? requestData2.address
+                  : 'select Receiver address'}
               </Text>
             </View>
           </View>
@@ -269,13 +483,38 @@ export default AddDispatch = ({navigation}) => {
             textColor={colors[appearance].textDark}
             buttonColor={colors[appearance].primary}
             onPress={() => {
-              signUpUser();
+              AddDispatch();
               // navigation.navigate(authRouts.otpVerification)
             }}
           />
         </ScrollView>
       </View>
-    </>
+
+      <View
+        style={{
+          display: step === 2 ? 'flex' : 'none',
+          flex: 1,
+        }}>
+        <SenderDetailScreen
+          goBack={() => setStep(1)}
+          requestData={requestData}
+          setName={setName}
+          setRequestData={setRequestData}
+        />
+      </View>
+
+      <View
+        style={{
+          display: step === 3 ? 'flex' : 'none',
+          flex: 1,
+        }}>
+        <RecieverScreen
+          requestData={requestData2}
+          setRequestData={setRequestData2}
+          goBack={() => setStep(1)}
+        />
+      </View>
+    </View>
   );
 };
 

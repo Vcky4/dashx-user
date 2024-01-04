@@ -11,6 +11,8 @@ import {
   TextInput,
   Animated,
   ScrollView,
+  FlatList,
+  RefreshControl,
 } from 'react-native';
 import io from 'socket.io-client';
 import colors from '../../../assets/colors/colors';
@@ -22,15 +24,64 @@ import mainRouts from '../../navigation/routs/mainRouts';
 import {AuthContext} from '../../../context/AuthContext';
 import {counterEvent} from 'react-native/Libraries/Performance/Systrace';
 import Button from '../../component/Button';
+import OrderItem from './orderItem';
 var Sound = require('react-native-sound');
 
 export default Home = ({navigation}) => {
-  const {saveToken, saveUser, colorScheme, login, user} =
+  const {saveToken, saveUser, colorScheme, token, login, user} =
     useContext(AuthContext);
   const appearance = colorScheme;
-
+  const [order, setOrder] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   //check if ready
-  // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;
+  // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;\
+
+  const retrieveOrder = async () => {
+     setRefreshing(true);
+    const response = await fetch(endpoints.baseUrl + endpoints.retrieveOrder, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        userid: user.userDetails._id,
+      }), // body data type must match "Content-Type" header
+    });
+    response
+      .json()
+      .then(data => {
+        console.log(data); // JSON data parsed by `data.json()` call
+
+        if (response.ok) {
+           setRefreshing(false);
+          setOrder(data.data);
+        } else {
+          // Toast.show({
+          //   type: 'error',
+          //   text1: 'Login failed',
+          //   text2: data.message,
+          // });
+          console.log('response: ', response);
+          console.log('retrieveOrder error:', data.message);
+        }
+      })
+      .catch(error => {
+        setRefreshing(false);
+        Toast.show({
+          type: 'error',
+          text1: 'retrieveOrder failed',
+          text2: error.message,
+        });
+        console.log('retrieveOrder error:', error);
+      });
+  };
+
+  useEffect(() => {
+    retrieveOrder();
+  }, []);
+
+
   return (
     <>
       <View
@@ -54,49 +105,38 @@ export default Home = ({navigation}) => {
               fontSize: 24,
               color: colors.light.white,
             }}>
-            {user.name}
+            {user.userDetails.name}
           </Text>
         </View>
-        <ScrollView
-          style={{
-            paddingHorizontal: 18,
-            paddingVertical: 16,
-          }}>
-          <View style={{flexDirection: 'row'}}>
-            <Text
+        <FlatList
+          data={order}
+          ListEmptyComponent={
+            <View
               style={{
-                fontFamily: 'Inter-Bold',
-                fontSize: 24,
-                color: colors[appearance].textDark,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingTop: 100,
               }}>
-              Wallet: {'  '}
-              <Text>₦ 4,589.55</Text>
-            </Text>
-          </View>
-
-          <View
-            style={{
-              paddingVertical: 20,
-              borderWidth: 1,
-              borderRadius: 15,
-              borderColor: '#A10F7E',
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 20,
-              marginTop: 10,
-            }}>
-            <TrackOrder fill={colors[appearance].textDark} />
-            <Text
-              style={{
-                fontFamily: 'Inter-Regular',
-                fontSize: 20,
-                paddingStart: 25,
-                color: colors[appearance].textDark,
-              }}>
-              Track orders
-            </Text>
-          </View>
-        </ScrollView>
+              <Text
+                style={{
+                  color: colors.Brand,
+                  fontFamily: 'Jost-Medium',
+                  fontSize: 16,
+                }}>
+                no order yet{' '}
+              </Text>
+            </View>
+          }
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={retrieveOrder}
+            />
+          }
+          renderItem={({item, index}) => (
+            <OrderItem item={item} index={index + 1} />
+          )}
+        />
       </View>
 
       <View
@@ -167,7 +207,7 @@ export default Home = ({navigation}) => {
                 fontSize: 16,
                 color: colors.dark.black,
               }}>
-              25, Ogeretedo Street, Dopemu,Agege
+              {user.userDetails.address}
             </Text>
           </Text>
         </View>

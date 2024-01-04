@@ -1,48 +1,40 @@
 import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal } from "react-native";
+import DeviceInfo from 'react-native-device-info';
 
 import { AuthContext } from "../../../context/AuthContext";
 import colors from "../../../assets/colors/colors";
-import CancelIcon from "../../../assets/icons/cancel.svg";
-import StarLgIcon from "../../../assets/icons/Star-lg.svg";
-import LogoutIcon from "../../../assets/icons/logout.svg";
 import mainRoute from "../routs/mainRouts";
 import profileRouts from "../routs/profileRouts";
-import SettingsIcon from "../../../assets/icons/settings.svg";
-import OrdersIcon from "../../../assets/icons/orders.svg";
-import HelpIcon from "../../../assets/icons/help.svg";
-import EarningsIcon from "../../../assets/icons/earnings.svg";
 
 
-export default function DrawerContent(props) {
-    const { logout, user } = useContext(AuthContext);
+export default function DrawerContent(props, onPendingOrderPress = () => { }) {
+    const { logout, user, colorScheme, toggleTheme } = useContext(AuthContext);
     // console.log('from drawer', user);
     const [modalVisible, setModalVisible] = useState(false);
     return (
         <>
             <View style={{
                 flex: 1,
-                backgroundColor: colors.primary,
+                backgroundColor: colors[colorScheme].background,
             }}>
                 <View style={styles.content}>
                     <View style={{
-                        backgroundColor: colors.primary,
+                        backgroundColor: colors[colorScheme].primary,
                         width: '100%',
-                        paddingHorizontal: 30,
-                        paddingTop: 50,
-                        paddingBottom: 16,
+                        height: 150,
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}>
-                        <TouchableOpacity
-                            onPress={() => props.navigation.closeDrawer()}
+                        <Image
+                            source={require('../../../assets/images/logo.png')}
                             style={{
-                                padding: 10,
-                                borderRadius: 5,
-                                backgroundColor: 'rgba(255, 255, 255, 0.35)',
-                                width: 32,
-                            }}>
-                            <CancelIcon fill={colors.white} height={12} width={12} />
-                        </TouchableOpacity>
+                                width: '50%',
+                                // height: 60,
+                                resizeMode: "contain",
+                            }}
 
+                        />
                     </View>
                     <ScrollView
                         vertical
@@ -51,87 +43,251 @@ export default function DrawerContent(props) {
                             flexGrow: 1,
                             justifyContent: 'flex-start',
                             width: '100%',
-                            paddingVertical: 30,
-                            paddingHorizontal: 30,
+                            paddingBottom: 20,
+                            paddingHorizontal: 20,
                         }}>
+                        <TouchableOpacity
+                            onPress={() => props.navigation.navigate(profileRouts.profile)}
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginTop: 20,
+                                justifyContent: 'space-between',
+                            }}>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}>
+                                <Image
+                                    source={require('../../../assets/images/profile.jpg')}
+                                    style={{
+                                        width: 46,
+                                        height: 46,
+                                        resizeMode: "cover",
+                                        borderRadius: 50,
+                                        marginRight: 14,
+                                    }}
+                                />
+                                <View>
+                                    <Text style={{
+                                        color: colors[colorScheme].textDark,
+                                        fontSize: 18,
+                                        fontFamily: 'Inter-Bold',
+                                    }}>{user?.name}</Text>
+                                    <Text style={{
+                                        color: colors[colorScheme].textGray,
+                                        fontSize: 16,
+                                        fontFamily: 'Inter-Regular',
+                                    }}>View Profile</Text>
+                                </View>
+                            </View>
+                            <TouchableOpacity onPress={() => toggleTheme()}>
+                                <Image
+                                    source={
+                                        colorScheme === 'light' ?
+                                            require('../../../assets/images/night.png') :
+                                            require('../../../assets/images/light.png')
+                                    }
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textDark,
+                                    }}
+                                />
+                            </TouchableOpacity>
+                        </TouchableOpacity>
                         <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            // width: '90%',
+                            marginTop: 20,
                         }}>
+                            <View>
+                                <Text style={{
+                                    color: colors[colorScheme].textGray,
+                                    fontSize: 16,
+                                    fontFamily: 'Inter-Regular',
+                                }}>Today’s Earnings:</Text>
+                                <Text style={{
+                                    color: colors[colorScheme].textGray,
+                                    fontSize: 25,
+                                    fontFamily: 'Inter-SemiBold',
+                                }}>₦8,900</Text>
+                            </View>
                             <Image
-                                source={user?.kyc?.selfie
-                                    ? { uri: user?.kyc?.selfie }
-                                    : require('../../../assets/images/profile.png')}
+                                source={require('../../../assets/images/outline.png')}
                                 style={{
-                                    width: 60,
-                                    height: 60,
+                                    width: 33,
+                                    height: 33,
                                     resizeMode: "contain",
-                                    borderRadius: 30,
                                 }}
-
                             />
-                            <Text style={{
-                                color: colors.white,
-                                fontSize: 20,
-                                fontFamily: 'Poppins-Bold',
-                                marginTop: 8,
-                                marginBottom: 10,
-                            }}>{user?.firstName} {user?.lastName}</Text>
-
                         </View>
+                        <TouchableOpacity style={{ marginTop: 30 }}
+                            onPress={() => {
+                                props.navigation.toggleDrawer()
+                                onPendingOrderPress()
+                            }}>
+                            <View style={styles.itemWrapper}>
+                                <Image
+                                    source={require('../../../assets/images/time.png')}
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textGray,
+                                    }}
+                                />
+                                <Text style={[styles.items, {
+                                    color: colors[colorScheme].textGray,
+                                }]}>Pending orders</Text>
+                            </View>
+                        </TouchableOpacity>
                         <TouchableOpacity style={{ marginTop: 30 }}
                             onPress={() => props.navigation.navigate(profileRouts.orderHistory)}>
                             <View style={styles.itemWrapper}>
-                                <OrdersIcon />
-                                <Text style={styles.items}>Order History</Text>
+                                <Image
+                                    source={require('../../../assets/images/time.png')}
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textGray,
+                                    }}
+                                />
+                                <Text style={[styles.items, {
+                                    color: colors[colorScheme].textGray,
+                                }]}>History</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ marginTop: 20 }} onPress={() => props.navigation.navigate(profileRouts.profile)}>
+                        <TouchableOpacity style={{ marginTop: 30 }}
+                            onPress={() => props.navigation.navigate(profileRouts.orderHistory)}>
                             <View style={styles.itemWrapper}>
-                                <SettingsIcon fill={colors.white} />
-                                <Text style={styles.items}>Profile Settings</Text>
+                                <Image
+                                    source={require('../../../assets/images/wallet.png')}
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textGray,
+                                    }}
+                                />
+                                <Text style={[styles.items, {
+                                    color: colors[colorScheme].textGray,
+                                }]}>Wallet</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => props.navigation.navigate(mainRoute.help)}
-                            style={{ marginTop: 20 }} >
+                        <TouchableOpacity style={{ marginTop: 30 }}
+                            onPress={() => props.navigation.navigate(profileRouts.orderHistory)}>
                             <View style={styles.itemWrapper}>
-                                <HelpIcon />
-                                <Text style={styles.items}>Help &  Support</Text>
+                                <Image
+                                    source={require('../../../assets/images/chat.png')}
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textGray,
+                                    }}
+                                />
+                                <Text style={[styles.items, {
+                                    color: colors[colorScheme].textGray,
+                                }]}>Message</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => props.navigation.navigate(profileRouts.myEarnings)}
-                            style={{ marginTop: 20 }} >
+                        <TouchableOpacity style={{ marginTop: 30 }}
+                            onPress={() => props.navigation.navigate(profileRouts.orderHistory)}>
                             <View style={styles.itemWrapper}>
-                                <EarningsIcon />
-                                <Text style={styles.items}>My earnings</Text>
+                                <Image
+                                    source={require('../../../assets/images/support.png')}
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textGray,
+                                    }}
+                                />
+                                <Text style={[styles.items, {
+                                    color: colors[colorScheme].textGray,
+                                }]}>Support</Text>
                             </View>
                         </TouchableOpacity>
-
-                        {/* <TouchableOpacity
-                            onPress={() => props.navigation.navigate(profileRouts.myRating)}
-                            style={{ marginTop: 20 }} >
+                        {/* <TouchableOpacity style={{ marginTop: 30 }}
+                            onPress={() => props.navigation.navigate(profileRouts.orderHistory)}>
                             <View style={styles.itemWrapper}>
-                                <StarLgIcon fill={colors.white} height={20} width={20} />
-                                <Text style={styles.items}>My rating</Text>
+                                <Image
+                                    source={require('../../../assets/images/setting.png')}
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textGray,
+                                    }}
+                                />
+                                <Text style={[styles.items, {
+                                    color: colors[colorScheme].textGray,
+                                }]}>Settings</Text>
                             </View>
                         </TouchableOpacity> */}
+                        <TouchableOpacity style={{ marginTop: 30 }}
+                            onPress={() => props.navigation.navigate(profileRouts.orderHistory)}>
+                            <View style={styles.itemWrapper}>
+                                <Image
+                                    source={require('../../../assets/images/help.png')}
+                                    style={{
+                                        width: 22,
+                                        height: 22,
+                                        resizeMode: "contain",
+                                        tintColor: colors[colorScheme].textGray,
+                                    }}
+                                />
+                                <Text style={[styles.items, {
+                                    color: colors[colorScheme].textGray,
+                                }]}>About</Text>
+                            </View>
+                        </TouchableOpacity>
                     </ScrollView>
 
                     <View style={{
-                        flex: 1,
-                        justifyContent: 'flex-end',
+                        justifyContent: 'flex-start',
                         paddingBottom: 50,
                         paddingHorizontal: 30,
+                        width: '100%',
                     }}>
-                        <TouchableOpacity onPress={() =>
-                            // logout()
-                            setModalVisible(true)
-                        }>
-                            <View style={styles.itemWrapper}>
-                                <LogoutIcon />
-                                <Text style={styles.items}>Logout</Text>
-                            </View>
+                        <TouchableOpacity style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100%',
+                            marginBottom: 10,
+                        }}
+                            onPress={() =>
+                                setModalVisible(true)
+                            }>
+                            <Image
+                                source={require('../../../assets/images/logout.png')}
+                                style={{
+                                    width: 33,
+                                    height: 33,
+                                    resizeMode: "contain",
+                                    marginRight: 20,
+                                    tintColor: colors[colorScheme].textGray,
+                                }}
+                            />
+                            <Text style={{
+                                color: colors[colorScheme].textGray,
+                                fontSize: 20,
+                                fontFamily: 'Inter-Medium',
+                            }}>Logout</Text>
                         </TouchableOpacity>
+
+                        <Text style={{
+                            color: colors[colorScheme].textDark,
+                            fontSize: 18,
+                            fontFamily: 'Inter-SemiBold',
+                            marginTop: 20,
+                        }}>V {DeviceInfo.getVersion()}</Text>
                     </View>
                 </View>
             </View>
@@ -153,18 +309,18 @@ export default function DrawerContent(props) {
 
                     <View onPress={() => setModalVisible(true)}
                         style={{
-                            backgroundColor: colors.white,
+                            backgroundColor: colors[colorScheme].background,
                             width: '90%',
                             borderRadius: 10,
                             padding: 20,
                         }}>
                         <Text style={{
-                            color: colors.textHash,
+                            color: colors[colorScheme].textDark,
                             fontSize: 20,
                             fontFamily: 'Inter-Regular',
                         }}>Log Out?</Text>
                         <Text style={{
-                            color: colors.textHash,
+                            color: colors[colorScheme].textDark,
                             fontSize: 16,
                             fontFamily: 'Inter-Regular',
                             marginTop: 10,
@@ -181,16 +337,16 @@ export default function DrawerContent(props) {
                         }}>
                             <TouchableOpacity onPress={() => setModalVisible(false)}
                                 style={{
-                                    backgroundColor: colors.white,
+                                    // backgroundColor: colors.white,
                                     padding: 10,
                                     borderRadius: 5,
                                     marginTop: 20,
                                     width: "45%",
                                     borderWidth: 1,
-                                    borderColor: colors.textHash,
+                                    borderColor: colors[colorScheme].primary,
                                 }}>
                                 <Text style={{
-                                    color: colors.textHash,
+                                    color: colors[colorScheme].primary,
                                     fontSize: 16,
                                     fontFamily: 'Inter-Regular',
                                     textAlign: 'center',
@@ -201,14 +357,14 @@ export default function DrawerContent(props) {
                                 logout()
                             }}
                                 style={{
-                                    backgroundColor: colors.primary,
+                                    backgroundColor: colors[colorScheme].primary,
                                     padding: 10,
                                     borderRadius: 5,
                                     marginTop: 20,
                                     width: "45%",
                                 }}>
                                 <Text style={{
-                                    color: colors.white,
+                                    color: colors[colorScheme].white,
                                     fontSize: 16,
                                     fontFamily: 'Inter-Regular',
                                     textAlign: 'center',
@@ -235,13 +391,14 @@ const styles = StyleSheet.create({
     },
     items: {
         flexDirection: 'row',
-        color: colors.white,
         fontSize: 16,
         fontFamily: 'Inter-Regular',
         marginStart: 20,
     },
     itemWrapper: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%',
+        marginStart: 10,
     },
 });

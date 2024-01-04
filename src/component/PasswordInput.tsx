@@ -10,12 +10,12 @@ type Props = {
 } & TextInputProps;
 
 
-const PasswordInput: React.FC<Props> = ({ theme='dark', containerStyle, label, ...rest }: Props) => {
+const PasswordInput: React.FC<Props> = ({ theme = 'dark', containerStyle, label='', ...rest }: Props) => {
     const [visible, setVisible] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     return (
         <View style={[{
-            borderColor:colors[theme].primary ,
+            borderColor: label.length>1? colors[theme].primary:colors[theme].subText ,
             borderRadius: 50,
             borderWidth: 1,
             paddingHorizontal: 10,
@@ -42,23 +42,23 @@ const PasswordInput: React.FC<Props> = ({ theme='dark', containerStyle, label, .
                 <TouchableOpacity onPress={() => { setVisible(!visible) }}>
                     {
                         visible ?
-                            <Image 
-                            source={require('../../assets/images/eye-closed.png')}
-                            style={{
-                                width: 20,
-                                height: 20,
-                            }}
-                            resizeMode="contain"
-                             />
+                            <Image
+                                source={require('../../assets/images/eye-closed.png')}
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                }}
+                                resizeMode="contain"
+                            />
                             :
                             <Image
-                            source={require('../../assets/images/eye_opened.png')}
-                            style={{
-                                width: 20,
-                                height: 20,
-                            }}
-                            resizeMode="contain"
-                             />
+                                source={require('../../assets/images/eye_opened.png')}
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                }}
+                                resizeMode="contain"
+                            />
                     }
                 </TouchableOpacity>
             </View>

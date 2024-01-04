@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
 import HomeIcon from '../../../assets/icons/homeIcon.svg';
@@ -9,7 +9,7 @@ import Chat from '../../../assets/icons/chats.svg';
 import ChatFilled from '../../../assets/icons/chatFilled.svg';
 import Profile from '../../../assets/icons/profile.svg';
 import ProfileFilled from '../../../assets/icons/profileIconFilled.svg';
-
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import mainRouts from '../routs/mainRouts';
 import Home from '../../screens/home/Home';
 import colors from '../../../assets/colors/colors';
@@ -22,213 +22,101 @@ import {Image, Keyboard, Text, TouchableOpacity, View} from 'react-native';
 import AddDispatch from '../../screens/home/AddDispatch';
 import RecieverScreen from '../../screens/home/RecieverScreen';
 import SenderDetailScreen from '../../screens/home/SenderDetailScreen';
+import DrawerContent from './DrawerContent';
 
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
 
-function bottomData2(currentRoute) {
+const Drawer = createDrawerNavigator();
+
+const DrawerStack = () => {
   const {colorScheme} = useContext(AuthContext);
-  return [
-    {
-      icon: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].textDark}
-          source={require('../../../assets/images/home.png')}
-        />
-      ),
-      iconFilled: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].primary}
-          source={require('../../../assets/images/home.png')}
-        />
-      ),
-      route: mainRouts.home,
-    },
-    {
-      icon: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].textDark}
-          source={require('../../../assets/images/wallet.png')}
-        />
-      ),
+  const panelRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-      iconFilled: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].primary}
-          source={require('../../../assets/images/wallet.png')}
-        />
-      ),
-      route: mainRouts.wallet,
-    },
-
-    {
-      icon: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].textDark}
-          source={require('../../../assets/images/chat.png')}
-        />
-      ),
-      iconFilled: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].primary}
-          source={require('../../../assets/images/chat.png')}
-        />
-      ),
-      route: mainRouts.chat,
-    },
-    {
-      icon: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].textDark}
-          source={require('../../../assets/images/profile.png')}
-        />
-      ),
-      iconFilled: (
-        <Image
-          style={{width: 40, height: 40}}
-          tintColor={colors[colorScheme].primary}
-          source={require('../../../assets/images/profile.png')}
-        />
-      ),
-      route: mainRouts.profile,
-    },
-  ];
-}
-const BottomNavStack = ({route, navigation}) => {
-  const currentRoute = getFocusedRouteNameFromRoute(route) ?? mainRouts.home;
-  const [keyboardStatus, setKeyboardStatus] = useState(false);
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardStatus(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardStatus(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
-  const {saveToken, saveUser, colorScheme, login} = useContext(AuthContext);
-  const appearance = colorScheme;
+  const openPanel = () => {
+    panelRef.current?.togglePanel();
+  };
   return (
     <>
-      <View
-        style={{
+      <Drawer.Navigator
+        drawerContent={props =>
+          DrawerContent(props, () => {
+            openPanel();
+          })
+        }>
+        <Drawer.Screen
+          name="Main"
+          component={AuthPassed}
+          options={{headerShown: false}}
+        />
+      </Drawer.Navigator>
+      {/* <BottomSheet
+        isOpen={false}
+        wrapperStyle={{
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+          elevation: 10,
+          backgroundColor: colors[colorScheme].background,
           flex: 1,
-          // paddingBottom: keyboardStatus ? 0 : 50,
-
-          width: '100%',
-        }}>
-        <Tab.Navigator
-          screenOptions={{
-            contentStyle: {backgroundColor: colors[appearance].background},
-          }}
-          initialRouteName={mainRouts.home}>
-          <Tab.Screen
-            name={mainRouts.home}
-            component={Home}
-            options={{headerShown: false}}
-          />
-          <Tab.Screen
-            name={mainRouts.wallet}
-            component={WalletScreen}
-            options={{headerShown: false}}
-          />
-
-          <Tab.Screen
-            name={mainRouts.chat}
-            component={ChatScren}
-            options={{headerShown: false}}
-          />
-
-          <Tab.Screen
-            name={mainRouts.profile}
-            component={ProfileScreen}
-            options={{headerShown: false}}
-          />
-        </Tab.Navigator>
-      </View>
-
-      {!keyboardStatus && (
+        }}
+        sliderMaxHeight={height * 0.8}
+        outerContentStyle={{
+          width: width,
+          left: -20.5,
+        }}
+        lineContainerStyle={
+          {
+            // display: 'none'
+          }
+        }
+        sliderMinHeight={0}
+        onOpen={() => {
+          setIsOpen(true);
+        }}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+        ref={ref => (panelRef.current = ref)}>
         <View
           style={{
-            flexDirection: 'row',
-            paddingHorizontal: 24,
-            paddingVertical: 16,
-            backgroundColor: colors[appearance].background,
-            justifyContent: 'space-between',
-            width: '100%',
+            backgroundColor: '#E6CEF2',
+            top: -95,
+            alignSelf: 'center',
+            borderRadius: 30,
+            position: 'absolute',
+            paddingHorizontal: 20,
+            paddingVertical: 6,
+            display: isOpen ? 'flex' : 'none',
           }}>
-          {bottomData2(currentRoute).map(data => (
-            <TouchableOpacity
-              onPress={() => {
-                if (data.route == 'More') {
-                  setModalVisible(true);
-                } else {
-                  navigation.navigate(data.route);
-                }
-              }}
-              key={data.route}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              {data.route === currentRoute ? data.iconFilled : data.icon}
-            </TouchableOpacity>
-          ))}
+          <Text
+            style={{
+              color: colors[colorScheme].black,
+              fontSize: 16,
+              fontFamily: 'Inter-SemiBold',
+            }}>
+            Pending Orders
+          </Text>
         </View>
-      )}
+        <PendingOrder />
+      </BottomSheet> */}
     </>
   );
 };
 
 export default AuthPassed = () => {
-  // const { user } = useContext(AuthContext);
-  // const [isLoading, setIsLoading] = useState(true);
-  // useEffect(() => {
-  //     setTimeout(() => {
-  //         if (user?.vehicle?.carModel) {
-  //             if (user?.kyc?.type) {
-  //                 if (user?.account?.accountNumber) {
-  //                     navigation.navigate(mainRouts.home)
-  //                     setIsLoading(false)
-  //                 } else {
-  //                     navigation.navigate(profileRouts.setBank)
-  //                     setIsLoading(false)
-  //                 }
-  //             } else {
-  //                 navigation.navigate(profileRouts.welcome)
-  //                 setIsLoading(false)
-  //             }
-  //         } else {
-  //             navigation.navigate(mainRouts.updateVehicle)
-  //             setIsLoading(false)
-  //         }
-  //     }, 300);
-  // }, [user]);
-
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name={'bottomNav'}
         component={BottomNavStack}
         options={{headerShown: false}}
-      />
-      {/* <Stack.Screen
+      /> */}
+      <Stack.Screen
         name={mainRouts.home}
         component={Home}
         options={{headerShown: false}}
-      /> */}
+      />
       <Stack.Screen
         name={mainRouts.AddDispatch}
         component={AddDispatch}

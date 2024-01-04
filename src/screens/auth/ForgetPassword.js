@@ -226,6 +226,5 @@ export default ForgetPassword = ({navigation}) => {
 const styles = StyleSheet.create({
   input: {
     marginTop: 20,
-    marginHorizontal: 20,
   },
 });
