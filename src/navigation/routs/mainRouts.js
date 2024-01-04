@@ -11,6 +11,8 @@ const mainRouts = {
   senderDetails: 'senderDetails',
   reciever: 'recieverDetails',
   dispatchDetails: 'dispatchDetails',
+  profile:'profile'
+
 };
 
 export default mainRouts;

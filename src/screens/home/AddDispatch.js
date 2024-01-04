@@ -212,6 +212,7 @@ export default AddDispatch = ({navigation}) => {
             receiverlat: '',
             receiverlong: '',
           });
+          navigation.goBack();
         } else {
           setProcessing(false);
           // Toast.show({

@@ -78,9 +78,10 @@ export default Home = ({navigation}) => {
   };
 
   useEffect(() => {
-    retrieveOrder();
+    setTimeout(() => {
+      retrieveOrder();
+    }, 5000);
   }, []);
-
   return (
     <>
       <View
@@ -98,6 +99,28 @@ export default Home = ({navigation}) => {
             justifyContent: 'center',
             paddingHorizontal: 20,
           }}>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={{
+              position: 'absolute',
+              top: 5,
+              left: 20,
+              zIndex: 100,
+              backgroundColor: colors[colorScheme].white,
+              borderRadius: 40,
+              padding: 6,
+              elevation: 10,
+            }}>
+            <Image
+              source={require('../../../assets/images/menu.png')}
+              style={{
+                width: 30,
+                height: 30,
+                resizeMode: 'contain',
+                borderRadius: 40,
+              }}
+            />
+          </TouchableOpacity>
           <Text
             style={{
               fontFamily: 'Inter-Regular',
@@ -114,13 +137,13 @@ export default Home = ({navigation}) => {
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                paddingTop: 100,
+                paddingTop: 300,
               }}>
               <Text
                 style={{
-                  color: colors.Brand,
-                  fontFamily: 'Jost-Medium',
-                  fontSize: 16,
+                  color: colors.dark.white,
+                  fontFamily: 'Inter-Medium',
+                  fontSize: 25,
                 }}>
                 no order yet{' '}
               </Text>
@@ -134,8 +157,10 @@ export default Home = ({navigation}) => {
               item={item}
               index={index + 1}
               onPress={() => {
-                if ( item?.order_status == 'pickup') {
-                  navigation.navigate(mainRouts.dispatchDetails);
+                if (item?.order_status == 'pickup') {
+                  navigation.navigate(mainRouts.dispatchDetails, {
+                    item: item,
+                  });
                 }
               }}
             />
