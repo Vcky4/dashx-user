@@ -43,7 +43,7 @@ export default SnderDetails = ({
   setRequestData,
   setName,
 }) => {
-  const {saveToken, saveUser, colorScheme, login, user} =
+  const {saveToken, saveUser, colorScheme, login, user,saveLatAndLong,loaction} =
     useContext(AuthContext);
   const appearance = colorScheme;
   const [processing, setProcessing] = useState(false);
@@ -71,23 +71,28 @@ export default SnderDetails = ({
   useEffect(() => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
-        setLocationData(prevState => ({
-          ...prevState,
-          lat: callback.position.coords.latitude,
-          lng: callback.position.coords.longitude,
-        }));
+    
+        saveLatAndLong(
+          callback.position.coords.latitude,
+          callback.position.coords.longitude,
+        );
       }
     });
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    SearchAddress(searchLocation, locationData.lat, locationData.lng, data => {
+    SearchAddress(searchLocation, loaction.lat, loaction.lng, data => {
       setListofLocation(data);
     });
 
     setLoading(false);
   }, [searchLocation]);
+
+
+
+
+
 
   return (
     <>

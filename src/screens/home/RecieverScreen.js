@@ -39,8 +39,15 @@ import getStateAndCity from '../../../utils/getStateAndCity';
 var Sound = require('react-native-sound');
 
 export default Home = ({goBack, requestData, setRequestData}) => {
-  const {saveToken, saveUser, colorScheme, login, user} =
-    useContext(AuthContext);
+  const {
+    saveToken,
+    saveUser,
+    colorScheme,
+    login,
+    user,
+    loaction,
+    saveLatAndLong,
+  } = useContext(AuthContext);
   const appearance = colorScheme;
   const [firstName, setFirstName] = useState('');
   const [Phone, setPhone] = useState('');
@@ -73,6 +80,10 @@ export default Home = ({goBack, requestData, setRequestData}) => {
           lat: callback.position.coords.latitude,
           lng: callback.position.coords.longitude,
         }));
+        saveLatAndLong(
+          callback.position.coords.latitude,
+          callback.position.coords.longitude,
+        );
       }
     });
   }, []);
@@ -80,7 +91,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
   useEffect(() => {
     setLoading(true);
 
-    SearchAddress(searchLocation, locationData.lat, locationData.lng, data => {
+    SearchAddress(searchLocation, loaction.lat, loaction.lng, data => {
       setListofLocation(data);
     });
 
@@ -393,8 +404,8 @@ export default Home = ({goBack, requestData, setRequestData}) => {
                           address:
                             data[0]?.formatted_address.split(/,(.*)/s)[0] +
                             data[0]?.formatted_address.split(/,(.*)/s)[1],
-                            receiverlong: data[0]?.geometry?.location?.lng,
-                            receiverlat: data[0]?.geometry?.location?.lat,
+                          receiverlong: data[0]?.geometry?.location?.lng,
+                          receiverlat: data[0]?.geometry?.location?.lat,
                         }));
                       });
 

@@ -30,7 +30,7 @@ import getAddress from '../../../utils/getAddress';
 var Sound = require('react-native-sound');
 
 export default Home = ({navigation}) => {
-  const {saveToken, saveUser, colorScheme, token, login, user} =
+  const {saveToken, saveUser, colorScheme, token, login, user, saveLatAndLong} =
     useContext(AuthContext);
   const appearance = colorScheme;
   const [order, setOrder] = useState(null);
@@ -54,17 +54,12 @@ export default Home = ({navigation}) => {
     response
       .json()
       .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
+        // console.log(data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setRefreshing(false);
           setOrder(data.data);
         } else {
-          // Toast.show({
-          //   type: 'error',
-          //   text1: 'Login failed',
-          //   text2: data.message,
-          // });
           console.log('response: ', response);
           console.log('retrieveOrder error:', data.message);
         }
@@ -83,11 +78,15 @@ export default Home = ({navigation}) => {
   const [currentAddress, setCurrentAddress] = useState('');
   useEffect(() => {
     retrieveOrder();
-  },[]);
+  }, []);
 
   useEffect(() => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
+        saveLatAndLong(
+          callback.position.coords.latitude,
+          callback.position.coords.longitude,
+        );
         getAddress(
           callback.position.coords.latitude,
           callback.position.coords.longitude,
@@ -95,11 +94,13 @@ export default Home = ({navigation}) => {
             setCurrentAddress(
               results[0]?.formatted_address || 'Address not found',
             );
+            // console.log('results', results[0])
           },
         );
       }
     });
   }, []);
+
   return (
     <>
       <View
@@ -149,7 +150,8 @@ export default Home = ({navigation}) => {
           </Text>
         </View>
         <FlatList
-          data={order}
+          data={order && [...order].reverse()}
+          contentContainerStyle={{paddingBottom: 30}}
           ListEmptyComponent={
             <View
               style={{
@@ -254,13 +256,14 @@ export default Home = ({navigation}) => {
               fontSize: 16,
               color: colors.dark.black,
               maxWidth: '80%',
+              paddingVertical: 5,
             }}>
             My Location:{' '}
             <Text
               style={{
                 fontFamily: 'Inter-Regular',
                 fontSize: 16,
-                color: colors.dark.black,
+                color: colors.light.black,
               }}>
               {currentAddress}
             </Text>

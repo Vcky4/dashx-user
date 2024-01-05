@@ -6,5 +6,6 @@ export default getAddress = async (lat, lng, callback) => {
     const response = await fetch(url);
     const data = await response.json();
 
+    // console.log("rtyui",data)
     return callback(data.results);
 }

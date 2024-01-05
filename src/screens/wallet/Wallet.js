@@ -64,7 +64,7 @@ export default Wallet = ({ navigation }) => {
                     fontSize: 24,
                     fontFamily: 'Inter-Bold',
                     marginVertical: 15,
-                }}>₦ 4,589.55</Text>
+                }}>₦ 0</Text>
                 <View style={{
                     marginTop: 10,
                     flexDirection: 'row',
@@ -84,30 +84,7 @@ export default Wallet = ({ navigation }) => {
                         }}>+ Deposit</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.navigate(mainRouts.withdraw)}
-                        style={{
-                            backgroundColor: colors[colorScheme].primary,
-                            paddingHorizontal: 16,
-                            paddingVertical: 8,
-                            borderRadius: 20,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                        }}>
-                        <Image
-                            source={require('../../../assets/images/down.png')}
-                            style={{
-                                width: 12,
-                                height: 12,
-                                resizeMode: "contain",
-                            }}
-                        />
-                        <Text style={{
-                            color: colors[colorScheme].white,
-                            fontSize: 16,
-                            fontFamily: 'Inter-SemiBold',
-                            marginLeft: 5,
-                        }}>Withdraw</Text>
-                    </TouchableOpacity>
+                 
                 </View>
             </View>
 

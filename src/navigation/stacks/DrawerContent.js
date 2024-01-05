@@ -136,7 +136,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                     fontSize: 25,
                     fontFamily: 'Inter-SemiBold',
                   }}>
-                  ₦8,900
+                  ₦0
                 </Text>
               </View>
               <Image

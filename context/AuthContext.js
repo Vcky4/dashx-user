@@ -8,6 +8,11 @@ export const AuthContextProvider = ({children}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+  const [loaction, setLoaction] = useState({
+    lat: 0,
+    lng: 0,
+  });
+
   const [colorScheme, setColorScheme] = useState('dark');
   const [isOnboarded, setIsOnboarded] = useState(false);
   const appearance = useColorScheme();
@@ -35,6 +40,17 @@ export const AuthContextProvider = ({children}) => {
     // console.log("user",user)
   };
 
+  const saveLatAndLong = (lat, lng) => {
+    setIsLoading(true);
+    setLoaction(prestate => ({
+      ...prestate,
+      lat: lat,
+      lng: lng,
+    }));
+    AsyncStorage.setItem('location', JSON.stringify(lat, lng));
+    setIsLoading(false);
+    // console.log("user",user)
+  };
   const onboard = () => {
     setIsOnboarded(true);
     AsyncStorage.setItem('onboarded', 'true');
@@ -71,9 +87,11 @@ export const AuthContextProvider = ({children}) => {
       let token = await AsyncStorage.getItem('token');
       let user = await AsyncStorage.getItem('user');
       let onboarded = await AsyncStorage.getItem('onboarded');
+      let location = await AsyncStorage.getItem('location');
       setIsOnboarded(onboarded === 'true' ? true : false);
       setToken(token);
       setUser(JSON.parse(user ?? '{}'));
+      setLoaction(location);
       setIsLoading(false);
     } catch (error) {
       console.log('isLoggedIn error: $(error)');
@@ -101,6 +119,8 @@ export const AuthContextProvider = ({children}) => {
         isOnboarded,
         onboard,
         toggleTheme,
+        saveLatAndLong,
+        loaction
       }}>
       {children}
     </AuthContext.Provider>
