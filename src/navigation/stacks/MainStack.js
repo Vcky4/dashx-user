@@ -13,6 +13,7 @@ import Profile from '../../screens/profile/Profile';
 import Withdraw from '../../screens/wallet/Withdraw';
 import Deposit from '../../screens/wallet/Deposit';
 import Wallet from '../../screens/wallet/Wallet';
+import History from '../../screens/profile/History';
 
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -90,6 +91,13 @@ const AuthPassed = () => {
       <Stack.Screen
         name={mainRouts.deposit}
         component={Deposit}
+        options={{headerShown: false}}
+      />
+
+
+<Stack.Screen
+        name={mainRouts.history}
+        component={History}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -15,6 +15,7 @@ const mainRouts = {
   wallet: 'wallet',
   withdrawal: 'withdrawal',
   deposit: 'deposit',
+  history: 'history',
 };
 
 export default mainRouts;
