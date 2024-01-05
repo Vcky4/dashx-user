@@ -8,6 +8,7 @@ import {
   TextInput,
   AppRegistry,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import colors from '../../../assets/colors/colors';
 import {AuthContext} from '../../../context/AuthContext';
@@ -24,11 +25,13 @@ export default Profile = ({navigation}) => {
   const [Phone, setPhone] = useState('');
   const [processing, setProcessing] = useState(false);
   const appearance = colorScheme;
+  const [profile, setProfile] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const [requestData, setRequestData] = useState({
-    name: user?.userDetails?.name || '',
-    Phone: user?.userDetails?.phone || '',
-    email: user?.userDetails?.email || '',
+    name: user?.name || '',
+    Phone: user?.phone || '',
+    email: user?.email || '',
   });
 
   const UpdateProfile = async () => {
@@ -40,7 +43,7 @@ export default Profile = ({navigation}) => {
         Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify({
-        userid: user?.userDetails?._id,
+        userid: user?._id,
         email: requestData.email,
         phone: requestData.Phone,
         name: requestData.name,
@@ -53,8 +56,8 @@ export default Profile = ({navigation}) => {
 
         if (response.ok) {
           setProcessing(false);
-          // saveUser(data.data);
-          navigation.goBack();
+          saveUser(data.data);
+          getProfile()
         } else {
           Toast.show({
             type: 'success',
@@ -77,52 +80,53 @@ export default Profile = ({navigation}) => {
       });
   };
 
-  //   const getProfile = async () => {
+  const getProfile = async () => {
+    setLoading(true);
+    const response = await fetch(endpoints.baseUrl + endpoints.getProfile, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        userid: user._id,
+      }), // body data type must match "Content-Type" header
+    });
+    response
+      .json()
+      .then(data => {
+        console.log('item', data.data); // JSON data parsed by `data.json()` call
 
-  //     const response = await fetch(endpoints.baseUrl + endpoints.getProfile, {
-  //       method: 'POST', // *GET, POST, PUT, DELETE, etc.
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: 'Bearer ' + token,
-  //       },
-  //       body: JSON.stringify({
-  //         userid: user.userDetails._id,
-  //       }), // body data type must match "Content-Type" header
-  //     });
-  //     response
-  //       .json()
-  //       .then(data => {
-  //         console.log('item', data.data); // JSON data parsed by `data.json()` call
+        if (response.ok) {
+          setLoading(false);
+        //   setProfile(data.data);
+            saveUser(data.data);
+        } else {
+          setLoading(false);
+          Toast.show({
+            type: 'success',
+            text1: ' Profile successfully',
+            text2: data.message,
+          });
+          console.log('response: ', response);
+          console.log(' profile error:', data.message);
+        }
+      })
 
-  //         if (response.ok) {
-  //           setProcessing(false);
-  //           //   saveUser(data.data);
+      .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: 'profile failed',
+          text2: error.message,
+        });
+        console.log('updateprofile error:', error);
+      });
+  };
 
-  //         } else {
-  //           Toast.show({
-  //             type: 'success',
-  //             text1: ' Profile successfully',
-  //             text2: data.message,
-  //           });
-  //           console.log('response: ', response);
-  //           console.log(' profile error:', data.message);
-  //         }
-  //       })
+  useEffect(() => {
+    getProfile();
+  }, []);
 
-  //       .catch(error => {
-
-  //         Toast.show({
-  //           type: 'error',
-  //           text1: 'profile failed',
-  //           text2: error.message,
-  //         });
-  //         console.log('updateprofile error:', error);
-  //       });
-  //   };
-
-  //   useEffect(() => {
-  //     getProfile();
-  //   }, []);
   return (
     <View
       style={{
@@ -169,7 +173,7 @@ export default Profile = ({navigation}) => {
               fontFamily: 'Inter-Bold',
               alignSelf: 'center',
             }}>
-            {user?.userDetails?.name}
+            {user?.name}
           </Text>
           <Text
             style={{
@@ -444,6 +448,8 @@ export default Profile = ({navigation}) => {
                     marginLeft: 10,
                 }}>{user.email}</Text>
             </View> */}
+
+      <ActivityIndicator animating={loading} size={'large'} style={{position:'absolute',bottom:0,left:0,top:0,right:0}} />
     </View>
   );
 };

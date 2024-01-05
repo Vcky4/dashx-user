@@ -70,7 +70,7 @@ export default Login = ({navigation}) => {
             text1: 'Login successful',
             text2: data.message,
           });
-          saveUser(data.data);
+          saveUser(data.data.userDetails);
           saveToken(data.data.token);
         } else {
             setProcessing(false);

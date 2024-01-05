@@ -32,6 +32,7 @@ export const AuthContextProvider = ({children}) => {
     setUser(user);
     AsyncStorage.setItem('user', JSON.stringify(user));
     setIsLoading(false);
+    // console.log("user",user)
   };
 
   const onboard = () => {

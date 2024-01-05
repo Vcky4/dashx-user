@@ -25,6 +25,8 @@ import {AuthContext} from '../../../context/AuthContext';
 import {counterEvent} from 'react-native/Libraries/Performance/Systrace';
 import Button from '../../component/Button';
 import OrderItem from './orderItem';
+import getCurrentPosition from '../../../utils/getCurrentPosition';
+import getAddress from '../../../utils/getAddress';
 var Sound = require('react-native-sound');
 
 export default Home = ({navigation}) => {
@@ -33,6 +35,7 @@ export default Home = ({navigation}) => {
   const appearance = colorScheme;
   const [order, setOrder] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [address, setAddress] = useState(null);
   //check if ready
   // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;\
 
@@ -45,7 +48,7 @@ export default Home = ({navigation}) => {
         Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify({
-        userid: user.userDetails._id,
+        userid: user._id,
       }), // body data type must match "Content-Type" header
     });
     response
@@ -77,10 +80,25 @@ export default Home = ({navigation}) => {
       });
   };
 
+  const [currentAddress, setCurrentAddress] = useState('');
   useEffect(() => {
-    setTimeout(() => {
-      retrieveOrder();
-    }, 5000);
+    retrieveOrder();
+  },[]);
+
+  useEffect(() => {
+    getCurrentPosition(callback => {
+      if (callback?.position?.coords) {
+        getAddress(
+          callback.position.coords.latitude,
+          callback.position.coords.longitude,
+          results => {
+            setCurrentAddress(
+              results[0]?.formatted_address || 'Address not found',
+            );
+          },
+        );
+      }
+    });
   }, []);
   return (
     <>
@@ -127,7 +145,7 @@ export default Home = ({navigation}) => {
               fontSize: 24,
               color: colors.light.white,
             }}>
-            {user?.userDetails?.name}
+            {user?.name}
           </Text>
         </View>
         <FlatList
@@ -157,12 +175,20 @@ export default Home = ({navigation}) => {
               item={item}
               index={index + 1}
               onPress={() => {
-                if (item?.order_status !== 'pickup' || 'pending') {
+                if (
+                  item &&
+                  item?.order_status !== 'pickup' &&
+                  item?.order_status !== 'pending'
+                ) {
                   navigation.navigate(mainRouts.dispatchDetails, {
                     item: item,
                   });
                 }
               }}
+              disabled={
+                item?.order_status === 'pickup' ||
+                item?.order_status === 'pending'
+              }
             />
           )}
         />
@@ -236,7 +262,7 @@ export default Home = ({navigation}) => {
                 fontSize: 16,
                 color: colors.dark.black,
               }}>
-              {user?.userDetails?.address}
+              {currentAddress}
             </Text>
           </Text>
         </View>

@@ -56,7 +56,7 @@ export default Home = ({navigation, route}) => {
           Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({
-          userid: user?.userDetails?._id,
+          userid: user?._id,
           orderid: item._id,
         }), // body data type must match "Content-Type" header
       },
@@ -170,7 +170,7 @@ export default Home = ({navigation, route}) => {
 
                   color: colors.light.white,
                 }}>
-                {order.order.order_status}
+                {order && order.order.order_status}
                 {/* {item?.order_status.charAt(0).toUpperCase() +
               item?.order_status.slice(1).toLowerCase()} */}
               </Text>
@@ -191,42 +191,90 @@ export default Home = ({navigation, route}) => {
                 alignItems: 'center',
                 paddingHorizontal: 20,
                 paddingVertical: 10,
+                justifyContent: 'space-between',
               }}>
-              <Image
-                style={{height: 39, width: 39, borderRadius: 20}}
-                source={
-                  order
-                    ? {uri: order && order.order.dispatchid.photo}
-                    : require('../../../assets/images/images.png')
-                }
-              />
-              <View style={{paddingStart: 10}}>
-                <Text
-                  style={{
-                    fontFamily: 'Inter-Medium',
-                    fontSize: 18,
-                    color: colors.dark.black,
-                  }}>
-                  {order && order.order.dispatchid.name}
-                </Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image
+                  style={{height: 39, width: 39, borderRadius: 20}}
+                  source={
+                    order
+                      ? {uri: order && order?.order?.dispatchid?.photo}
+                      : require('../../../assets/images/images.png')
+                  }
+                />
+                <View style={{paddingStart: 10}}>
+                  <Text
+                    style={{
+                      fontFamily: 'Inter-Medium',
+                      fontSize: 18,
+                      color: colors.dark.black,
+                    }}>
+                    {order && order.order.dispatchid.name}
+                  </Text>
 
-                <Text
-                  style={{
-                    fontFamily: 'Inter-Regular',
-                    fontSize: 14,
-                    color: colors.dark.subText,
-                  }}>
-                  {order && order.order.dispatchid.email}
-                </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'Inter-Regular',
+                      fontSize: 14,
+                      color: colors.dark.subText,
+                    }}>
+                    {order && order.order.dispatchid.email}
+                  </Text>
 
-                <Text
+                  <Text
+                    style={{
+                      fontFamily: 'Inter-Regular',
+                      fontSize: 14,
+                      color: colors.dark.subText,
+                    }}>
+                    {order && order.order.dispatchid.phone}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
                   style={{
-                    fontFamily: 'Inter-Regular',
-                    fontSize: 14,
-                    color: colors.dark.subText,
+                    marginEnd: 10,
+                  }}
+                  onPress={() => {
+                    //navigate to whatsapp
+                    //regex to replace first 0 with +234
+                    // const number = phone.replace(/^0/, '+234')
+                    // Linking.openURL(`https://wa.me/${number}`)
                   }}>
-                  {order && order.order.dispatchid.phone}
-                </Text>
+                  <Image
+                    source={require('../../../assets/images/whatsapp.png')}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: colors[colorScheme].primary,
+                    borderRadius: 20,
+                    padding: 6,
+                  }}
+                  onPress={() => {
+                    //call
+                    // Linking.openURL(`tel:${phone}`);
+                  }}>
+                  <Image
+                    source={require('../../../assets/images/phone.png')}
+                    style={{
+                      width: 22,
+                      height: 22,
+                      resizeMode: 'contain',
+                      tintColor: colors[colorScheme].white,
+                    }}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
 

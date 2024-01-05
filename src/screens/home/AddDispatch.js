@@ -105,7 +105,7 @@ export default AddDispatch = ({navigation}) => {
         Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify({
-        userid: user.userDetails_id,
+        userid: user._id,
       }), // body data type must match "Content-Type" header
     });
     response
@@ -159,7 +159,7 @@ export default AddDispatch = ({navigation}) => {
         Authorization: 'Bearer ' + token,
       },
       body: JSON.stringify({
-        userid: user.userDetails._id,
+        userid: user._id,
         vehicle_type: selectedItem?.name,
         delivery_fee: delivery_fee,
         sendername: requestData.fullname,
@@ -271,7 +271,7 @@ export default AddDispatch = ({navigation}) => {
                 fontSize: 20,
                 color: colors[appearance].textDark,
               }}>
-              {user.userDetails.name}
+              {user.name}
             </Text>
 
             <TouchableOpacity
@@ -319,7 +319,7 @@ export default AddDispatch = ({navigation}) => {
               }}>
               {requestData.address
                 ? requestData.address
-                : user.userDetails.address}
+                : user.address}
             </Text>
           </View>
         </View>

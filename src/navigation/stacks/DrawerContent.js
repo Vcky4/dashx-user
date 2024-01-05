@@ -85,7 +85,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                       fontFamily: 'Inter-Bold',
                       overflow: 'hidden',
                     }}>
-                    {user?.userDetails?.name}
+                    {user?.name}
                   </Text>
                   <Text
                     style={{
