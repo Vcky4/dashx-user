@@ -12,6 +12,7 @@ import {
   Animated,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import io from 'socket.io-client';
 import colors from '../../../assets/colors/colors';
@@ -23,12 +24,14 @@ import Bike from '../../../assets/icons/scooter.svg';
 import Car from '../../../assets/icons/sedan.svg';
 import Van from '../../../assets/icons/containertruck.svg';
 import Truck from '../../../assets/icons/truck.svg';
+import Info from '../../../assets/icons/infoIcon.svg';
 import Button from '../../component/Button';
 import SenderDetailScreen from './SenderDetailScreen';
 import RecieverScreen from './RecieverScreen';
 import Toast from 'react-native-toast-message';
 import distance from '../../../utils/getDistance';
 import getCurrentPosition from '../../../utils/getCurrentPosition';
+import formatNumber from '../../../utils/formatNumber';
 
 var Sound = require('react-native-sound');
 
@@ -42,13 +45,29 @@ export default AddDispatch = ({navigation}) => {
     {name: 'Van', id: 3, icon: <Van />},
     {name: 'Truck', id: 4, icon: <Truck />},
   ];
-  const {saveToken, saveUser, token, colorScheme, login, user} =
-    useContext(AuthContext);
+
+  const data2 = [
+    {name: 'Small_truck', id: 5, icon: <Bike />},
+    {name: 'Medium_truck', id: 6, icon: <Car />},
+    {name: 'Big_truck', id: 7, icon: <Van />},
+  ];
+  const {
+    saveToken,
+    saveUser,
+    token,
+    colorScheme,
+    login,
+    loaction,
+    saveLatAndLong,
+    user,
+  } = useContext(AuthContext);
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [truck, SetTruckType] = useState(false);
+  const [selectedTruck, setSelectedTruck] = useState(false);
+  const [orderConfirm, setOrderConfirm] = useState(false);
   const appearance = colorScheme;
   const [step, setStep] = useState(1);
 
@@ -75,30 +94,32 @@ export default AddDispatch = ({navigation}) => {
     receiverlong: '',
     receiverlat: '',
   });
-
+  console.log(requestData);
+  console.log(requestData2);
   const canProceed =
-    selectedItem?.name?.length > 2 
-
+    selectedItem?.name?.length > 2 &&
+    requestData.fullname.length > 2 &&
+    requestData.Phone.length === 11 &&
+    requestData.address.length > 2 &&
+    requestData.state.length > 2 &&
+    requestData2.Phone.length === 11 &&
+    requestData2.address.length > 2 &&
+    requestData2.fullname.length > 2 &&
+    requestData2.state.length > 2;
 
   const setName = text => {
     setRequestData({...requestData, fullname: text});
   };
-
-  const [locationData, setLocationData] = useState({
-    lat: 5.01,
-    lng: 7.9,
-  });
 
   const [price, setPrice] = useState([]);
 
   useEffect(() => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
-        setLocationData(prevState => ({
-          ...prevState,
-          lat: callback.position.coords.latitude,
-          lng: callback.position.coords.longitude,
-        }));
+        saveLatAndLong(
+          callback.position.coords.latitude,
+          callback.position.coords.longitude,
+        );
       }
     });
   }, []);
@@ -149,16 +170,16 @@ export default AddDispatch = ({navigation}) => {
   }, []);
 
   const getdistance = distance(
-    locationData.lat,
-    locationData.lng,
+    loaction.lat || requestData.senderlat,
+    loaction.lng || requestData.senderlong,
     requestData2.receiverlat,
     requestData2.receiverlong,
     'km',
   );
   const delivery_fee =
-    getdistance * price[0]?.price_per_km &&
-    price[0].price_per_km + selectedItem?.price;
-  //   console.log("test",delivery_fee);
+    getdistance * price[0]?.price_per_km + selectedItem?.price;
+  console.log('test', delivery_fee);
+
   const AddDispatch = async () => {
     setProcessing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.addDispatch, {
@@ -245,6 +266,25 @@ export default AddDispatch = ({navigation}) => {
       });
   };
 
+  const handleItemPress = item => {
+    setSelectedItem({
+      ...item,
+      price: price[0][item.name.toLowerCase()],
+    });
+
+    if (item.name === 'Truck') {
+      setSelectedTruck(true);
+      SetTruckType(true);
+    } else {
+      setSelectedTruck(false);
+      SetTruckType(false);
+    }
+
+    if (data2.map(it => it.name).includes(item.name)) {
+      setSelectedTruck(true);
+    }
+  };
+
   return (
     <View
       style={{
@@ -277,16 +317,14 @@ export default AddDispatch = ({navigation}) => {
               <View
                 style={{
                   flexDirection: 'row',
-                  paddingStart: 30,
-                  marginTop: 20,
                   width: '100%',
-                  paddingRight: 16,
-                  justifyContent: 'space-between',
+                  justifyContent: 'space-around',
                 }}>
                 <Text
                   style={{
                     fontFamily: 'Inter-Regular',
                     fontSize: 20,
+                    maxWidth: 150,
                     color: colors[appearance].white,
                   }}>
                   {user.name}
@@ -344,7 +382,8 @@ export default AddDispatch = ({navigation}) => {
               style={{
                 paddingHorizontal: 16,
                 paddingVertical: 16,
-              }}>
+              }}
+              contentContainerStyle={{paddingBottom: 50}}>
               <View>
                 <Text
                   style={{
@@ -354,6 +393,7 @@ export default AddDispatch = ({navigation}) => {
                   }}>
                   Delivery Type
                 </Text>
+
                 <Text
                   style={{
                     marginTop: 36,
@@ -367,27 +407,45 @@ export default AddDispatch = ({navigation}) => {
               </View>
 
               <View
+                // onPress={() => {
+                //   SetInfo(true);
+                // }}
+                style={{
+                  paddingStart: 20,
+                  marginTop: 20,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Info fill={colors[appearance].primary} />
+                <Text
+                  style={{
+                    fontFamily: 'Inter-Regular',
+                    fontSize: 13,
+                    color: colors[appearance].textDark,
+                    alignSelf: 'center',
+                    paddingStart: 10,
+                  }}>
+                  Please make sure to choose a vehicle suitable for your item.
+                </Text>
+              </View>
+
+              <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginTop: 20,
+                  marginTop: 6,
                   alignSelf: 'center',
                 }}>
                 {data.map(item => (
                   <TouchableOpacity
-                    onPress={() => {
-                      console.log('Item Pressed:', item);
-                      setSelectedItem({
-                        ...item,
-                        price: price[0][item.name.toLowerCase()],
-                      });
-                    }}
+                    onPress={() => handleItemPress(item)}
                     key={item.id}
                     style={{
                       paddingHorizontal: 10,
                       paddingVertical: 10,
                       backgroundColor:
-                        selectedItem?.id === item.id
+                        selectedItem?.id === item.id ||
+                        (item.name === 'Truck' && selectedTruck)
                           ? colors[appearance].black
                           : colors[appearance].primary,
                       borderRadius: 10,
@@ -404,6 +462,7 @@ export default AddDispatch = ({navigation}) => {
                         paddingHorizontal: 10,
                         paddingVertical: 10,
                       }}>
+                      {/* Assuming your icons are part of your data */}
                       {item?.icon}
                     </View>
                     <Text
@@ -415,22 +474,31 @@ export default AddDispatch = ({navigation}) => {
                       }}>
                       {item?.name}
                     </Text>
-
-                    <Text
-                      style={{
-                        fontFamily: 'Inter-Medium',
-                        fontSize: 16,
-                        color: colors.light.white,
-                      }}>
-                      ₦{price[0] && price[0][item.name.toLowerCase()]}
-                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
-
+              <Text
+                style={{
+                  fontFamily: 'Inter-Regular',
+                  fontSize: 13,
+                  color: colors[appearance].textDark,
+                  paddingStart: 10,
+                  marginTop: 61,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'Inter-Regular',
+                    fontSize: 18,
+                    color: colors[appearance].textDark,
+                    paddingStart: 10,
+                  }}>
+                  Description:
+                </Text>{' '}
+                {requestData.ProductName}
+              </Text>
               <View
                 style={{
-                  marginTop: 61,
+                  marginTop: 10,
                   backgroundColor: '#EBEBEB',
 
                   borderRadius: 10,
@@ -488,6 +556,27 @@ export default AddDispatch = ({navigation}) => {
                   </Text>
                 </View>
               </View>
+
+              <Text
+                style={{
+                  fontFamily: 'Inter-Regular',
+                  fontSize: 18,
+                  color: colors[appearance].textDark,
+                  paddingStart: 10,
+                  display: canProceed ? 'flex' : 'none',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'Inter-Regular',
+                    fontSize: 18,
+                    color: colors[appearance].textDark,
+                    paddingStart: 10,
+                  }}>
+                  Total Price:
+                </Text>{' '}
+                ₦ {formatNumber(delivery_fee)}
+              </Text>
+
               <Button
                 title="Confirm"
                 buttonStyle={{
@@ -500,6 +589,7 @@ export default AddDispatch = ({navigation}) => {
                 textColor={colors[appearance].textDark}
                 buttonColor={colors[appearance].primary}
                 onPress={() => {
+                  // setOrderConfirm(true);
                   AddDispatch();
                   // navigation.navigate(authRouts.otpVerification)
                 }}
@@ -533,6 +623,71 @@ export default AddDispatch = ({navigation}) => {
           </View>
         </View>
       )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={truck}
+        onRequestClose={() => {
+          SetTruckType(!truck);
+        }}>
+        <TouchableOpacity
+          onPress={() => {
+            SetTruckType(!truck);
+          }}
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+          }}>
+          <View
+            style={{
+              backgroundColor: colors[appearance].background,
+              width: '60%',
+              borderRadius: 20,
+              paddingVertical: 20,
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Inter-SemiBold',
+                fontSize: 20,
+                color: colors[appearance].textDark,
+                alignSelf: 'center',
+              }}>
+              Truckk Type
+            </Text>
+            <ScrollView
+              style={{
+                marginTop: 20,
+              }}>
+              {data2.map(item => (
+                <TouchableOpacity
+                  onPress={() => handleItemPress(item)}
+                  key={item.id}
+                  style={{
+                    paddingVertical: 10,
+                    backgroundColor:
+                      selectedItem?.id === item.id ||
+                      (item.name === 'Truck' && selectedTruck)
+                        ? colors[appearance].black
+                        : colors[appearance].background,
+                    paddingHorizontal: 20,
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'Inter-Regular',
+                      fontSize: 19,
+                      color: colors[appearance].textDark,
+                    }}>
+                    {item?.name.replace('_', ' ')}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };

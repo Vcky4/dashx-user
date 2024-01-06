@@ -19,7 +19,8 @@ import Bike from '../../../assets/icons/scooter.svg';
 import Car from '../../../assets/icons/sedan.svg';
 import Van from '../../../assets/icons/containertruck.svg';
 import Truck from '../../../assets/icons/truck.svg';
-
+import {ProgressBar, MD3Colors} from 'react-native-paper';
+const {width} = Dimensions.get('window');
 export default OrderItem = ({item, index, onPress}) => {
   const {saveToken, saveUser, colorScheme, token, login, user} =
     useContext(AuthContext);
@@ -36,6 +37,7 @@ export default OrderItem = ({item, index, onPress}) => {
     const vehicle = data.find(v => v.name === vehicleType);
     return vehicle ? vehicle.icon : null;
   };
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -69,7 +71,7 @@ export default OrderItem = ({item, index, onPress}) => {
               fontSize: 16,
               color: colors[appearance].textDark,
             }}>
-            {index}
+            {item?._id && item._id.substr(-6)}
           </Text>
 
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -82,7 +84,6 @@ export default OrderItem = ({item, index, onPress}) => {
               style={{
                 fontFamily: 'Inter-Medium',
                 fontSize: 16,
-
                 color: colors[appearance].textDark,
               }}>
               {item.receiverphone}
@@ -152,7 +153,7 @@ export default OrderItem = ({item, index, onPress}) => {
             backgroundColor:
               item?.order_status == 'pickup'
                 ? '#31D0AA'
-                : item?.order_status == 'Accepted'
+                : item?.order_status == 'delivered'
                 ? '#A10F7E'
                 : '#868686',
             height: 40,
@@ -215,18 +216,38 @@ export default OrderItem = ({item, index, onPress}) => {
         }}>
         {getVehicleIcon(item?.vehicle_type)}
 
-        <View
+        {/* <View
           style={{
             height: 2,
             width: '75%',
             backgroundColor:
               item?.order_status == 'pickup'
                 ? '#31D0AA'
-                : item?.order_status == 'Accepted'
+                : item?.order_status === 'delivered'
                 ? '#A10F7E'
                 : '#868686',
             marginHorizontal: 10,
-          }}></View>
+          }}></View> */}
+
+        <ProgressBar
+          progress={item?.order_status === 'pending'
+          ? 0
+          : item?.order_status === 'pickup'
+          ? 0.2
+          : item?.order_status === 'accepted'
+          ? 0.5
+          : item?.order_status === 'shipping'
+          ? 0.8
+          : 1}
+          style={{width: width * 0.6, marginHorizontal: 10}}
+          color={
+            item?.order_status == 'pickup'
+              ? '#31D0AA'
+              : item?.order_status === 'delivered'
+              ? '#A10F7E'
+              : '#31D0AA'
+          }
+        />
 
         <Image
           tintColor={'#A10F7E'}

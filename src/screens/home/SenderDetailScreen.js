@@ -43,8 +43,15 @@ export default SnderDetails = ({
   setRequestData,
   setName,
 }) => {
-  const {saveToken, saveUser, colorScheme, login, user,saveLatAndLong,loaction} =
-    useContext(AuthContext);
+  const {
+    saveToken,
+    saveUser,
+    colorScheme,
+    login,
+    user,
+    saveLatAndLong,
+    loaction,
+  } = useContext(AuthContext);
   const appearance = colorScheme;
   const [processing, setProcessing] = useState(false);
 
@@ -71,7 +78,6 @@ export default SnderDetails = ({
   useEffect(() => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
-    
         saveLatAndLong(
           callback.position.coords.latitude,
           callback.position.coords.longitude,
@@ -88,11 +94,6 @@ export default SnderDetails = ({
 
     setLoading(false);
   }, [searchLocation]);
-
-
-
-
-
 
   return (
     <>
@@ -181,7 +182,7 @@ export default SnderDetails = ({
                 color: colors[appearance].subText,
                 paddingTop: 20,
               }}>
-              Product Name
+              description
             </Text>
             <InputField
               theme={appearance}
@@ -189,7 +190,7 @@ export default SnderDetails = ({
               onChangeText={text =>
                 setRequestData(prevState => ({...prevState, ProductName: text}))
               }
-              placeholder=" Product Name"
+              placeholder="Description"
               containerStyle={styles.input}
               leftComponet={<PhoneIcon fill={colors[appearance].textDark} />}
             />

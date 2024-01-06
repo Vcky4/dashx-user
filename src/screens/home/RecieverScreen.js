@@ -75,11 +75,6 @@ export default Home = ({goBack, requestData, setRequestData}) => {
   useEffect(() => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
-        setLocationData(prevState => ({
-          ...prevState,
-          lat: callback.position.coords.latitude,
-          lng: callback.position.coords.longitude,
-        }));
         saveLatAndLong(
           callback.position.coords.latitude,
           callback.position.coords.longitude,
@@ -144,7 +139,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
                 color: colors[appearance].subText,
                 paddingTop: 34,
               }}>
-              Sender’s Name
+              Receiver Name
             </Text>
             <InputField
               theme={appearance}
@@ -156,6 +151,8 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               containerStyle={styles.input}
               leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
             />
+
+      
 
             <Text
               style={{
@@ -185,7 +182,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
                 color: colors[appearance].subText,
                 paddingTop: 20,
               }}>
-              Sender Address
+              Receiver Address
             </Text>
             <TouchableOpacity
               style={{
@@ -213,7 +210,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
                 }}>
                 {requestData.address.length > 0
                   ? requestData.address
-                  : 'Sender Address'}
+                  : 'Receiver Address'}
               </Text>
               {/* <InputField
                 theme={appearance}

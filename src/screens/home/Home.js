@@ -54,7 +54,7 @@ export default Home = ({navigation}) => {
     response
       .json()
       .then(data => {
-        // console.log(data); // JSON data parsed by `data.json()` call
+       console.log(data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setRefreshing(false);
@@ -161,7 +161,7 @@ export default Home = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  color: colors.dark.black,
+                  color: colors[appearance].darkText,
                   fontFamily: 'Inter-Medium',
                   fontSize: 25,
                 }}>
