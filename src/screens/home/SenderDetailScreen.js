@@ -281,22 +281,7 @@ export default SnderDetails = ({
                 }}>
                 {requestData.state.length > 0 ? requestData.state : 'State'}
               </Text>
-              {/* <InputField
-                theme={appearance}
-                value={requestData.address}
-                // onChangeText={text =>
-                //   setRequestData(prevState => ({
-                //     ...prevState,
-                //     address: text,
-                //   }))
-                // }
-                placeholder="Sender Address"
-                containerStyle={styles.input}
-                editable={false}
-                leftComponet={
-                  <AddressIcon fill={colors[appearance].textDark} />
-                }
-              /> */}
+          
             </View>
 
             <Text
