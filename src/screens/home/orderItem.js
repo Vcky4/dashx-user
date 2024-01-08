@@ -201,6 +201,7 @@ export default OrderItem = ({item, index, onPress}) => {
               color: '#868686',
               fontFamily: 'Inter-Regular',
               fontSize: 13,
+              maxWidth:200
             }}>
             {item?.receiveraddress}
           </Text>

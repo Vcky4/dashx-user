@@ -13,9 +13,10 @@ const endpoints = {
     retrievePrice: '/user/retrieve/price',
     retrieveOrder: '/user/retrieve/all/order',
     profile: '/user/update/profile',
-    getProfile: '/user/profile', 
+    getProfile: '/user/profile',
     fundWallet: '/user/fund/wallet',
-    retreive:'/user/retrieve/balance'
+    retreive: '/user/retrieve/balance',
+    history: '/user/retrieve/wallet/history'
 
 }
 

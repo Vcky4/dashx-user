@@ -32,6 +32,7 @@ import Toast from 'react-native-toast-message';
 import distance from '../../../utils/getDistance';
 import getCurrentPosition from '../../../utils/getCurrentPosition';
 import formatNumber from '../../../utils/formatNumber';
+import Order_summary from './order_summary';
 
 var Sound = require('react-native-sound');
 
@@ -94,8 +95,7 @@ export default AddDispatch = ({navigation}) => {
     receiverlong: '',
     receiverlat: '',
   });
-  console.log(requestData);
-  console.log(requestData2);
+
   const canProceed =
     selectedItem?.name?.length > 2 &&
     requestData.fullname.length > 2 &&
@@ -574,7 +574,7 @@ export default AddDispatch = ({navigation}) => {
                   }}>
                   Total Price:
                 </Text>{' '}
-                ₦ {formatNumber(delivery_fee)}
+                ₦ {isNaN(delivery_fee) ? '0' : formatNumber(delivery_fee)}
               </Text>
 
               <Button
@@ -584,13 +584,15 @@ export default AddDispatch = ({navigation}) => {
                   marginHorizontal: 20,
                   borderRadius: 30,
                 }}
-                loading={processing}
-                enabled={canProceed && !processing}
+                loading={false}
+                enabled={canProceed}
                 textColor={colors[appearance].textDark}
                 buttonColor={colors[appearance].primary}
                 onPress={() => {
                   // setOrderConfirm(true);
-                  AddDispatch();
+                  // AddDispatch();
+                  setStep(4);
+                  // navigation.navigate(mainRouts.orderSummary);
                   // navigation.navigate(authRouts.otpVerification)
                 }}
               />
@@ -621,6 +623,20 @@ export default AddDispatch = ({navigation}) => {
               goBack={() => setStep(1)}
             />
           </View>
+
+          <View
+            style={{
+              display: step === 4 ? 'flex' : 'none',
+              flex: 1,
+            }}>
+            <Order_summary
+              requestData={requestData}
+              requestData2={requestData2}
+              setRequestData={setRequestData}
+              setRequestData2={setRequestData2}
+              goBack={() => setStep(1)}
+            />
+          </View>
         </View>
       )}
 
@@ -631,10 +647,7 @@ export default AddDispatch = ({navigation}) => {
         onRequestClose={() => {
           SetTruckType(!truck);
         }}>
-        <TouchableOpacity
-          onPress={() => {
-            SetTruckType(!truck);
-          }}
+        <View
           style={{
             flex: 1,
             justifyContent: 'center',
@@ -686,7 +699,7 @@ export default AddDispatch = ({navigation}) => {
               ))}
             </ScrollView>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );

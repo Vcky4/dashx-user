@@ -167,7 +167,12 @@ export default Home = ({navigation, route}) => {
 
                 <TouchableOpacity
                   style={{
-                    backgroundColor: '#31D0AA',
+                    backgroundColor:
+                      order && order.order.order_status == 'pickup'
+                        ? '#31D0AA'
+                        : order && order.order.order_status == 'delivered'
+                        ? '#A10F7E'
+                        : '#868686',
 
                     height: 40,
                     alignItems: 'center',
@@ -388,7 +393,7 @@ export default Home = ({navigation, route}) => {
                   </Text>
                 </View>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {}}
                   style={{
                     borderRadius: 30,
@@ -407,9 +412,9 @@ export default Home = ({navigation, route}) => {
                       fontSize: 24,
                       color: colors.dark.primary,
                     }}>
-                    {order && order.ordercode.order_code}
+                    {order && order?.ordercode?.order_code}
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
 
               <View style={{paddingHorizontal: 20, paddingTop: 20}}>
@@ -485,7 +490,7 @@ export default Home = ({navigation, route}) => {
                       fontSize: 14,
                       color: colors.dark.subText,
                     }}>
-                    02:56AM
+                    {order && order?.pickuptime}
                   </Text>
                 </View>
 
@@ -523,7 +528,7 @@ export default Home = ({navigation, route}) => {
                   </Text>
                 </View>
 
-                <View
+                {/* <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -555,7 +560,7 @@ export default Home = ({navigation, route}) => {
                     }}>
                     {order && order.order.productname}
                   </Text>
-                </View>
+                </View> */}
               </View>
             </ScrollView>
           </View>

@@ -17,8 +17,38 @@ export default Wallet = ({navigation}) => {
   const {colorScheme, user, token} = useContext(AuthContext);
   const [processing, setProcessing] = useState(false);
   const [wallet, setWallet] = useState({});
+  const [history, setHistory] = useState([]);
+  // console.log(user)
 
-  const balance = () => {
+
+  const getHistory = (id) => {
+    setProcessing(true);
+    fetch(endpoints.baseUrl + endpoints.history, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        userid: user?._id,
+        walletid:id
+      }),
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        setProcessing(false);
+        if (Array.isArray(resJson.data)) {
+          console.log('history', resJson);
+          setHistory(resJson.data);
+        }
+      })
+      .catch(err => {
+        setProcessing(false);
+        console.log('err', err);
+      });
+  };
+
+  const getBalance = () => {
     setProcessing(true);
     fetch(endpoints.baseUrl + endpoints.retreive, {
       method: 'POST',
@@ -36,17 +66,25 @@ export default Wallet = ({navigation}) => {
         console.log('resJson', resJson);
         if (resJson.status) {
           setWallet(resJson.data);
+          getHistory(resJson.data._id);
         }
       })
       .catch(err => {
         setProcessing(false);
-        console.log('err', err);
+        console.log('error', err);
       });
   };
 
+
+
   useEffect(() => {
-    balance();
-  }, []);
+    onRefresh()
+}, [])
+
+const onRefresh = () => {
+    getBalance()
+}
+
   return (
     <View
       style={{
@@ -96,12 +134,15 @@ export default Wallet = ({navigation}) => {
       </View>
 
       <FlatList
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+        data={history}
         contentContainerStyle={{
           paddingBottom: 20,
         }}
         refreshControl={
-          <RefreshControl refreshing={processing} onRefresh={balance} />
+          <RefreshControl
+            refreshing={processing}
+            onRefresh={onRefresh}
+          />
         }
         ListHeaderComponent={
           <View>
@@ -207,7 +248,7 @@ export default Wallet = ({navigation}) => {
                     fontSize: 16,
                     fontFamily: 'Inter-SemiBold',
                   }}>
-                  Withdraw
+                  Deposit
                 </Text>
                 <Text
                   style={{
@@ -225,7 +266,7 @@ export default Wallet = ({navigation}) => {
                 fontSize: 16,
                 fontFamily: 'Inter-SemiBold',
               }}>
-              ₦ 4,589.55
+              ₦ {item?.amount}
             </Text>
           </View>
         )}

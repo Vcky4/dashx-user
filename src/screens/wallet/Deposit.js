@@ -29,9 +29,9 @@ export default Deposit = ({navigation}) => {
       },
       body: JSON.stringify({
         userid: user?._id,
-        amount: amount * 100,
+        amount: parseInt(amount),
         email: user?.email,
-        usertype: 'dispatch',
+        usertype: 'user',
       }),
     })
       .then(res => res.json())
