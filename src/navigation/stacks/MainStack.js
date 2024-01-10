@@ -16,6 +16,7 @@ import Wallet from '../../screens/wallet/Wallet';
 import History from '../../screens/profile/History';
 import Broswer from '../../screens/home/broswer/Broswer';
 import order_summary from '../../screens/home/order_summary';
+import Chat from '../../screens/support/Chat';
 
 const Tab = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -110,6 +111,11 @@ const AuthPassed = () => {
       <Stack.Screen
         name={mainRouts.orderSummary}
         component={order_summary}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={mainRouts.support}
+        component={Chat}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

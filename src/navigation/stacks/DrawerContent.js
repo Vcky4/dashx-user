@@ -97,6 +97,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                   </Text>
                 </View>
               </View>
+
               <TouchableOpacity onPress={() => toggleTheme()}>
                 <Image
                   source={
@@ -151,9 +152,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
 
             <TouchableOpacity
               style={{marginTop: 30}}
-              onPress={() =>
-                props.navigation.navigate(mainRoute.history)
-              }>
+              onPress={() => props.navigation.navigate(mainRoute.history)}>
               <View style={styles.itemWrapper}>
                 <Image
                   source={require('../../../assets/images/time.png')}
@@ -177,9 +176,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={{marginTop: 30}}
-              onPress={() =>
-                props.navigation.navigate(mainRoute.wallet)
-              }>
+              onPress={() => props.navigation.navigate(mainRoute.wallet)}>
               <View style={styles.itemWrapper}>
                 <Image
                   source={require('../../../assets/images/wallet.png')}
@@ -230,9 +227,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
 
             <TouchableOpacity
               style={{marginTop: 30}}
-              onPress={() =>
-                props.navigation.navigate(profileRouts.orderHistory)
-              }>
+              onPress={() => props.navigation.navigate(mainRoute.support)}>
               <View style={styles.itemWrapper}>
                 <Image
                   source={require('../../../assets/images/support.png')}

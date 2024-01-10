@@ -15,9 +15,9 @@ const mainRouts = {
   withdrawal: 'withdrawal',
   deposit: 'deposit',
   history: 'history',
-  broswer:'broswer',
-  orderSummary:'orderSummary',
-  
+  broswer: 'broswer',
+  orderSummary: 'orderSummary',
+  support: 'support',
 };
 
 export default mainRouts;
