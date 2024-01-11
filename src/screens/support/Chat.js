@@ -29,12 +29,13 @@ export default Chat = ({ navigation }) => {
     });
 
     //connect socket
+    
     useEffect(() => {
         // if (coordinate.latitude !== 0 && coordinate.longitude !== 0) {
         socket.on('connect', e => {
             console.log('connected', socket.connected);
             socket.emit('supportuser', {
-                userid: user.id
+                "userid": user._id
             })
         });
 
@@ -52,7 +53,7 @@ export default Chat = ({ navigation }) => {
     const sendChat = (content, type) => {
         console.log('sendChat', content);
         socket.emit('send_user_support', {
-            "userid": user.id,
+            "userid": user._id,
             "type": type ?? chat.type,
             "usertype": "user",
             "text": content ?? chat.content
@@ -70,6 +71,7 @@ export default Chat = ({ navigation }) => {
             content: ''
         })
     }
+
     useEffect(() => {
         socket.on('receieve_user_support', (data) => {
             setNewChat(data)
@@ -102,11 +104,11 @@ export default Chat = ({ navigation }) => {
                 'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify({
-                dispatchid: user?.id,
+                userid: user?._id,
             }),
         }).then(res => res.json())
             .then(resJson => {
-                 console.log('resJson', resJson.data)
+                // console.log('resJson', resJson.data)
                 setProcessing(false)
                 if (Array.isArray(resJson.data)) {
                     setChats(resJson.data)

@@ -149,10 +149,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               }
               placeholder="Full Name"
               containerStyle={styles.input}
-              leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
             />
-
-      
 
             <Text
               style={{
@@ -167,12 +164,12 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               theme={appearance}
               value={requestData.Phone}
               maxLength={11}
+              keyboardType="numeric"
               onChangeText={text =>
                 setRequestData(prevState => ({...prevState, Phone: text}))
               }
               placeholder="Phone Number"
               containerStyle={styles.input}
-              leftComponet={<PhoneIcon fill={colors[appearance].textDark} />}
             />
 
             <Text
@@ -200,7 +197,6 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               onPress={() => {
                 bottomSheetRef.current.open();
               }}>
-              <AddressIcon fill={colors[appearance].textDark} />
               <Text
                 style={{
                   fontFamily: 'Inter-Regular',
@@ -252,7 +248,6 @@ export default Home = ({goBack, requestData, setRequestData}) => {
                     ? colors[appearance].primary
                     : colors[appearance].subText,
               }}>
-              <AddressIcon fill={colors[appearance].textDark} />
               <Text
                 style={{
                   fontFamily: 'Inter-Regular',
@@ -298,7 +293,6 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               }
               placeholder="Landmark"
               containerStyle={styles.input}
-              leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
             />
 
             <Button

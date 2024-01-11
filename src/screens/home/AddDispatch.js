@@ -34,8 +34,6 @@ import getCurrentPosition from '../../../utils/getCurrentPosition';
 import formatNumber from '../../../utils/formatNumber';
 import Order_summary from './order_summary';
 
-var Sound = require('react-native-sound');
-
 export default AddDispatch = ({navigation}) => {
   //check if ready
   // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;
@@ -52,16 +50,8 @@ export default AddDispatch = ({navigation}) => {
     {name: 'Medium_truck', id: 6, icon: <Car />},
     {name: 'Big_truck', id: 7, icon: <Van />},
   ];
-  const {
-    saveToken,
-    saveUser,
-    token,
-    colorScheme,
-    login,
-    loaction,
-    saveLatAndLong,
-    user,
-  } = useContext(AuthContext);
+  const {token, colorScheme, loaction, saveLatAndLong, user} =
+    useContext(AuthContext);
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [processing, setProcessing] = useState(false);
@@ -71,11 +61,13 @@ export default AddDispatch = ({navigation}) => {
   const [orderConfirm, setOrderConfirm] = useState(false);
   const appearance = colorScheme;
   const [step, setStep] = useState(1);
+  console.log(user);
 
+  
   const [requestData, setRequestData] = useState({
-    fullname: '',
-    Phone: '',
-    address: '',
+    fullname: user?.name || '',
+    Phone: user?.phone || '',
+    address: user?.address || '',
     state: '',
     LandMark: '',
     ProductName: '',
@@ -176,95 +168,8 @@ export default AddDispatch = ({navigation}) => {
     requestData2.receiverlong,
     'km',
   );
-  const delivery_fee =
-    getdistance * price[0]?.price_per_km + selectedItem?.price;
-  console.log('test', delivery_fee);
-
-  const AddDispatch = async () => {
-    setProcessing(true);
-    const response = await fetch(endpoints.baseUrl + endpoints.addDispatch, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({
-        userid: user._id,
-        vehicle_type: selectedItem?.name,
-        delivery_fee: delivery_fee,
-        sendername: requestData.fullname,
-        productname: requestData.ProductName,
-        senderaddress: requestData.address,
-        sendercity: requestData.city,
-        senderphone: requestData.Phone,
-        senderlandmark: requestData.LandMark,
-        receivername: requestData2.fullname,
-        receiverphone: requestData2.Phone,
-        receiveraddress: requestData2.address,
-        receivercity: requestData2.city,
-        receiverlandmark: requestData2.LandMark,
-        senderlong: requestData.senderlong.toString(),
-        senderlat: requestData.senderlat.toString(),
-        receiverlat: requestData2.receiverlat.toString(),
-        receiverlong: requestData2.receiverlong.toString(),
-      }), // body data type must match "Content-Type" header
-    });
-    response
-      .json()
-      .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
-        setProcessing(false);
-        if (response.ok) {
-          Toast.show({
-            type: 'success',
-            text1: 'DisPatch successful',
-            text2: data.message,
-          });
-          setRequestData({
-            fullname: '',
-            Phone: '',
-            address: '',
-            state: '',
-            LandMark: '',
-            ProductName: '',
-            city: '',
-            senderlong: '',
-            senderlat: '',
-          });
-          setRequestData2({
-            fullname: '',
-            Phone: '',
-            address: '',
-            state: '',
-            LandMark: '',
-            ProductName: '',
-            city: '',
-            receiverlat: '',
-            receiverlong: '',
-          });
-          navigation.goBack();
-        } else {
-          setProcessing(false);
-          Toast.show({
-            type: 'error',
-            text1: 'DisPatch failed',
-            text2: data.message,
-          });
-
-          console.log('response: ', response);
-          console.log('Login error:', data.message);
-        }
-      })
-      .catch(error => {
-        setProcessing(false);
-        Toast.show({
-          type: 'error',
-          text1: 'Login failed',
-          text2: error.message,
-        });
-        console.log('Login error:', error);
-      });
-  };
+  const total_fee = getdistance * selectedItem?.price;
+  console.log('test', total_fee);
 
   const handleItemPress = item => {
     setSelectedItem({
@@ -574,7 +479,7 @@ export default AddDispatch = ({navigation}) => {
                   }}>
                   Total Price:
                 </Text>{' '}
-                ₦ {isNaN(delivery_fee) ? '0' : formatNumber(delivery_fee)}
+                ₦ {isNaN(total_fee) ? '0' : formatNumber(total_fee)}
               </Text>
 
               <Button
@@ -633,7 +538,10 @@ export default AddDispatch = ({navigation}) => {
               requestData={requestData}
               requestData2={requestData2}
               setRequestData={setRequestData}
+              selectedItem={selectedItem?.name}
               setRequestData2={setRequestData2}
+              setSelectedItem={setSelectedItem}
+              total_fee={total_fee}
               goBack={() => setStep(1)}
             />
           </View>
@@ -704,13 +612,3 @@ export default AddDispatch = ({navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  mapView: {
-    width: '100%',
-    height: '100%',
-  },
-});

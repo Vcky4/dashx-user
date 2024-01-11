@@ -142,16 +142,37 @@ export default SnderDetails = ({
               }}>
               Sender’s Name
             </Text>
-            <InputField
-              theme={appearance}
-              value={requestData.fullname}
-              onChangeText={text =>
-                setRequestData(prevState => ({...prevState, fullname: text}))
-              }
-              placeholder="Full Name"
-              containerStyle={styles.input}
-              leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
-            />
+
+            <View
+              style={{
+                borderColor:
+                  requestData.fullname.length > 0
+                    ? colors[appearance].primary
+                    : colors[appearance].subText,
+                borderRadius: 50,
+                borderWidth: 1,
+                paddingHorizontal: 18,
+                height: 50,
+                flexDirection: 'row',
+                width: '100%',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <TextInput
+                value={requestData.fullname}
+                onChangeText={text =>
+                  setRequestData(prevState => ({...prevState, fullname: text}))
+                }
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'Inter-Medium',
+                  // color: colors[theme].textDark,
+                  width: '100%',
+                }}
+                placeholder="Full Name"
+                //   cursorColor={colors[theme].primary}
+              />
+            </View>
 
             <Text
               style={{
@@ -162,18 +183,39 @@ export default SnderDetails = ({
               }}>
               Pickup Phone Number
             </Text>
-            <InputField
-              theme={appearance}
-              value={requestData.Phone}
-              onChangeText={text =>
-                setRequestData(prevState => ({...prevState, Phone: text}))
-              }
-              maxLength={11}
-              keyboardType="numeric"
-              placeholder="Phone Number"
-              containerStyle={styles.input}
-              leftComponet={<PhoneIcon fill={colors[appearance].textDark} />}
-            />
+
+            <View
+              style={{
+                borderColor:
+                  requestData.Phone.length > 0
+                    ? colors[appearance].primary
+                    : colors[appearance].subText,
+                borderRadius: 50,
+                borderWidth: 1,
+                paddingHorizontal: 18,
+                height: 50,
+                flexDirection: 'row',
+                width: '100%',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <TextInput
+                value={requestData.Phone}
+                onChangeText={text =>
+                  setRequestData(prevState => ({...prevState, Phone: text}))
+                }
+                maxLength={11}
+                keyboardType="numeric"
+                placeholder="Phone Number"
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'Inter-Medium',
+                  // color: colors[theme].textDark,
+                  width: '100%',
+                }}
+                //   cursorColor={colors[theme].primary}
+              />
+            </View>
 
             <Text
               style={{
@@ -184,16 +226,40 @@ export default SnderDetails = ({
               }}>
               description
             </Text>
-            <InputField
-              theme={appearance}
-              value={requestData.ProductName}
-              onChangeText={text =>
-                setRequestData(prevState => ({...prevState, ProductName: text}))
-              }
-              placeholder="Description"
-              containerStyle={styles.input}
-              leftComponet={<PhoneIcon fill={colors[appearance].textDark} />}
-            />
+
+            <View
+              style={{
+                borderColor:
+                  requestData.ProductName.length > 0
+                    ? colors[appearance].primary
+                    : colors[appearance].subText,
+                borderRadius: 50,
+                borderWidth: 1,
+                paddingHorizontal: 18,
+                height: 50,
+                flexDirection: 'row',
+                width: '100%',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <TextInput
+                value={requestData.ProductName}
+                onChangeText={text =>
+                  setRequestData(prevState => ({
+                    ...prevState,
+                    ProductName: text,
+                  }))
+                }
+                placeholder="Description"
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'Inter-Medium',
+                  // color: colors[theme].textDark,
+                  width: '100%',
+                }}
+                //   cursorColor={colors[theme].primary}
+              />
+            </View>
             <Text
               style={{
                 fontFamily: 'Inter-Regular',
@@ -219,7 +285,7 @@ export default SnderDetails = ({
               onPress={() => {
                 bottomSheetRef.current.open();
               }}>
-              <AddressIcon fill={colors[appearance].textDark} />
+            
               <Text
                 style={{
                   fontFamily: 'Inter-Regular',
@@ -271,7 +337,7 @@ export default SnderDetails = ({
                     ? colors[appearance].primary
                     : colors[appearance].subText,
               }}>
-              <AddressIcon fill={colors[appearance].textDark} />
+            
               <Text
                 style={{
                   fontFamily: 'Inter-Regular',
@@ -281,7 +347,6 @@ export default SnderDetails = ({
                 }}>
                 {requestData.state.length > 0 ? requestData.state : 'State'}
               </Text>
-          
             </View>
 
             <Text

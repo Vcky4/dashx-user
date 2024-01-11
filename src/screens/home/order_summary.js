@@ -35,14 +35,19 @@ import Scotter from '../../../assets/icons/scooter.svg';
 import LocationIcon from '../../../assets/icons/loaction.svg';
 
 import OrderItem from './orderItem';
+import Toast from 'react-native-toast-message';
 var Sound = require('react-native-sound');
 
 export default Home = ({
+  navigation,
   goBack,
   requestData,
   requestData2,
   setRequestData2,
   setRequestData,
+  total_fee,
+  selectedItem,
+  setSelectedItem,
 }) => {
   const {saveToken, saveUser, colorScheme, token, login, user} =
     useContext(AuthContext);
@@ -50,7 +55,9 @@ export default Home = ({
   const appearance = colorScheme;
   const [order, setOrder] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [selected, setSelected] = useState('Wallet');
+  const [payment_method, setPaymementMethod] = useState(true);
 
   const data = [
     {anme: 'Wallet', id: 1},
@@ -68,8 +75,9 @@ export default Home = ({
       },
       body: JSON.stringify({
         userid: user._id,
-        vehicle_type: selectedItem?.name,
-        delivery_fee: delivery_fee,
+        vehicle_type: selectedItem,
+        total_fee: total_fee,
+        payment_method: payment_method,
         sendername: requestData.fullname,
         productname: requestData.ProductName,
         senderaddress: requestData.address,
@@ -120,7 +128,8 @@ export default Home = ({
             receiverlat: '',
             receiverlong: '',
           });
-          navigation.goBack();
+          setSelectedItem(null);
+          goBack();
         } else {
           setProcessing(false);
           Toast.show({
@@ -437,6 +446,11 @@ export default Home = ({
                   <TouchableOpacity
                     onPress={() => {
                       setSelected(item.anme);
+                      if (item.anme === 'Pay on Delivery') {
+                        setPaymementMethod(false);
+                      } else {
+                        setPaymementMethod(true);
+                      }
                     }}
                     key={item.id}
                     style={{
@@ -497,13 +511,13 @@ export default Home = ({
                     marginHorizontal: 20,
                     borderRadius: 30,
                   }}
-                  loading={false}
+                  loading={processing}
                   enabled={true}
                   textColor={colors[appearance].textDark}
                   buttonColor={colors[appearance].primary}
                   onPress={() => {
                     // setOrderConfirm(true);
-                     AddDispatch();
+                    AddDispatch();
                     // navigation.navigate(authRouts.otpVerification)
                   }}
                 />

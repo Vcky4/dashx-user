@@ -1,7 +1,7 @@
 const endpoints = {
     gg: 'AIzaSyDJ_sm-EFNvOBvTLMKbDi8CAT8G21GxDvQ',
     baseUrl: 'https://dashx-cc5d52b5155a.herokuapp.com',
-    socketUrl: 'wss://expressryderv2.adaptable.app',
+    socketUrl: 'wss://dashx-cc5d52b5155a.herokuapp.com',
     login: '/user/login',
     signup: '/user/signup',
     forgotPassword: '/user/forgot/password',
@@ -16,7 +16,8 @@ const endpoints = {
     getProfile: '/user/profile',
     fundWallet: '/user/fund/wallet',
     retreive: '/user/retrieve/balance',
-    history: '/user/retrieve/wallet/history'
+    history: '/user/retrieve/wallet/history',
+    chat: '/user/chat/support',
 
 }
 
