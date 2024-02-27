@@ -8,6 +8,7 @@ import { AuthContext, AuthContextProvider } from "./context/AuthContext";
 import AuthStack from "./src/navigation/stacks/AuthStack";
 import MainStack from "./src/navigation/stacks/MainStack";
 import Splash from "./src/screens/onboarding/Splash";
+import colors from "./assets/colors/colors";
 
 
 const RootNavigator: React.FC = () => {
@@ -36,11 +37,14 @@ export default function App() {
   }
   return (
     <>
+    <View style={{flex:1,backgroundColor:colors.dark.primary,paddingTop:Platform.OS == 'ios'?50:0}}>
+
       <AuthContextProvider>
         <StatusBar backgroundColor={"#000"} />
         <RootNavigator />
       </AuthContextProvider>
       <Toast />
+    </View>
     </>
   );
 }

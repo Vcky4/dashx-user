@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, ImageBackground, useColorScheme } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, ImageBackground, useColorScheme, Platform } from "react-native";
 
 import colors from "../../../assets/colors/colors";
 import authRouts from "../../navigation/routs/authRouts";
@@ -51,7 +51,7 @@ export default Intro = ({ navigation }) => {
                     <Image
                         style={{
                             width: '100%',
-                            height: width * 0.9,
+                            height: width * 0.8,
                             resizeMode: 'contain',
                             alignSelf: 'center',
                             marginTop: height * 0.1,
@@ -81,7 +81,7 @@ export default Intro = ({ navigation }) => {
                     <Image
                         style={{
                             width: '100%',
-                            height: width * 0.9,
+                            height: width * 0.8,
                             resizeMode: 'contain',
                             alignSelf: 'center',
                             marginTop: height * 0.1,
@@ -111,7 +111,7 @@ export default Intro = ({ navigation }) => {
                     <Image
                         style={{
                             width: '100%',
-                            height: width * 0.9,
+                            height: width * 0.8,
                             resizeMode: 'contain',
                             alignSelf: 'center',
                             marginTop: height * 0.1,
@@ -165,10 +165,12 @@ export default Intro = ({ navigation }) => {
                     }
                 </View>
             </View>
+
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'flex-end',
                 zIndex: 100,
+                paddingBottom:Platform.OS=='ios'?20:0
             }}>
                 <TouchableOpacity onPress={() => {
                     onboard()

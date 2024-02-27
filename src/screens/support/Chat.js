@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, FlatList, TextInput, RefreshControl, PermissionsAndroid } from "react-native";
+import { View, Text, Image, TouchableOpacity, FlatList, TextInput, RefreshControl, PermissionsAndroid, Platform } from "react-native";
 import colors from "../../../assets/colors/colors";
 import { AuthContext } from "../../../context/AuthContext";
 import mainRouts from "../../navigation/routs/mainRouts";
@@ -174,7 +174,7 @@ export default Chat = ({ navigation }) => {
                     buttonPositive: "OK"
                 }
             );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 launchCamera({
                     mediaType: 'photo',
                     // includeBase64: true,
@@ -214,14 +214,14 @@ export default Chat = ({ navigation }) => {
                         });
                     }
                 })
-            } else {
-                Toast.show({
-                    type: "error",
-                    text1: "Permission denied",
-                    text2: "App needs access to your camera ",
-                });
-                console.log("Camera permission denied");
-            }
+            // else {
+            //     Toast.show({
+            //         type: "error",
+            //         text1: "Permission denied",
+            //         text2: "App needs access to your camera ",
+            //     });
+            //     console.log("Camera permission denied");
+            // }
         } catch (err) {
             console.warn(err);
         }
@@ -370,6 +370,7 @@ export default Chat = ({ navigation }) => {
                 justifyContent: 'space-between',
                 paddingHorizontal: 20,
                 paddingVertical: 10,
+                paddingBottom:Platform.OS =='ios'?30:0,
                 width: '100%',
             }}>
                 <View style={{

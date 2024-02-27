@@ -62,7 +62,8 @@ export default function InputField({ theme = 'dark', value = '', rightComponet, 
             height: 50,
             flexDirection: 'row',
             width: '100%',
-            alignItems:"center"
+            alignItems:"center",
+            justifyContent:'center'
 
         }, containerStyle]}>
 

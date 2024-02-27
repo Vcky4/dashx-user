@@ -20,11 +20,15 @@ const PasswordInput: React.FC<Props> = ({ theme = 'dark', containerStyle, label=
             borderWidth: 1,
             paddingHorizontal: 10,
             height: 50,
+            alignItems:'center',
+            justifyContent:"center"
         }, containerStyle]}>
             <View style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                alignItems: "center"
+                alignItems: "center",
+             
+                
             }}>
                 <TextInput
                     style={{

@@ -204,6 +204,7 @@ export default Home = ({navigation}) => {
           borderColor: colors.light.white,
           backgroundColor: '#E6CEF2',
           paddingTop: 20,
+          paddingBottom:Platform.OS=='ios'?20:0,
           justifyContent: 'center',
         }}>
         <TouchableOpacity
