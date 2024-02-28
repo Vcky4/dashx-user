@@ -19,6 +19,7 @@ import PasswordInput from '../../component/PasswordInput';
 import {AuthContext} from '../../../context/AuthContext';
 import endpoints from '../../../assets/endpoints/endpoints';
 import InputField from '../../component/InputField';
+import mainRouts from '../../navigation/routs/mainRouts';
 
 export default Login = ({navigation}) => {
   const {saveToken, saveUser, colorScheme, login} = useContext(AuthContext);
@@ -73,12 +74,15 @@ export default Login = ({navigation}) => {
           saveUser(data.data.userDetails);
           saveToken(data.data.token);
         } else {
-            setProcessing(false);
-          Toast.show({
-            type: 'error',
-            text1: 'Login failed',
-            text2: data.message,
-          });
+          setProcessing(false);
+          // if (data.error == 'user email is not veirified'){
+          //   navigation.navigate(authRouts.otpVerification,{email:email})
+          // }
+            Toast.show({
+              type: 'error',
+              text1: 'Login failed',
+              text2: data.message,
+            });
           console.log('response: ', response);
           console.log('Login error:', data.message);
         }
@@ -223,8 +227,8 @@ export default Login = ({navigation}) => {
               style={{
                 color: colors[appearance].primary,
                 fontWeight: 'bold',
-                fontSize:18,
-                fontFamily:'Inter-Regular'
+                fontSize: 18,
+                fontFamily: 'Inter-Regular',
               }}>
               {' '}
               Sign Up
@@ -325,6 +329,5 @@ const styles = StyleSheet.create({
 
   input: {
     marginTop: 20,
-  
   },
 });

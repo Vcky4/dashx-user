@@ -35,6 +35,8 @@ import getCurrentPosition from '../../../utils/getCurrentPosition';
 import SearchAddress from '../../../utils/SearchAddress';
 import getPlaceDetails from '../../../utils/getPlaceDetails';
 import getStateAndCity from '../../../utils/getStateAndCity';
+import getAddress from '../../../utils/getAddress';
+import getCity from '../../../utils/getCity';
 
 var Sound = require('react-native-sound');
 
@@ -171,6 +173,50 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               placeholder="Phone Number"
               containerStyle={styles.input}
             />
+
+            <Text
+              style={{
+                fontFamily: 'Inter-Regular',
+                fontSize: 16,
+                color: colors[appearance].subText,
+                paddingTop: 20,
+              }}>
+              description
+            </Text>
+
+            <View
+              style={{
+                borderColor:
+                  requestData.ProductName.length > 0
+                    ? colors[appearance].primary
+                    : colors[appearance].subText,
+                borderRadius: 50,
+                borderWidth: 1,
+                paddingHorizontal: 18,
+                height: 50,
+                flexDirection: 'row',
+                width: '100%',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <TextInput
+                value={requestData.ProductName}
+                onChangeText={text =>
+                  setRequestData(prevState => ({
+                    ...prevState,
+                    ProductName: text,
+                  }))
+                }
+                placeholder="Description"
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'Inter-Medium',
+                  // color: colors[theme].textDark,
+                  width: '100%',
+                }}
+                //   cursorColor={colors[theme].primary}
+              />
+            </View>
 
             <Text
               style={{
@@ -398,15 +444,25 @@ export default Home = ({goBack, requestData, setRequestData}) => {
                           receiverlong: data[0]?.geometry?.location?.lng,
                           receiverlat: data[0]?.geometry?.location?.lat,
                         }));
+                        getAddress(
+                          data[0]?.geometry?.location?.lat,
+                          data[0]?.geometry?.location?.lng,
+                          result => {
+                            setRequestData(prevState => ({
+                              ...prevState,
+                              city: getCity(result[0].formatted_address),
+                            }));
+                          },
+                        );
                       });
 
                       getStateAndCity(item.place_id, data => {
                         setRequestData(prevState => ({
                           ...prevState,
                           state: data.state,
-                          city: data.city,
                         }));
                       });
+
                       setSearchLocation('');
                       bottomSheetRef.current.close();
                     }}>

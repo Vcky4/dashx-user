@@ -13,11 +13,12 @@ import {
   ScrollView,
   FlatList,
   RefreshControl,
+  Modal,
 } from 'react-native';
 import io from 'socket.io-client';
 import colors from '../../../assets/colors/colors';
 import TrackOrder from '../../../assets/icons/trackOrder.svg';
-
+import { useFocusEffect } from '@react-navigation/native';
 import endpoints from '../../../assets/endpoints/endpoints';
 // import dings from '../../../assets/sounds/trilla.mp3'
 import mainRouts from '../../navigation/routs/mainRouts';
@@ -27,6 +28,7 @@ import Button from '../../component/Button';
 import OrderItem from './orderItem';
 import getCurrentPosition from '../../../utils/getCurrentPosition';
 import getAddress from '../../../utils/getAddress';
+import Toast from 'react-native-toast-message';
 var Sound = require('react-native-sound');
 
 export default Home = ({navigation}) => {
@@ -36,6 +38,8 @@ export default Home = ({navigation}) => {
   const [order, setOrder] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [address, setAddress] = useState(null);
+  const [isvisble, setIsVisible] = useState(false);
+  const [id, setId] = useState('');
   //check if ready
   // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;\
 
@@ -54,7 +58,7 @@ export default Home = ({navigation}) => {
     response
       .json()
       .then(data => {
-       console.log(data); // JSON data parsed by `data.json()` call
+        console.log(data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setRefreshing(false);
@@ -75,10 +79,21 @@ export default Home = ({navigation}) => {
       });
   };
 
+
+
+
   const [currentAddress, setCurrentAddress] = useState('');
   useEffect(() => {
     retrieveOrder();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Fetch data whenever the screen gains focus
+      retrieveOrder();
+    }, [])
+  );
+
 
   useEffect(() => {
     getCurrentPosition(callback => {
@@ -100,6 +115,7 @@ export default Home = ({navigation}) => {
       }
     });
   }, []);
+
 
   return (
     <>
@@ -177,24 +193,28 @@ export default Home = ({navigation}) => {
               item={item}
               index={index + 1}
               onPress={() => {
-                if (
-                  item &&
-                  item?.order_status !== 'pickup' &&
-                  item?.order_status !== 'pending'
-                ) {
+                // if (
+                //   item &&
+                //   item?.order_status !== 'accpected' &&
+                //   item?.order_status !== 'pending'
+                // ) {
                   navigation.navigate(mainRouts.dispatchDetails, {
                     item: item,
                   });
-                }
+                // }
               }}
               disabled={
-                item?.order_status === 'pickup' ||
+                item?.order_status === 'accpected' ||
                 item?.order_status === 'pending'
               }
+              // cancel={() => {
+              //   setIsVisible(true);
+              //   setId(item?._id);
+
+              // }}
             />
           )}
         />
-      </View>
 
       <View
         style={{
@@ -227,50 +247,53 @@ export default Home = ({navigation}) => {
               fontFamily: 'Inter-Regular',
               fontSize: 15,
 
-              color: colors.light.white,
-            }}>
-            Add Dispatch
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: '#fff',
-            marginTop: 21,
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderRadius: 10,
-            paddingHorizontal: 10,
-          }}>
+                color: colors.light.white,
+              }}>
+              Add Dispatch
+            </Text>
+          </TouchableOpacity>
           <View
             style={{
-              height: 10,
-              width: 10,
-              backgroundColor: '#21EB00',
-              marginEnd: 5,
+              width: '100%',
+              backgroundColor: '#fff',
+              marginTop: 21,
+              flexDirection: 'row',
+              alignItems: 'center',
               borderRadius: 10,
-            }}></View>
-          <Text
-            numberOfLines={1}
-            style={{
-              fontFamily: 'Inter-Medium',
-              fontSize: 16,
-              color: colors.dark.black,
-              maxWidth: '80%',
-              paddingVertical: 5,
+              paddingHorizontal: 10,
             }}>
-            My Location:{' '}
-            <Text
+            <View
               style={{
-                fontFamily: 'Inter-Regular',
+                height: 10,
+                width: 10,
+                backgroundColor: '#21EB00',
+                marginEnd: 5,
+                borderRadius: 10,
+              }}></View>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontFamily: 'Inter-Medium',
                 fontSize: 16,
-                color: colors.light.black,
+                color: colors.dark.black,
+                maxWidth: '80%',
+                paddingVertical: 5,
               }}>
-              {currentAddress}
+              My Location:{' '}
+              <Text
+                style={{
+                  fontFamily: 'Inter-Regular',
+                  fontSize: 16,
+                  color: colors.light.black,
+                }}>
+                {currentAddress}
+              </Text>
             </Text>
-          </Text>
+          </View>
         </View>
       </View>
+
+
     </>
   );
 };

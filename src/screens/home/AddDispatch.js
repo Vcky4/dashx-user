@@ -61,19 +61,17 @@ export default AddDispatch = ({navigation}) => {
   const [orderConfirm, setOrderConfirm] = useState(false);
   const appearance = colorScheme;
   const [step, setStep] = useState(1);
-  console.log(user);
 
-  
   const [requestData, setRequestData] = useState({
     fullname: user?.name || '',
     Phone: user?.phone || '',
     address: user?.address || '',
-    state: '',
+    state: user?.state || '',
     LandMark: '',
     ProductName: '',
-    city: '',
-    senderlong: '',
-    senderlat: '',
+    city:user.city|| '',
+    senderlong:user.longitude|| '',
+    senderlat:user.latitude|| '',
   });
 
   const [requestData2, setRequestData2] = useState({
@@ -88,20 +86,23 @@ export default AddDispatch = ({navigation}) => {
     receiverlat: '',
   });
 
+  // console.log('requestData', requestData);
+  // console.log('requestData2', requestData2,selectedItem?.name);
   const canProceed =
     selectedItem?.name?.length > 2 &&
     requestData.fullname.length > 2 &&
     requestData.Phone.length === 11 &&
     requestData.address.length > 2 &&
-    requestData.state.length > 2 &&
+    // requestData.state.length > 2 &&
     requestData2.Phone.length === 11 &&
     requestData2.address.length > 2 &&
-    requestData2.fullname.length > 2 &&
-    requestData2.state.length > 2;
+    requestData2.fullname.length > 2 
+    // requestData2.state.length > 2;
 
   const setName = text => {
     setRequestData({...requestData, fullname: text});
   };
+
 
   const [price, setPrice] = useState([]);
 
@@ -169,7 +170,6 @@ export default AddDispatch = ({navigation}) => {
     'km',
   );
   const total_fee = getdistance * selectedItem?.price;
-  console.log('test', total_fee);
 
   const handleItemPress = item => {
     setSelectedItem({
@@ -302,7 +302,7 @@ export default AddDispatch = ({navigation}) => {
                 <Text
                   style={{
                     marginTop: 36,
-                    paddingStart: 20,
+                    paddingStart: 10,
                     fontFamily: 'Inter-SmeiBold',
                     fontSize: 20,
                     color: '#565656',
@@ -316,7 +316,7 @@ export default AddDispatch = ({navigation}) => {
                 //   SetInfo(true);
                 // }}
                 style={{
-                  paddingStart: 20,
+                  paddingStart: 10,
                   marginTop: 20,
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -399,7 +399,7 @@ export default AddDispatch = ({navigation}) => {
                   }}>
                   Description:
                 </Text>{' '}
-                {requestData.ProductName}
+                {requestData2.ProductName}
               </Text>
               <View
                 style={{
@@ -542,6 +542,7 @@ export default AddDispatch = ({navigation}) => {
               setRequestData2={setRequestData2}
               setSelectedItem={setSelectedItem}
               total_fee={total_fee}
+              navigation={navigation}
               goBack={() => setStep(1)}
             />
           </View>
@@ -565,7 +566,7 @@ export default AddDispatch = ({navigation}) => {
           <View
             style={{
               backgroundColor: colors[appearance].background,
-              width: '60%',
+              width: '100%',
               borderRadius: 20,
               paddingVertical: 20,
             }}>
@@ -576,13 +577,62 @@ export default AddDispatch = ({navigation}) => {
                 color: colors[appearance].textDark,
                 alignSelf: 'center',
               }}>
-              Truckk Type
+              Truck Type
             </Text>
             <ScrollView
               style={{
                 marginTop: 20,
               }}>
-              {data2.map(item => (
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 6,
+                  alignSelf: 'center',
+                }}>
+                {data2.map(item => (
+                  <TouchableOpacity
+                    onPress={() => handleItemPress(item)}
+                    key={item.id}
+                    style={{
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                      backgroundColor:
+                        selectedItem?.id === item.id ||
+                        (item.name === 'Truck' && selectedTruck)
+                          ? colors[appearance].black
+                          : colors[appearance].primary,
+                      borderRadius: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      margin: 5,
+                    }}>
+                    <View
+                      style={{
+                        backgroundColor: colors[appearance].white,
+                        borderRadius: 5,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                      }}>
+                      {/* Assuming your icons are part of your data */}
+                      <Truck/>
+                    </View>
+                    <Text
+                      style={{
+                        fontFamily: 'Inter-Medium',
+                        fontSize: 16,
+                        color: colors.light.white,
+                        marginTop: 10,
+                      }}>
+                      {item?.name.replace('_',' ')}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {/* {data2.map(item => (
                 <TouchableOpacity
                   onPress={() => handleItemPress(item)}
                   key={item.id}
@@ -604,7 +654,7 @@ export default AddDispatch = ({navigation}) => {
                     {item?.name.replace('_', ' ')}
                   </Text>
                 </TouchableOpacity>
-              ))}
+              ))} */}
             </ScrollView>
           </View>
         </View>

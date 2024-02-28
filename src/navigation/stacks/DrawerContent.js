@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,11 +14,41 @@ import {AuthContext} from '../../../context/AuthContext';
 import colors from '../../../assets/colors/colors';
 import mainRoute from '../routs/mainRouts';
 import profileRouts from '../routs/profileRouts';
+import formatNumber from '../../../utils/formatNumber';
+import endpoints from '../../../assets/endpoints/endpoints';
 
 export default function DrawerContent(props, onPendingOrderPress = () => {}) {
-  const {logout, user, colorScheme, toggleTheme} = useContext(AuthContext);
+  const {logout, user, colorScheme, toggleTheme, token} =
+    useContext(AuthContext);
   // console.log('from drawer', user);
   const [modalVisible, setModalVisible] = useState(false);
+  const [wallet, setWallet] = useState({});
+  const getBalance = () => {
+    fetch(endpoints.baseUrl + endpoints.retreive, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        userid: user?._id,
+      }),
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        console.log('resJson', resJson);
+        if (resJson.status) {
+          setWallet(resJson.data);
+        }
+      })
+      .catch(err => {
+        console.log('error', err);
+      });
+  };
+
+  useEffect(() => {
+    getBalance();
+  }, []);
   return (
     <>
       <View
@@ -129,7 +159,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                     fontSize: 16,
                     fontFamily: 'Inter-Regular',
                   }}>
-                  Today’s Earnings:
+                  User balance
                 </Text>
                 <Text
                   style={{
@@ -137,7 +167,7 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                     fontSize: 25,
                     fontFamily: 'Inter-SemiBold',
                   }}>
-                  ₦0
+                  ₦{formatNumber(wallet.balance)}
                 </Text>
               </View>
               <Image

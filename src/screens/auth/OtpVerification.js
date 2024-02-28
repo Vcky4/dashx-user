@@ -234,7 +234,7 @@ export default OtpVerification = ({navigation}) => {
                   }
                 }}
               />
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   timerCount > 0 ? {} : resend();
                 }}
@@ -257,7 +257,7 @@ export default OtpVerification = ({navigation}) => {
                   }}>
                   {timerCount > 0 ? '0:' + timerCount : 'Resend'}
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </KeyboardAvoidingView>
           </View>
           <Button

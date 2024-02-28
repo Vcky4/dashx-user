@@ -6,16 +6,17 @@ type Props = {
     // leftComponet?: React.ReactNode,
     containerStyle?: object,
     label: string,
+    value: string,
     theme?: 'dark' | 'light'
 } & TextInputProps;
 
 
-const PasswordInput: React.FC<Props> = ({ theme = 'dark', containerStyle, label='', ...rest }: Props) => {
+const PasswordInput: React.FC<Props> = ({ theme = 'dark', value = '', containerStyle, label, ...rest }: Props) => {
     const [visible, setVisible] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     return (
         <View style={[{
-            borderColor: label.length>1? colors[theme].primary:colors[theme].subText ,
+            borderColor: value.length>1? colors[theme].primary:colors[theme].subText ,
             borderRadius: 50,
             borderWidth: 1,
             paddingHorizontal: 10,

@@ -25,6 +25,8 @@ import SearchAddress from '../../../utils/SearchAddress';
 import getCurrentPosition from '../../../utils/getCurrentPosition';
 import getPlaceDetails from '../../../utils/getPlaceDetails';
 import getStateAndCity from '../../../utils/getStateAndCity';
+import getAddress from '../../../utils/getAddress';
+import getCity from '../../../utils/getCity';
 
 export default SignUp = ({navigation}) => {
   const {saveToken, saveUser, colorScheme} = useContext(AuthContext);
@@ -42,12 +44,20 @@ export default SignUp = ({navigation}) => {
   let emailRegex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const canProceed =
-    // phone?.length > 9 &&
-    password?.length > 0 &&
-    firstName?.split(' ').length > 1 &&
+     phone.length > 9 &&
+    // password.length > 0 &&
+    // firstName.split(' ').length > 1 &&
     emailRegex.test(email);
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [requestData, setRequestData] = useState({
+    lat: '',
+    long: '',
+    state: '',
+    city: '',
+  });
+
+  console.log(password)
 
   const [locationData, setLocationData] = useState({
     lat: 5.01,
@@ -66,7 +76,7 @@ export default SignUp = ({navigation}) => {
     });
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {i
     setLoading(true);
 
     SearchAddress(searchLocation, locationData.lat, locationData.lng, data => {
@@ -83,12 +93,17 @@ export default SignUp = ({navigation}) => {
       headers: {
         'Content-Type': 'application/json',
       },
+
       body: JSON.stringify({
-        email: email,
+        email: email.trim(),
         name: firstName,
         password: password,
         phone: phone,
+        longitude: requestData.long.toString(),
+        latitude: requestData.lat.toString(),
         address: address,
+        state: requestData.state,
+        city: requestData.city,
       }), // body data type must match "Content-Type" header
     });
     response
@@ -165,33 +180,6 @@ export default SignUp = ({navigation}) => {
           Welcome
         </Text>
 
-        {/* <View
-          style={{
-            marginTop: 30,
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginLeft: 15,
-          }}>
-          <View
-            style={{
-              height: 25,
-              width: 25,
-              borderRadius: 15,
-              borderWidth: 5,
-              borderColor: colors[appearance].primary,
-            }}
-          />
-          <Text
-            style={{
-              fontFamily: 'Inter-SemiBold',
-              fontSize: 16,
-              color: colors[appearance].textDark,
-              marginLeft: 15,
-            }}>
-            Create account.
-          </Text>
-        </View> */}
-
         <InputField
           theme={appearance}
           value={firstName}
@@ -202,7 +190,7 @@ export default SignUp = ({navigation}) => {
         <InputField
           theme={appearance}
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(text)=>setEmail(text.trim())}
           placeholder="Enter e-mail"
           containerStyle={styles.input}
         />
@@ -267,16 +255,6 @@ export default SignUp = ({navigation}) => {
           placeholder="Password"
           containerStyle={styles.input}
         />
-        {/* 
-<TouchableOpacity>
-                    <Text style={{
-                        fontFamily: 'Inter-SemiBold',
-                        fontSize: 14,
-                        color: colors[appearance].primary,
-                        marginTop: 16,
-                        marginLeft: 35
-                    }}>Forgot password?</Text>
-                </TouchableOpacity> */}
 
         <Button
           title="Sign Up"
@@ -431,15 +409,31 @@ export default SignUp = ({navigation}) => {
                           data[0]?.formatted_address.split(/,(.*)/s)[0] +
                             data[0]?.formatted_address.split(/,(.*)/s)[1],
                         );
+                        setRequestData(prevState => ({
+                          ...prevState,
+                          lat: data[0]?.geometry?.location?.lat,
+                          long: data[0]?.geometry?.location?.lng,
+                        }));
+                        getAddress(
+                          data[0]?.geometry?.location?.lat,
+                          data[0]?.geometry?.location?.lng,
+                          result => {
+                            setRequestData(prevState => ({
+                              ...prevState,
+                              city: getCity(result[0].formatted_address),
+                            }));
+                          },
+                        );
                       });
 
-                      // getStateAndCity(item.place_id, data => {
-                      //   setRequestData(prevState => ({
-                      //     ...prevState,
-                      //     state: data.state,
-                      //     city: data.city,
-                      //   }));
-                      // });
+                      getStateAndCity(item.place_id, data => {
+                        setRequestData(prevState => ({
+                          ...prevState,
+                          state: data.state,
+                          city: data.city,
+                        }));
+                      });
+
                       setSearchLocation('');
                       bottomSheetRef.current.close();
                     }}>

@@ -63,7 +63,7 @@ export default Home = ({
     {anme: 'Wallet', id: 1},
     {anme: 'Pay on Delivery', id: 2},
   ];
-  console.log(requestData?.fullname);
+  console.log(user);
 
   const AddDispatch = async () => {
     setProcessing(true);
@@ -79,9 +79,9 @@ export default Home = ({
         total_fee: total_fee,
         payment_method: payment_method,
         sendername: requestData.fullname,
-        productname: requestData.ProductName,
+        productname: requestData2.ProductName,
         senderaddress: requestData.address,
-        sendercity: requestData.city,
+        sendercity: user.city || requestData.city,
         senderphone: requestData.Phone,
         senderlandmark: requestData.LandMark,
         receivername: requestData2.fullname,
@@ -89,10 +89,11 @@ export default Home = ({
         receiveraddress: requestData2.address,
         receivercity: requestData2.city,
         receiverlandmark: requestData2.LandMark,
-        senderlong: requestData.senderlong.toString(),
-        senderlat: requestData.senderlat.toString(),
+        senderlong: user.longitude || requestData.senderlong.toString(),
+        senderlat: user.latitude || requestData.senderlat.toString(),
         receiverlat: requestData2.receiverlat.toString(),
         receiverlong: requestData2.receiverlong.toString(),
+        trackingid: 0,
       }), // body data type must match "Content-Type" header
     });
     response
@@ -129,7 +130,7 @@ export default Home = ({
             receiverlong: '',
           });
           setSelectedItem(null);
-          goBack();
+          navigation.navigate(mainRouts.home);
         } else {
           setProcessing(false);
           Toast.show({
@@ -404,7 +405,7 @@ export default Home = ({
                       color: colors[appearance].textDark,
                       paddingStart: 16,
                     }}>
-                    {requestData?.ProductName}
+                    {requestData2?.ProductName}
                   </Text>
                 </View>
 

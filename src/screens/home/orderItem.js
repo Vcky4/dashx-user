@@ -21,7 +21,7 @@ import Van from '../../../assets/icons/containertruck.svg';
 import Truck from '../../../assets/icons/truck.svg';
 import {ProgressBar, MD3Colors} from 'react-native-paper';
 const {width} = Dimensions.get('window');
-export default OrderItem = ({item, index, onPress}) => {
+export default OrderItem = ({item, index, onPress, cancel}) => {
   const {saveToken, saveUser, colorScheme, token, login, user} =
     useContext(AuthContext);
   const appearance = colorScheme;
@@ -43,7 +43,7 @@ export default OrderItem = ({item, index, onPress}) => {
       onPress={() => {
         onPress();
       }}
-      activeOpacity={item?.order_status == 'pickup' ? 0.5 : 1}
+      activeOpacity={item && item?.order_status == 'pickup' ? 0.5 : 1}
       style={{
         paddingVertical: 6,
         borderWidth: 1,
@@ -71,7 +71,7 @@ export default OrderItem = ({item, index, onPress}) => {
               fontSize: 16,
               color: colors[appearance].textDark,
             }}>
-            {item?._id && item._id.substr(-6)}
+            parcel#:{item && item?._id && item?._id?.substr(-6)}
           </Text>
 
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -86,7 +86,7 @@ export default OrderItem = ({item, index, onPress}) => {
                 fontSize: 16,
                 color: colors[appearance].textDark,
               }}>
-              {item.receiverphone}
+              {item && item?.receiverphone}
             </Text>
           </View>
         </View>
@@ -116,7 +116,7 @@ export default OrderItem = ({item, index, onPress}) => {
 
             color: colors[appearance].textDark,
           }}>
-          {item?.sendername}
+          {item && item?.sendername}
         </Text>
       </View>
 
@@ -145,7 +145,7 @@ export default OrderItem = ({item, index, onPress}) => {
               fontFamily: 'Inter-Regular',
               fontSize: 13,
             }}>
-            {item?.senderaddress}
+            {item && item?.senderaddress}
           </Text>
         </View>
         <TouchableOpacity
@@ -153,8 +153,10 @@ export default OrderItem = ({item, index, onPress}) => {
             backgroundColor:
               item?.order_status == 'pickup'
                 ? '#31D0AA'
-                : item?.order_status == 'delivered'
+                : item?.order_status === 'accepted'
                 ? '#A10F7E'
+                : item?.order_status === 'shipping'
+                ? '#31D0AA'
                 : '#868686',
             height: 40,
             alignItems: 'center',
@@ -170,42 +172,74 @@ export default OrderItem = ({item, index, onPress}) => {
 
               color: colors.light.white,
             }}>
-            {item?.order_status.charAt(0).toUpperCase() +
-              item?.order_status.slice(1).toLowerCase()}
+            {item && item?.order_status === 'pickup'
+              ? 'Picked up'
+              : item?.order_status?.charAt(0).toUpperCase() +
+                item?.order_status?.slice(1).toLowerCase()}
           </Text>
         </TouchableOpacity>
       </View>
 
-      <View style={{flexDirection: 'row'}}>
-        <View
-          style={{
-            height: 18,
-            width: 18,
-            backgroundColor: '#31D0AA',
-            borderRadius: 20,
-            marginEnd: 7,
-            marginTop: 7,
-          }}></View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View
+            style={{
+              height: 18,
+              width: 18,
+              backgroundColor: '#31D0AA',
+              borderRadius: 20,
+              marginEnd: 7,
+              marginTop: 7,
+            }}></View>
 
-        <View style={{}}>
+          <View style={{}}>
+            <Text
+              style={{
+                fontFamily: 'Inter-Regular',
+                fontSize: 15,
+                color: colors[appearance].textDark,
+              }}>
+              {item && item?.receivername}
+            </Text>
+            <Text
+              style={{
+                color: '#868686',
+                fontFamily: 'Inter-Regular',
+                fontSize: 13,
+                maxWidth: 200,
+              }}>
+              {item && item?.receiveraddress}
+            </Text>
+          </View>
+        </View>
+        {/* <TouchableOpacity
+          onPress={() => {
+            cancel();
+          }}
+          style={{
+            backgroundColor: 'red',
+            height: 40,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            borderRadius: 15,
+          }}>
           <Text
             style={{
               fontFamily: 'Inter-Regular',
               fontSize: 15,
-              color: colors[appearance].textDark,
+
+              color: colors.light.white,
             }}>
-            {item?.receivername}
+            Cancel
           </Text>
-          <Text
-            style={{
-              color: '#868686',
-              fontFamily: 'Inter-Regular',
-              fontSize: 13,
-              maxWidth:200
-            }}>
-            {item?.receiveraddress}
-          </Text>
-        </View>
+        </TouchableOpacity> */}
       </View>
 
       <View
@@ -215,7 +249,7 @@ export default OrderItem = ({item, index, onPress}) => {
           marginHorizontal: 10,
           marginVertical: 12,
         }}>
-        {getVehicleIcon(item?.vehicle_type)}
+        {getVehicleIcon(item?.vehicle_type) || <Truck />}
 
         {/* <View
           style={{
@@ -231,22 +265,26 @@ export default OrderItem = ({item, index, onPress}) => {
           }}></View> */}
 
         <ProgressBar
-          progress={item?.order_status === 'pending'
-          ? 0
-          : item?.order_status === 'pickup'
-          ? 0.2
-          : item?.order_status === 'accepted'
-          ? 0.5
-          : item?.order_status === 'shipping'
-          ? 0.8
-          : 1}
-          style={{width: width * 0.6, marginHorizontal: 10}}
+          progress={
+            item && item?.order_status === 'pending'
+              ? 0
+              : item && item?.order_status === 'pickup'
+              ? 0.5
+              : item && item?.order_status === 'accepted'
+              ? 0.2
+              : item && item?.order_status === 'shipping'
+              ? 0.8
+              : 1
+          }
+          style={{width: width * 0.56, marginHorizontal: 10}}
           color={
-            item?.order_status == 'pickup'
+            item && item?.order_status == 'pickup'
               ? '#31D0AA'
-              : item?.order_status === 'delivered'
+              : item && item?.order_status === 'accepted'
               ? '#A10F7E'
-              : '#31D0AA'
+              : item && item?.order_status === 'shipping'
+              ? '#31D0AA'
+              : '#868686'
           }
         />
 

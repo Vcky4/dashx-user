@@ -332,7 +332,6 @@ export default Chat = ({ navigation }) => {
                                     borderBottomStartRadius: item.usertype === 'admin' ? 0 : 10,
                                     borderBottomEndRadius: item.usertype === 'admin' ? 10 : 0,
                                     marginTop: 4,
-                                    // maxWidth: '80%',
                                     minWidth: 150,
                                 }}>
                                     {

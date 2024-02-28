@@ -18,6 +18,7 @@ const endpoints = {
     retreive: '/user/retrieve/balance',
     history: '/user/retrieve/wallet/history',
     chat: '/user/chat/support',
+    cancelOrder: '/user/cancel/order'
 
 }
 
