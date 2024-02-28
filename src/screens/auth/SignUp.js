@@ -231,6 +231,7 @@ export default SignUp = ({navigation}) => {
             }}>
             {address.length > 0 ? address : 'Sender Address'}
           </Text>
+
           {/* <InputField
                 theme={appearance}
                 value={requestData.address}
@@ -247,6 +248,7 @@ export default SignUp = ({navigation}) => {
                   <AddressIcon fill={colors[appearance].textDark} />
                 }
               /> */}
+              
         </TouchableOpacity>
         <PasswordInput
           theme={appearance}

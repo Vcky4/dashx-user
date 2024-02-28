@@ -189,7 +189,7 @@ export default AddDispatch = ({navigation}) => {
       setSelectedTruck(true);
     }
   };
-
+  
   return (
     <View
       style={{
