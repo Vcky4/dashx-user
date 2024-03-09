@@ -18,6 +18,8 @@ import Button from '../../component/Button';
 import endpoints from '../../../assets/endpoints/endpoints';
 import Toast from 'react-native-toast-message';
 import mainRouts from '../../navigation/routs/mainRouts';
+import BackArrow from '../../../assets/icons/backIcon.svg';
+
 export default Profile = ({navigation}) => {
   const {colorScheme, user, token, saveUser} = useContext(AuthContext);
   const [email, setEmail] = useState('');
@@ -152,6 +154,7 @@ export default Profile = ({navigation}) => {
               style={{
                 position: 'absolute',
                 left: 0,
+                padding:20
               }}
               onPress={() => navigation.goBack()}>
               <Back fill={'#fff'} />

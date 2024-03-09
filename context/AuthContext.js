@@ -51,6 +51,7 @@ export const AuthContextProvider = ({children}) => {
     setIsLoading(false);
     // console.log("user",user)
   };
+  
   const onboard = () => {
     setIsOnboarded(true);
     AsyncStorage.setItem('onboarded', 'true');

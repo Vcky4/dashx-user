@@ -76,7 +76,7 @@ export default SignUp = ({navigation}) => {
     });
   }, []);
 
-  useEffect(() => {i
+  useEffect(() => {
     setLoading(true);
 
     SearchAddress(searchLocation, locationData.lat, locationData.lng, data => {

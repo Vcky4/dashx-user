@@ -7,7 +7,7 @@ import endpoints from "../../../assets/endpoints/endpoints";
 import io from 'socket.io-client';
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import Toast from "react-native-toast-message";
-
+import BackArrow from '../../../assets/icons/backIcon.svg';
 
 export default Chat = ({ navigation }) => {
     const { colorScheme, user, token } = useContext(AuthContext)
@@ -29,7 +29,7 @@ export default Chat = ({ navigation }) => {
     });
 
     //connect socket
-    
+
     useEffect(() => {
         // if (coordinate.latitude !== 0 && coordinate.longitude !== 0) {
         socket.on('connect', e => {
@@ -175,45 +175,45 @@ export default Chat = ({ navigation }) => {
                 }
             );
             // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                launchCamera({
-                    mediaType: 'photo',
-                    // includeBase64: true,
-                    // maxHeight: 200,
-                    // maxWidth: 200,
-                }, (res) => {
-                    console.log(res);
-                    if (res.didCancel) {
-                        console.log('User cancelled image picker');
-                        Toast.show({
-                            type: 'success',
-                            text1: 'Cancelled',
-                            text2: 'Process cancelled successfully'
-                        });
-                    }
-                    else if (res.error) {
-                        console.log('ImagePicker Error: ', res.error);
-                        Toast.show({
-                            type: 'error',
-                            text1: 'failed to get image',
-                            text2: res.error
-                        });
-                    }
-                    else if (res.assets) {
-                        // setChats([...chats, {
-                        //     "type": 'image',
-                        //     "usertype": "dispatch",
-                        //     "text": res.assets[0].uri,
-                        //     createdAt: new Date().toISOString()
-                        // }])
-                        uploadImage(res.assets[0], (url) => {
-                            console.log(url);
-                            sendChat(
-                                url,
-                                'image'
-                            )
-                        });
-                    }
-                })
+            launchCamera({
+                mediaType: 'photo',
+                // includeBase64: true,
+                // maxHeight: 200,
+                // maxWidth: 200,
+            }, (res) => {
+                console.log(res);
+                if (res.didCancel) {
+                    console.log('User cancelled image picker');
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Cancelled',
+                        text2: 'Process cancelled successfully'
+                    });
+                }
+                else if (res.error) {
+                    console.log('ImagePicker Error: ', res.error);
+                    Toast.show({
+                        type: 'error',
+                        text1: 'failed to get image',
+                        text2: res.error
+                    });
+                }
+                else if (res.assets) {
+                    // setChats([...chats, {
+                    //     "type": 'image',
+                    //     "usertype": "dispatch",
+                    //     "text": res.assets[0].uri,
+                    //     createdAt: new Date().toISOString()
+                    // }])
+                    uploadImage(res.assets[0], (url) => {
+                        console.log(url);
+                        sendChat(
+                            url,
+                            'image'
+                        )
+                    });
+                }
+            })
             // else {
             //     Toast.show({
             //         type: "error",
@@ -253,20 +253,14 @@ export default Chat = ({ navigation }) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                     }}>
-                        <TouchableOpacity style={{
-                            marginEnd: 10,
-                        }}
-                            onPress={() => navigation.goBack()}>
-                            <Image
-                                source={require('../../../assets/images/back.png')}
-                                style={{
-                                    width: 24,
-                                    height: 24,
-                                    resizeMode: "contain",
-                                    tintColor: colors[colorScheme].white,
-                                }}
-                            />
+                        <TouchableOpacity
+                            style={{ padding: 20 }}
+                            onPress={() => {
+                               navigation.goBack()
+                            }}>
+                            <BackArrow fill={'#fff'} />
                         </TouchableOpacity>
+
                         <Image
                             source={user.photo?.length > 0 ? { uri: user.photo } : require('../../../assets/images/user.png')}
                             style={{
@@ -346,7 +340,7 @@ export default Chat = ({ navigation }) => {
                                                 source={{ uri: item?.text }}
                                                 style={{
                                                     width: 200,
-                                                    height:  200,
+                                                    height: 200,
                                                     resizeMode: "contain",
                                                 }}
                                             />
@@ -369,7 +363,7 @@ export default Chat = ({ navigation }) => {
                 justifyContent: 'space-between',
                 paddingHorizontal: 20,
                 paddingVertical: 10,
-                paddingBottom:Platform.OS =='ios'?30:0,
+                paddingBottom: Platform.OS == 'ios' ? 30 : 0,
                 width: '100%',
             }}>
                 <View style={{

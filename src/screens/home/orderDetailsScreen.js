@@ -188,9 +188,9 @@ export default Home = ({navigation, route}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   width: '100%',
-                  justifyContent: 'space-between',
+                  
                 }}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
+                <TouchableOpacity style={{padding:20}} onPress={() => navigation.goBack()}>
                   <ArrowBack fill={'#fff'} />
                 </TouchableOpacity>
 
@@ -199,8 +199,10 @@ export default Home = ({navigation, route}) => {
                     fontFamily: 'Inter-Regular',
                     fontSize: 24,
                     color: colors.light.white,
-                    textAlign: 'center',
-                    flex: 1,
+                    flex:0.9,
+                    textAlign:'center'
+
+                  
                   }}>
                   Dispatch Details
                 </Text>

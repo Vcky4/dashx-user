@@ -111,7 +111,8 @@ export default SnderDetails = ({
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <TouchableOpacity
+           <TouchableOpacity
+          style={{padding:20}}
             onPress={() => {
               goBack();
             }}>
@@ -122,7 +123,7 @@ export default SnderDetails = ({
               fontFamily: 'Inter-SemiBold',
               fontSize: 20,
               color: colors[appearance].textDark,
-              flex: 0.9,
+              flex: 0.8,
               textAlign: 'center',
             }}>
             Sender

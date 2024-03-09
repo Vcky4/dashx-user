@@ -111,6 +111,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
             alignItems: 'center',
           }}>
           <TouchableOpacity
+          style={{padding:20}}
             onPress={() => {
               goBack();
             }}>
@@ -121,7 +122,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               fontFamily: 'Inter-SemiBold',
               fontSize: 20,
               color: colors[appearance].textDark,
-              flex: 0.9,
+              flex: 0.8,
               textAlign: 'center',
             }}>
             Receiver

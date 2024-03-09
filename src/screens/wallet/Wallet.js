@@ -110,6 +110,7 @@ const onRefresh = () => {
             style={{
               position: 'absolute',
               left: 0,
+              padding:20
             }}
             onPress={() => navigation.goBack()}>
             <Image

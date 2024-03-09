@@ -4,7 +4,7 @@ import colors from '../../../assets/colors/colors';
 import {AuthContext} from '../../../context/AuthContext';
 import endpoints from '../../../assets/endpoints/endpoints';
 import {RefreshControl} from 'react-native-gesture-handler';
-
+import BackArrow from '../../../assets/icons/backIcon.svg';
 export default History = ({navigation}) => {
   const {colorScheme, user, token} = useContext(AuthContext);
   const [orders, setOrders] = React.useState([]);
@@ -58,6 +58,7 @@ export default History = ({navigation}) => {
             style={{
               position: 'absolute',
               left: 0,
+              padding:20
             }}
             onPress={() => navigation.goBack()}>
             <Image

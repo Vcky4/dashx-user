@@ -9,7 +9,7 @@ import endpoints from "../../../assets/endpoints/endpoints";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-
+import BackArrow from '../../../assets/icons/backIcon.svg';
 export default EditProfile = ({ navigation }) => {
     const { user, saveUser, colorScheme, token } = useContext(AuthContext)
     const appearance = colorScheme
@@ -249,23 +249,13 @@ export default EditProfile = ({ navigation }) => {
                     width: '100%',
                     paddingHorizontal: 20,
                 }}>
-                    <TouchableOpacity onPress={() => {
-                        if (step > 1) {
-                            setStep(step - 1)
-                        } else {
-                            navigation.goBack()
-                        }
-                    }}>
-                        <Image
-                            source={require("../../../assets/images/back.png")}
-                            style={{
-                                width: 24,
-                                height: 24,
-                                resizeMode: 'contain',
-                                tintColor: colors[appearance].textDark,
-                            }}
-                        />
-                    </TouchableOpacity>
+                    <TouchableOpacity
+                            style={{ padding: 20 }}
+                            onPress={() => {
+                               navigation.goBack()
+                            }}>
+                            <BackArrow fill={'#fff'} />
+                        </TouchableOpacity>
 
                     <View style={{
                         flexDirection: 'row',
