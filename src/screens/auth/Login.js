@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -16,13 +16,15 @@ import colors from '../../../assets/colors/colors';
 import authRouts from '../../navigation/routs/authRouts';
 import Button from '../../component/Button';
 import PasswordInput from '../../component/PasswordInput';
-import {AuthContext} from '../../../context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 import endpoints from '../../../assets/endpoints/endpoints';
 import InputField from '../../component/InputField';
 import mainRouts from '../../navigation/routs/mainRouts';
+import * as Yup from 'yup';
+import { Formik, validateYupSchema } from 'formik';
 
-export default Login = ({navigation}) => {
-  const {saveToken, saveUser, colorScheme, login} = useContext(AuthContext);
+export default Login = ({ navigation }) => {
+  const { saveToken, saveUser, colorScheme, login } = useContext(AuthContext);
   const appearance = colorScheme;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,7 +50,7 @@ export default Login = ({navigation}) => {
     }).start();
   }, [fade]);
 
-  const loginUser = async () => {
+  const loginUser = async ({ email, password }) => {
     setProcessing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.login, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -63,7 +65,7 @@ export default Login = ({navigation}) => {
     response
       .json()
       .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
+        // console.log(data); // JSON data parsed by `data.json()` call
         setProcessing(false);
         if (response.ok) {
           Toast.show({
@@ -78,11 +80,11 @@ export default Login = ({navigation}) => {
           // if (data.error == 'user email is not veirified'){
           //   navigation.navigate(authRouts.otpVerification,{email:email})
           // }
-            Toast.show({
-              type: 'error',
-              text1: 'Login failed',
-              text2: data.message,
-            });
+          Toast.show({
+            type: 'error',
+            text1: 'Login failed',
+            text2: data.message,
+          });
           console.log('response: ', response);
           console.log('Login error:', data.message);
         }
@@ -97,6 +99,11 @@ export default Login = ({navigation}) => {
         console.log('Login error:', error);
       });
   };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Email Required'),
+    password: Yup.string().min(4, 'Password is too short').required('Password Required'),
+  });
   return (
     <>
       <View
@@ -161,54 +168,85 @@ export default Login = ({navigation}) => {
               Sign in.
             </Text>
           </View>
+          <Formik
+            initialValues={{ email: '', password: '' }}
+            onSubmit={loginUser}
+            validationSchema={validationSchema}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, errors,
+              touched, isValid, dirty }) => (
 
-          <InputField
-            theme={appearance}
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter e-mail"
-            containerStyle={styles.input}
-          />
-          <PasswordInput
-            theme={appearance}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            containerStyle={styles.input}
-          />
+              <View>
+                <InputField
+                  theme={appearance}
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  placeholder="Enter e-mail"
+                  containerStyle={styles.input}
+                  onBlur={handleBlur('email')}
+                />
+                {touched.email && errors.email && <Text style={{
+                  color: 'red',
+                  fontWeight: 'normal',
+                  fontSize: 12,
+                  fontFamily: 'Inter-Regular',
+                }}>{errors.email}</Text>}
+                <PasswordInput
+                  theme={appearance}
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  placeholder="Password"
+                  containerStyle={styles.input}
+                  onBlur={handleBlur('password')}
+                  secureTextEntry
+                />
+                {touched.password && errors.password &&
+                  <Text style={{
+                    color: 'red',
+                    fontWeight: 'normal',
+                    fontSize: 12,
+                    fontFamily: 'Inter-Regular',
+                  }}>{errors.password}</Text>}
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate(authRouts.forgotPassword);
+                  }}
+                  style={{alignSelf:'flex-end'}}
+                  >
+                  <Text
+                    style={{
+                      fontFamily: 'Inter-SemiBold',
+                      fontSize: 14,
+                      color: colors[appearance].primary,
+                      
+                      textAlign: 'right',
+                      paddingVertical:16
+                    }}>
+                    Forgot password?
+                  </Text>
+                </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate(authRouts.forgotPassword);
-            }}>
-            <Text
-              style={{
-                fontFamily: 'Inter-SemiBold',
-                fontSize: 14,
-                color: colors[appearance].primary,
-                marginTop: 16,
-                marginLeft: 35,
-              }}>
-              Forgot password?
-            </Text>
-          </TouchableOpacity>
+                <Button
+                  title="Sign In"
+                  buttonStyle={{
+                    marginTop: 30,
+                    marginHorizontal: 20,
+                    borderRadius: 30,
+                  }}
+                  loading={processing}
+                  enabled={isValid && dirty && !processing}
+                  textColor={colors[appearance].textDark}
+                  buttonColor={colors[appearance].primary}
+                  onPress={() => {
+                    handleSubmit()
+                  }}
+                />
+              </View>
+            )}
 
-          <Button
-            title="Sign In"
-            buttonStyle={{
-              marginTop: 30,
-              marginHorizontal: 20,
-              borderRadius: 30,
-            }}
-            loading={processing}
-            enabled={canProceed && !processing}
-            textColor={colors[appearance].textDark}
-            buttonColor={colors[appearance].primary}
-            onPress={() => {
-              loginUser();
-              // navigation.navigate(authRouts.otpVerification)
-            }}
-          />
+
+          </Formik>
+
 
           <Text
             style={{

@@ -110,7 +110,7 @@ export default OtpVerification = ({navigation}) => {
     response
       .json()
       .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
+        // console.log(data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setProcessing(false);

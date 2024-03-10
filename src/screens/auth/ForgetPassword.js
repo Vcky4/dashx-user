@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -13,15 +13,18 @@ import {
 import Toast from 'react-native-toast-message';
 
 import colors from '../../../assets/colors/colors';
-import {AuthContext} from '../../../context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 import endpoints from '../../../assets/endpoints/endpoints';
 import InputField from '../../component/InputField';
 import PasswordInput from '../../component/PasswordInput';
 import Button from '../../component/Button';
 import authRouts from '../../navigation/routs/authRouts';
+import * as Yup from 'yup';
+import { Formik, validateYupSchema } from 'formik';
 
-export default ForgetPassword = ({navigation}) => {
-  const {saveToken, saveUser, colorScheme} = useContext(AuthContext);
+
+export default ForgetPassword = ({ navigation }) => {
+  const { saveToken, saveUser, colorScheme } = useContext(AuthContext);
   const appearance = colorScheme;
   const [email, setEmail] = useState('');
   let emailRegex =
@@ -29,7 +32,7 @@ export default ForgetPassword = ({navigation}) => {
   const canProceed = emailRegex.test(email);
   const [processing, setProcessing] = useState(false);
 
-  const forgetPassword = async () => {
+  const forgetPassword = async ({email}) => {
     setProcessing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.forgotPassword, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -43,7 +46,7 @@ export default ForgetPassword = ({navigation}) => {
     response
       .json()
       .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
+        // console.log(data); // JSON data parsed by `data.json()` call
         setProcessing(false);
         if (response.ok) {
           Toast.show({
@@ -51,7 +54,7 @@ export default ForgetPassword = ({navigation}) => {
             text1: 'forgot passsword successful',
             text2: data.message,
           });
-          navigation.navigate(authRouts.resetPassword);
+          navigation.navigate(authRouts.resetPassword,{email:email});
           // saveUser(data.user)
           // navigation.navigate(authRouts.otpVerification, { token: data.data.accessToken })
         } else {
@@ -60,7 +63,7 @@ export default ForgetPassword = ({navigation}) => {
             text1: 'forgot passsword failed',
             text2: data.message,
           });
-         
+
           console.log('response: ', response);
           console.log('forgot passsword error:', data);
         }
@@ -76,6 +79,11 @@ export default ForgetPassword = ({navigation}) => {
         console.log('Login error:', error);
       });
   };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Email is required'),
+  });
+
   return (
     <View
       style={{
@@ -140,31 +148,48 @@ export default ForgetPassword = ({navigation}) => {
             Recovery.
           </Text>
         </View>
+        <Formik
+          initialValues={{ email: '' }}
+          onSubmit={(values) => forgetPassword(values)}
+          validationSchema={validationSchema}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid, dirty }) => (
 
-        <InputField
-          theme={appearance}
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Enter e-mail"
-          containerStyle={styles.input}
-        />
+            <View>
+              <InputField
+                theme={appearance}
+                value={values.email}
+                onChangeText={handleChange('email')}
+                placeholder="Enter e-mail"
+                containerStyle={styles.input}
+                onBlur={handleBlur('email')}
+              />
+              {touched.email && errors.email && <Text  style={{
+            fontFamily: 'Inter-Regular',
+            fontSize: 14,
+            color: 'red',
+        
+           
+          }}>{errors.email}</Text>}
+              <Button
+                title="Send Code"
+                buttonStyle={{
+                  marginTop: 30,
+                  marginHorizontal: 20,
+                  borderRadius: 30,
+                }}
+                loading={processing}
+                enabled={isValid && dirty && !processing}
+                textColor={colors[appearance].textDark}
+                buttonColor={colors[appearance].primary}
+                onPress={() => {
+                 handleSubmit()
+                }}
+              />
 
-        <Button
-          title="Send Code"
-          buttonStyle={{
-            marginTop: 30,
-            marginHorizontal: 20,
-            borderRadius: 30,
-          }}
-          loading={processing}
-          enabled={canProceed && !processing}
-          textColor={colors[appearance].textDark}
-          buttonColor={colors[appearance].primary}
-          onPress={() => {
-            // loginUser()
-            forgetPassword();
-          }}
-        />
+            </View>
+          )}
+        </Formik>
 
         <Text
           style={{
@@ -226,5 +251,11 @@ export default ForgetPassword = ({navigation}) => {
 const styles = StyleSheet.create({
   input: {
     marginTop: 20,
+  },
+  errorText: {
+    color: colors, // Adjust error color as needed
+    fontSize: 14,
+    marginTop: 5,
+    paddingStart:5
   },
 });
