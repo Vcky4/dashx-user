@@ -26,11 +26,7 @@ import { Formik, validateYupSchema } from 'formik';
 export default Login = ({ navigation }) => {
   const { saveToken, saveUser, colorScheme, login } = useContext(AuthContext);
   const appearance = colorScheme;
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const canProceed = email.length > 5 && password.length > 0;
   const [processing, setProcessing] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState('');
   const [fadeIn] = useState(new Animated.Value(0));
   const [fade, setFade] = useState(0);

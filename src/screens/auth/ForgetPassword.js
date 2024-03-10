@@ -26,12 +26,7 @@ import { Formik, validateYupSchema } from 'formik';
 export default ForgetPassword = ({ navigation }) => {
   const { saveToken, saveUser, colorScheme } = useContext(AuthContext);
   const appearance = colorScheme;
-  const [email, setEmail] = useState('');
-  let emailRegex =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const canProceed = emailRegex.test(email);
   const [processing, setProcessing] = useState(false);
-
   const forgetPassword = async ({email}) => {
     setProcessing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.forgotPassword, {

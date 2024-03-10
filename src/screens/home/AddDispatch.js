@@ -54,11 +54,10 @@ export default AddDispatch = ({navigation}) => {
     useContext(AuthContext);
 
   const [selectedItem, setSelectedItem] = useState(null);
-  const [processing, setProcessing] = useState(false);
+
   const [refreshing, setRefreshing] = useState(false);
   const [truck, SetTruckType] = useState(false);
   const [selectedTruck, setSelectedTruck] = useState(false);
-  const [orderConfirm, setOrderConfirm] = useState(false);
   const appearance = colorScheme;
   const [step, setStep] = useState(1);
 
@@ -86,8 +85,7 @@ export default AddDispatch = ({navigation}) => {
     receiverlat: '',
   });
 
-  // console.log('requestData', requestData);
-  // console.log('requestData2', requestData2,selectedItem?.name);
+
   const canProceed =
     selectedItem?.name?.length > 2 &&
     requestData.fullname.length > 2 &&
@@ -132,7 +130,7 @@ export default AddDispatch = ({navigation}) => {
     response
       .json()
       .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
+        // console.log(data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setRefreshing(false);

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import colors from '../../../assets/colors/colors';
-import {AuthContext} from '../../../context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 import Back from '../../../assets/icons/backIcon.svg';
 import InputField from '../../component/InputField';
 import Button from '../../component/Button';
@@ -19,9 +19,12 @@ import endpoints from '../../../assets/endpoints/endpoints';
 import Toast from 'react-native-toast-message';
 import mainRouts from '../../navigation/routs/mainRouts';
 import BackArrow from '../../../assets/icons/backIcon.svg';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
-export default Profile = ({navigation}) => {
-  const {colorScheme, user, token, saveUser} = useContext(AuthContext);
+
+export default Profile = ({ navigation }) => {
+  const { colorScheme, user, token, saveUser } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [Phone, setPhone] = useState('');
@@ -36,52 +39,13 @@ export default Profile = ({navigation}) => {
     email: user?.email || '',
   });
 
-  const UpdateProfile = async () => {
-    setProcessing(true);
-    const response = await fetch(endpoints.baseUrl + endpoints.profile, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({
-        userid: user?._id,
-        email: requestData.email,
-        phone: requestData.Phone,
-        name: requestData.name,
-      }), // body data type must match "Content-Type" header
-    });
-    response
-      .json()
-      .then(data => {
-        console.log('profileupdate', data.data); // JSON data parsed by `data.json()` call
+  const ProfileSchema = yup.object().shape({
+    name: yup.string().required('Name is required'),
+    email: yup.string().email('Invalid email').required('Email is required'),
+    Phone: yup.string().required('Phone number is required'),
+  });
 
-        if (response.ok) {
-          setProcessing(false);
-          saveUser(data.data);
-          getProfile()
-        } else {
-          Toast.show({
-            type: 'success',
-            text1: 'updated Profile successfully',
-            text2: data.message,
-          });
-          console.log('response: ', response);
-          console.log('updateprofile error:', data.message);
-        }
-      })
-
-      .catch(error => {
-        setProcessing(false);
-        Toast.show({
-          type: 'error',
-          text1: 'updateprofile failed',
-          text2: error.message,
-        });
-        console.log('updateprofile error:', error);
-      });
-  };
-
+ 
   const getProfile = async () => {
     setLoading(true);
     const response = await fetch(endpoints.baseUrl + endpoints.getProfile, {
@@ -97,12 +61,13 @@ export default Profile = ({navigation}) => {
     response
       .json()
       .then(data => {
-        console.log('item', data.data); // JSON data parsed by `data.json()` call
+        // console.log('item', data.data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setLoading(false);
-        //   setProfile(data.data);
-            saveUser(data.data);
+          //   setProfile(data.data);
+          saveUser(data.data);
+          
         } else {
           setLoading(false);
           Toast.show({
@@ -123,6 +88,56 @@ export default Profile = ({navigation}) => {
         });
         console.log('updateprofile error:', error);
       });
+  };
+
+  const handleSubmit = async (values, actions) => {
+    const { name, email, Phone } = values;
+
+    try {
+      const response = await fetch(endpoints.baseUrl + endpoints.profile, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({
+          userid: user?._id,
+          email,
+          phone: Phone,
+          name,
+          address: user.address,
+          longitude: user.longitude,
+          latitude: user.latitude,
+          state: user.state,
+          city:user.city
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // saveUser(data.data);
+        getProfile()
+        Toast.show({
+          type: 'success',
+          text1: 'Profile updated successfully',
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Failed to update profile',
+          text2: data.message,
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Update profile failed',
+        text2: error.message,
+      });
+    } finally {
+      actions.setSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -154,7 +169,7 @@ export default Profile = ({navigation}) => {
               style={{
                 position: 'absolute',
                 left: 0,
-                padding:20
+                padding: 20
               }}
               onPress={() => navigation.goBack()}>
               <Back fill={'#fff'} />
@@ -188,271 +203,178 @@ export default Profile = ({navigation}) => {
             {user.online_status ? 'Online' : 'Offline'}
           </Text>
         </View>
+        <Formik
+          initialValues={{ name: user?.name || '', email: user?.email || '', Phone: user?.phone || '' }}
+          validationSchema={ProfileSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
 
-        <View style={{paddingHorizontal: 16, marginTop: 10}}>
-          <Text
-            style={{
-              color: colors[colorScheme].textDark,
-              fontSize: 20,
-              fontFamily: 'Inter-Medium',
-              paddingTop: 20,
-            }}>
-            Name
-          </Text>
-          <View
-            style={{
-              borderColor:
-                requestData.name.length > 0
-                  ? colors[appearance].primary
-                  : colors[appearance].subText,
-              borderRadius: 50,
-              borderWidth: 1,
-              paddingHorizontal: 18,
-              height: 50,
-              flexDirection: 'row',
-              width: '100%',
-              alignItems: 'center',
-              marginTop: 10,
-            }}>
-            <TextInput
-              value={requestData.name}
-              onChangeText={text =>
-                setRequestData(prevState => ({
-                  ...prevState,
-                  name: text,
-                }))
-              }
-              style={{
-                fontSize: 16,
-                fontFamily: 'Inter-Medium',
-                // color: colors[theme].textDark,
-                width: '100%',
-              }}
-              //   cursorColor={colors[theme].primary}
-            />
-          </View>
 
-          <Text
-            style={{
-              color: colors[colorScheme].textDark,
-              fontSize: 20,
-              fontFamily: 'Inter-Medium',
-              marginTop: 20,
-            }}>
-            Email
-          </Text>
-          <View
-            style={{
-              borderColor:
-                requestData.name.length > 0
-                  ? colors[appearance].primary
-                  : colors[appearance].subText,
-              borderRadius: 50,
-              borderWidth: 1,
-              paddingHorizontal: 18,
-              height: 50,
-              flexDirection: 'row',
-              width: '100%',
-              alignItems: 'center',
-              marginTop: 10,
-            }}>
-            <TextInput
-              value={requestData.email}
-              onChangeText={text =>
-                setRequestData(prevState => ({
-                  ...prevState,
-                  email: text,
-                }))
-              }
-              style={{
-                fontSize: 16,
-                fontFamily: 'Inter-Medium',
-                // color: colors[theme].textDark,
-                width: '100%',
-              }}
-              //   cursorColor={colors[theme].primary}
-            />
-          </View>
+            <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 20,
+                  fontFamily: 'Inter-Medium',
+                  paddingTop: 20,
+                }}>
+                Name
+              </Text>
+              <View
+                style={{
+                  borderColor:
+                    requestData.name.length > 0
+                      ? colors[appearance].primary
+                      : colors[appearance].subText,
+                  borderRadius: 50,
+                  borderWidth: 1,
+                  paddingHorizontal: 18,
+                  height: 50,
+                  flexDirection: 'row',
+                  width: '100%',
+                  alignItems: 'center',
+                  marginTop: 10,
+                }}>
+                <TextInput
+                  value={values.name}
+                  onChangeText={handleChange('name')}
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'Inter-Medium',
+                    // color: colors[theme].textDark,
+                    width: '100%',
+                  }}
+                  onBlur={handleBlur('name')}
+                //   cursorColor={colors[theme].primary}
+                />
 
-          <Text
-            style={{
-              color: colors[colorScheme].textDark,
-              fontSize: 20,
-              fontFamily: 'Inter-Medium',
-              paddingTop: 20,
-            }}>
-            Phone
-          </Text>
-          <View
-            style={{
-              borderColor:
-                requestData.name.length > 0
-                  ? colors[appearance].primary
-                  : colors[appearance].subText,
-              borderRadius: 50,
-              borderWidth: 1,
-              paddingHorizontal: 18,
-              height: 50,
-              flexDirection: 'row',
-              width: '100%',
-              alignItems: 'center',
-              marginTop: 10,
-            }}>
-            <TextInput
-              value={requestData.Phone}
-              onChangeText={text =>
-                setRequestData(prevState => ({
-                  ...prevState,
-                  Phone: text,
-                }))
-              }
-              keyboardType="numeric"
-              maxLength={11}
-              style={{
-                fontSize: 16,
-                fontFamily: 'Inter-Medium',
-                // color: colors[theme].textDark,
-                width: '100%',
-              }}
-              //   cursorColor={colors[theme].primary}
-            />
-          </View>
+              </View>
+              {touched.name && errors.name && <Text style={{
+                color: 'red',
+                fontWeight: 'normal',
+                fontSize: 12,
+                fontFamily: 'Inter-Regular',
+                marginStart: 20
+              }}>{errors.name}</Text>}
 
-          <Button
-            title="Save"
-            buttonStyle={{
-              marginTop: 30,
-              marginHorizontal: 20,
-              borderRadius: 30,
-            }}
-            loading={processing}
-            enabled={true}
-            textColor={colors[appearance].textDark}
-            buttonColor={colors[appearance].primary}
-            onPress={() => {
-              UpdateProfile();
-              // navigation.navigate(authRouts.otpVerification)
-            }}
-          />
-        </View>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 20,
+                  fontFamily: 'Inter-Medium',
+                  marginTop: 20,
+                }}>
+                Email
+              </Text>
+              <View
+                style={{
+                  borderColor:
+                    requestData.name.length > 0
+                      ? colors[appearance].primary
+                      : colors[appearance].subText,
+                  borderRadius: 50,
+                  borderWidth: 1,
+                  paddingHorizontal: 18,
+                  height: 50,
+                  flexDirection: 'row',
+                  width: '100%',
+                  alignItems: 'center',
+                  marginTop: 10,
+                }}>
+                <TextInput
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'Inter-Medium',
+                    // color: colors[theme].textDark,
+                    width: '100%',
+                  }}
+                //   cursorColor={colors[theme].primary}
+                />
+
+              </View>
+              {touched.email && errors.email && <Text style={{
+                color: 'red',
+                fontWeight: 'normal',
+                fontSize: 12,
+                marginStart: 20,
+                fontFamily: 'Inter-Regular',
+              }}>{errors.email}</Text>}
+
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 20,
+                  fontFamily: 'Inter-Medium',
+                  paddingTop: 20,
+                }}>
+                Phone
+              </Text>
+              <View
+                style={{
+                  borderColor:
+                    requestData.name.length > 0
+                      ? colors[appearance].primary
+                      : colors[appearance].subText,
+                  borderRadius: 50,
+                  borderWidth: 1,
+                  paddingHorizontal: 18,
+                  height: 50,
+                  flexDirection: 'row',
+                  width: '100%',
+                  alignItems: 'center',
+                  marginTop: 10,
+                }}>
+                <TextInput
+                  value={values.Phone}
+                  onChangeText={handleChange('Phone')}
+                  onBlur={handleBlur('phone')}
+                  keyboardType="numeric"
+                  maxLength={11}
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'Inter-Medium',
+                    // color: colors[theme].textDark,
+                    width: '100%',
+                  }}
+                //   cursorColor={colors[theme].primary}
+                />
+              </View>
+              {touched.Phone && errors.Phone && <Text style={{
+                color: 'red',
+                fontWeight: 'normal',
+                fontSize: 12,
+                marginStart: 20,
+                fontFamily: 'Inter-Regular',
+              }}>{errors.Phone}</Text>}
+
+              <Button
+                title="Save"
+                buttonStyle={{
+                  marginTop: 30,
+                  marginHorizontal: 20,
+                  borderRadius: 30,
+                }}
+                loading={isSubmitting}
+                enabled={true}
+                textColor={colors[appearance].textDark}
+                buttonColor={colors[appearance].primary}
+                onPress={() => {
+                  handleSubmit()
+                  // navigation.navigate(authRouts.otpVerification)
+                }}
+              />
+            </View>
+          )}
+
+        </Formik>
+
+
       </ScrollView>
-
-      {/* <Text style={{
-                color: colors[colorScheme].textGray,
-                fontSize: 12,
-                fontFamily: 'Inter-Bold',
-                marginTop: 20,
-                marginLeft: 32,
-                marginBottom: 8,
-            }}>Vehicle Type</Text>
-            <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '85%',
-                paddingHorizontal: 10,
-                borderColor: colors[colorScheme].primary,
-                borderWidth: 1,
-                paddingVertical: 10,
-                marginHorizontal: 20,
-                alignSelf: 'center',
-                borderRadius: 30,
-            }}>
-                <Image
-                    source={require('../../../assets/images/car.png')}
-                    style={{
-                        width: 24,
-                        height: 24,
-                        resizeMode: "contain",
-                        alignSelf: 'center',
-                    }}
-                />
-                <Text style={{
-                    color: colors[colorScheme].textDark,
-                    fontSize: 16,
-                    fontFamily: 'Inter-Medium',
-                    alignSelf: 'center',
-                    marginLeft: 10,
-                }}>{user.vehicle.vehicle_type}</Text>
-            </View>
-
-            <Text style={{
-                color: colors[colorScheme].textGray,
-                fontSize: 12,
-                fontFamily: 'Inter-Bold',
-                marginTop: 20,
-                marginLeft: 32,
-                marginBottom: 8,
-            }}>Vehicle Number</Text>
-            <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '85%',
-                paddingHorizontal: 10,
-                borderColor: colors[colorScheme].primary,
-                borderWidth: 1,
-                paddingVertical: 10,
-                marginHorizontal: 20,
-                alignSelf: 'center',
-                borderRadius: 30,
-            }}>
-                <Image
-                    source={require('../../../assets/images/car.png')}
-                    style={{
-                        width: 24,
-                        height: 24,
-                        resizeMode: "contain",
-                        alignSelf: 'center',
-                    }}
-                />
-                <Text style={{
-                    color: colors[colorScheme].textDark,
-                    fontSize: 16,
-                    fontFamily: 'Inter-Medium',
-                    alignSelf: 'center',
-                    marginLeft: 10,
-                }}>{user.vehicle.vehicle_number}</Text>
-            </View>
-
-
-            <Text style={{
-                color: colors[colorScheme].textGray,
-                fontSize: 12,
-                fontFamily: 'Inter-Bold',
-                marginTop: 20,
-                marginLeft: 32,
-                marginBottom: 8,
-            }}>Email</Text>
-            <View style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                width: '85%',
-                paddingHorizontal: 10,
-                borderColor: colors[colorScheme].primary,
-                borderWidth: 1,
-                paddingVertical: 10,
-                marginHorizontal: 20,
-                alignSelf: 'center',
-                borderRadius: 30,
-            }}>
-                <Image
-                    source={require('../../../assets/images/car.png')}
-                    style={{
-                        width: 24,
-                        height: 24,
-                        resizeMode: "contain",
-                        alignSelf: 'center',
-                    }}
-                />
-                <Text style={{
-                    color: colors[colorScheme].textDark,
-                    fontSize: 16,
-                    fontFamily: 'Inter-Medium',
-                    alignSelf: 'center',
-                    marginLeft: 10,
-                }}>{user.email}</Text>
-            </View> */}
-
-      <ActivityIndicator animating={loading} size={'large'} style={{position:'absolute',bottom:0,left:0,top:0,right:0}} />
+      <ActivityIndicator animating={loading} size={'large'} style={{ position: 'absolute', bottom: 0, left: 0, top: 0, right: 0 }} />
     </View>
   );
 };

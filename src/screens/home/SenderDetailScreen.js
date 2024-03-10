@@ -55,28 +55,11 @@ export default SnderDetails = ({
     loaction,
   } = useContext(AuthContext);
   const appearance = colorScheme;
-  const [processing, setProcessing] = useState(false);
-
-  //   const canProceed =
-  //     requestData.fullname.length > 2 &&
-  //     requestData.phone.length == 11 &&
-  //     requestData.address.length > 2 &&
-  //     requestData.state.length > 1 &&
-  //     requestData.ProductName > 1
-  // requestData.ProductName.length > 1;
-  //check if ready
-  // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;
-
   const bottomSheetRef = useRef();
   const [loading, setLoading] = useState(false);
   const [searchLocation, setSearchLocation] = useState('');
   const [listofLocation, setListofLocation] = useState([]);
-
-  const [locationData, setLocationData] = useState({
-    lat: 5.01,
-    lng: 7.9,
-  });
-
+  
   useEffect(() => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
@@ -112,7 +95,7 @@ export default SnderDetails = ({
             alignItems: 'center',
           }}>
            <TouchableOpacity
-          style={{padding:20}}
+          style={{paddingVertical:20}}
             onPress={() => {
               goBack();
             }}>
@@ -141,7 +124,7 @@ export default SnderDetails = ({
                 fontFamily: 'Inter-Regular',
                 fontSize: 16,
                 color: colors[appearance].subText,
-                paddingTop: 34,
+                paddingTop: 20,
               }}>
               Sender’s Name
             </Text>
@@ -250,28 +233,15 @@ export default SnderDetails = ({
                   fontFamily: 'Inter-Regular',
                   fontSize: 16,
                   paddingStart: 10,
-                  color: colors[appearance].textDark,
+                  color:requestData.state.length > 2
+                  ? colors[appearance].textDark
+                  : colors[appearance].subText,
                 }}>
                 {requestData.address.length > 0
                   ? requestData.address
                   : 'Sender Address'}
               </Text>
-              {/* <InputField
-                theme={appearance}
-                value={requestData.address}
-                // onChangeText={text =>
-                //   setRequestData(prevState => ({
-                //     ...prevState,
-                //     address: text,
-                //   }))
-                // }
-                placeholder="Sender Address"
-                containerStyle={styles.input}
-                editable={false}
-                leftComponet={
-                  <AddressIcon fill={colors[appearance].textDark} />
-                }
-              /> */}
+              
             </TouchableOpacity>
 
             <Text
@@ -301,7 +271,9 @@ export default SnderDetails = ({
                   fontFamily: 'Inter-Regular',
                   fontSize: 16,
                   paddingStart: 10,
-                  color: colors[appearance].textDark,
+                  color: requestData.state.length > 2
+                  ? colors[appearance].textDark
+                  : colors[appearance].subText,
                 }}>
                 {requestData.state.length > 0 ? requestData.state : 'State'}
               </Text>
@@ -324,7 +296,7 @@ export default SnderDetails = ({
               }
               placeholder="Landmark"
               containerStyle={styles.input}
-              leftComponet={<PersonIcon fill={colors[appearance].textDark} />}
+             
             />
 
             <Button
@@ -341,8 +313,6 @@ export default SnderDetails = ({
               onPress={() => {
                 goBack();
 
-                // signUpUser();
-                // navigation.navigate(authRouts.otpVerification)
               }}
             />
           </View>

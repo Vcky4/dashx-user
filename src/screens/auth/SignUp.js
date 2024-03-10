@@ -33,15 +33,11 @@ import { Formik, validateYupSchema } from 'formik';
 export default SignUp = ({ navigation }) => {
   const { saveToken, saveUser, colorScheme } = useContext(AuthContext);
   const appearance = colorScheme;
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchLocation, setSearchLocation] = useState('');
   const [listofLocation, setListofLocation] = useState([]);
   const bottomSheetRef = useRef();
-
-
   const [processing, setProcessing] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [requestData, setRequestData] = useState({
     lat: '',
     long: '',
@@ -119,7 +115,7 @@ export default SignUp = ({ navigation }) => {
             text2: data.message,
           });
           //   saveUser(data.user);
-          navigation.navigate(authRouts.otpVerification);
+          navigation.navigate(authRouts.otpVerification,{email:email});
         } else {
           setProcessing(false);
           Toast.show({
@@ -166,6 +162,7 @@ export default SignUp = ({ navigation }) => {
           }}
         />
       </View>
+      
       <Formik
         initialValues={{ email: '', password: '', name: '', phone: '', address: '' }}
         onSubmit={signUpUser}

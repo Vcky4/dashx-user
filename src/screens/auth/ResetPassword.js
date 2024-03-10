@@ -50,52 +50,6 @@ export default ResetPassword = ({ navigation, route }) => {
     };
   }, [activator]);
 
-  // const resend = async () => {
-  //     setTimer(60);
-  //     setActivator(Math.random());
-  //     const response = await fetch(endpoints.baseUrl + endpoints.resend, {
-  //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
-  //         headers: {
-  //             'Content-Type': 'application/json',
-  //             'Authorization': 'Bearer ' + token,
-  //         },
-  //         body: JSON.stringify({
-  //             email: user.email,
-  //         }),
-  //     });
-  //     response
-  //         .json()
-  //         .then(data => {
-  //             setProcessing(false);
-  //             console.log(data);
-  //             if (response.ok) {
-  //                 Toast.show({
-  //                     type: 'success',
-  //                     text1: 'Resend Successful',
-  //                     text2: data.message,
-  //                 });
-  //                 setTimer(60);
-  //                 setActivator(Math.random());
-  //             } else {
-  //                 Toast.show({
-  //                     type: 'error',
-  //                     text1: 'Resend Failed',
-  //                     text2: data.message,
-  //                 });
-  //             }
-  //         })
-  //         .catch(err => {
-  //             setTimer(0);
-  //             setActivator(Math.random());
-  //             Toast.show({
-  //                 type: 'error',
-  //                 text1: 'Code resend Failed',
-  //                 text2: err.message,
-  //             });
-  //             console.log(err.message);
-  //         });
-  // };
-
   const ResetPassword = async ({ otp, password }) => {
     setProcessing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.resetPassword, {

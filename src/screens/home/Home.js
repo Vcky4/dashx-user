@@ -37,10 +37,7 @@ export default Home = ({navigation}) => {
   const appearance = colorScheme;
   const [order, setOrder] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [address, setAddress] = useState(null);
-  const [isvisble, setIsVisible] = useState(false);
-  const [id, setId] = useState('');
-  //check if ready
+
   // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;\
 
   const retrieveOrder = async () => {
@@ -58,7 +55,7 @@ export default Home = ({navigation}) => {
     response
       .json()
       .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
+        // console.log(data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setRefreshing(false);

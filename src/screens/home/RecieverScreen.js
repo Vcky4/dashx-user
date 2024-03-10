@@ -51,23 +51,12 @@ export default Home = ({goBack, requestData, setRequestData}) => {
     saveLatAndLong,
   } = useContext(AuthContext);
   const appearance = colorScheme;
-  const [firstName, setFirstName] = useState('');
-  const [Phone, setPhone] = useState('');
-  const [Address, setAddress] = useState('');
-  const [State, setState] = useState('');
-  const [LandMark, setLandMark] = useState('');
   const bottomSheetRef = useRef();
   const [loading, setLoading] = useState(false);
   const [searchLocation, setSearchLocation] = useState('');
   const [listofLocation, setListofLocation] = useState([]);
   const [processing, setProcessing] = useState(false);
 
-  //   const canProceed =
-  //     requestData.fullname.length > 2 &&
-  //      requestData.phone.length == 11&&
-  //   requestData.address.length > 2&&
-  //   requestData.state.length > 1&&
-  //   requestData.ProductName > 1
 
   const [locationData, setLocationData] = useState({
     lat: 5.01,
