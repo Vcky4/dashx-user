@@ -95,7 +95,7 @@ export default SnderDetails = ({
             alignItems: 'center',
           }}>
            <TouchableOpacity
-          style={{paddingVertical:20}}
+          style={{}}
             onPress={() => {
               goBack();
             }}>

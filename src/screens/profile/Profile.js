@@ -169,9 +169,9 @@ export default Profile = ({ navigation }) => {
               style={{
                 position: 'absolute',
                 left: 0,
-                padding: 20
+             
               }}
-              onPress={() => navigation.goBack()}>
+              onPress={() => {navigation.goBack()}}>
               <Back fill={'#fff'} />
             </TouchableOpacity>
             <Text
@@ -374,7 +374,7 @@ export default Profile = ({ navigation }) => {
 
 
       </ScrollView>
-      <ActivityIndicator animating={loading} size={'large'} style={{ position: 'absolute', bottom: 0, left: 0, top: 0, right: 0 }} />
+      {/* <ActivityIndicator animating={loading} size={'large'} style={{ position: 'absolute', bottom: 0, left: 0, top: 0, right: 0 }} /> */}
     </View>
   );
 };

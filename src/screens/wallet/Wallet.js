@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -12,13 +12,52 @@ import {AuthContext} from '../../../context/AuthContext';
 import mainRouts from '../../navigation/routs/mainRouts';
 import endpoints from '../../../assets/endpoints/endpoints';
 import formatNumber from '../../../utils/formatNumber';
-
+import BottomSheet from 'react-native-raw-bottom-sheet';
+import InputField from '../../component/InputField';
+import Button from '../../component/Button';
+import { useFocusEffect } from '@react-navigation/native';
 export default Wallet = ({navigation}) => {
   const {colorScheme, user, token} = useContext(AuthContext);
   const [processing, setProcessing] = useState(false);
   const [wallet, setWallet] = useState({});
   const [history, setHistory] = useState([]);
+  const panelRef = useRef();
   // console.log(user)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [amount, setAmount] = React.useState('')
+  const [isOpen, setIsOpen] = React.useState(false)
+  const canproceed = amount.length >= 4 // Check if amount is greater than or equal to 4 digits
+
+  const deposit = () => {
+    setIsLoading(true)
+    fetch(endpoints.baseUrl + endpoints.fundWallet, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        },
+        body: JSON.stringify({
+          userid: user?._id,
+            amount: parseInt(amount),
+            email: user?.email,
+            usertype: "user"
+        }),
+    }).then(res => res.json())
+        .then(resJson => {
+            setIsLoading(false)
+            console.log('resJson', resJson);
+            if (resJson.status) {
+                navigation.navigate(mainRouts.broswer, {
+                    url: resJson.data,
+                    title: 'Deposit'
+                });
+            }
+        })
+        .catch(err => {
+            setIsLoading(false)
+            console.log('err', err);
+        });
+};
 
 
   const getHistory = (id) => {
@@ -76,17 +115,20 @@ export default Wallet = ({navigation}) => {
   };
 
 
-
-  useEffect(() => {
-    onRefresh()
-}, [])
+useFocusEffect(
+  useCallback(() => {
+      onRefresh()
+  }, [])
+)
 
 const onRefresh = () => {
     getBalance()
+    getHistory()
 }
 
   return (
-    <View
+    <>
+      <View
       style={{
         flex: 1,
         backgroundColor: colors[colorScheme].background,
@@ -179,7 +221,7 @@ const onRefresh = () => {
                   justifyContent: 'space-between',
                 }}>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate(mainRouts.deposit)}
+                  onPress={() => {panelRef.current.open()}}
                   style={{
                     backgroundColor: colors[colorScheme].primary,
                     paddingHorizontal: 16,
@@ -272,6 +314,112 @@ const onRefresh = () => {
           </View>
         )}
       />
+
+
     </View>
+
+    
+    <BottomSheet
+        height={320}
+        width={'100%'}
+        animationType="fade"
+        ref={panelRef}
+        closeOnDragDown={false}
+        closeOnPressMask={true}
+        closeOnPressBack={true}
+        customStyles={{
+          draggableIcon: {
+          
+            width: 50,
+            height: 1,
+          },
+          container: {
+            // backgroundColor: 'rgba(158, 176, 162, 0.5)',
+            backgroundColor: colors[colorScheme].white,
+            borderTopStartRadius: 20,
+            borderTopRightRadius: 20,
+            paddingHorizontal: 20,
+            paddingBottom: 10,
+          },
+        }}>
+                <View style={{ paddingHorizontal: 20 }}>
+                    <Text style={{
+                        fontFamily: 'Satoshi-Bold',
+                        fontSize: 24,
+                        color: colors[colorScheme].textDark,
+                        marginTop: 20,
+                        textAlign: 'center'
+                    }}>
+                        Deposit
+                    </Text>
+                    <Text style={{
+                        fontFamily: 'Satoshi-Medium',
+                        fontSize: 15,
+                        color: colors[colorScheme].textDark,
+                        marginTop: 20,
+                    }}>
+                        Enter Amount (NGN)
+                    </Text>
+                    {/* Input field for amount */}
+                    <InputField
+                        theme={colorScheme}
+                        value={amount}
+                        onChangeText={setAmount}
+                        keyboardType='numeric'
+                        placeholder="Enter Amount"
+                        containerStyle={{ marginTop: 16 }}
+                    />
+                    {/* Note for amount */}
+                    {
+                        amount.length > 1 && amount <= 1000 &&
+                        <Text style={{
+                            color: colors[colorScheme].error,
+                        }}>Note: Amount cannot be less than #1000</Text>
+                    }
+
+                    {/* Buttons for Cancel and Recharge Wallet */}
+                    <View style={{
+                        marginTop: 40,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginBottom: 20,
+                        justifyContent: 'space-between'
+                    }}>
+                        {/* Cancel button */}
+                        <Button
+                            title="Cancel"
+                            buttonStyle={{
+                                borderRadius: 10,
+                                width: '45%'
+                            }}
+                            enabled={true}
+                            textColor={colors[colorScheme].buttonLight}
+                            buttonColor={colors[colorScheme].card}
+                            onPress={() => {
+                                panelRef.current.close()
+                            }}
+                        />
+                        {/* Recharge Wallet button */}
+                        <Button
+                            title="Proceed"
+                            buttonStyle={{
+                                borderRadius: 10,
+                                width: '45%'
+                            }}
+                            loading={isLoading}
+                            enabled={canproceed}
+                            textColor={colors[colorScheme].white}
+                            buttonColor={colors[colorScheme].primary}
+                            onPress={() => {
+                                panelRef.current.close()
+                                deposit()
+                            }}
+                            fontSize={16}
+                        />
+                    </View>
+                </View>
+            </BottomSheet>
+    </>
+  
   );
 };

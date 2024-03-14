@@ -63,8 +63,17 @@ export default Home = ({
     {anme: 'Wallet', id: 1},
     {anme: 'Pay on Delivery', id: 2},
   ];
-  console.log(user);
-
+  // console.log(user);
+  const handleBackPress = () => {
+    if (step > 1) {
+      // Decrease the step to go back in the component's "flow"
+      setStep(prevStep => prevStep - 1);
+      return true; // Prevent the default back behavior
+    }
+    // Allow the default back action to occur
+    return false;
+  };
+  
   const AddDispatch = async () => {
     setProcessing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.addDispatch, {
@@ -99,7 +108,7 @@ export default Home = ({
     response
       .json()
       .then(data => {
-        console.log(data); // JSON data parsed by `data.json()` call
+        // console.log(data); // JSON data parsed by `data.json()` call
         setProcessing(false);
         if (response.ok) {
           Toast.show({

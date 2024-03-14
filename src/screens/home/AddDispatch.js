@@ -1,25 +1,17 @@
-import React, {useEffect, useState, useContext, useRef} from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   TouchableOpacity,
-  PermissionsAndroid,
-  Platform,
-  Dimensions,
-  TextInput,
-  Animated,
   ScrollView,
   ActivityIndicator,
   Modal,
+  BackHandler
 } from 'react-native';
-import io from 'socket.io-client';
 import colors from '../../../assets/colors/colors';
 import endpoints from '../../../assets/endpoints/endpoints';
-// import dings from '../../../assets/sounds/trilla.mp3'
-import mainRouts from '../../navigation/routs/mainRouts';
-import {AuthContext} from '../../../context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 import Bike from '../../../assets/icons/scooter.svg';
 import Car from '../../../assets/icons/sedan.svg';
 import Van from '../../../assets/icons/containertruck.svg';
@@ -34,23 +26,24 @@ import getCurrentPosition from '../../../utils/getCurrentPosition';
 import formatNumber from '../../../utils/formatNumber';
 import Order_summary from './order_summary';
 
-export default AddDispatch = ({navigation}) => {
+
+export default AddDispatch = ({ navigation }) => {
   //check if ready
   // const ready = variableUser?.data?.longitude != 0 && variableUser?.data?.is_online == 1;
 
   const data = [
-    {name: 'Bike', id: 1, icon: <Bike />},
-    {name: 'Car', id: 2, icon: <Car />},
-    {name: 'Van', id: 3, icon: <Van />},
-    {name: 'Truck', id: 4, icon: <Truck />},
+    { name: 'Bike', id: 1, icon: <Bike /> },
+    { name: 'Car', id: 2, icon: <Car /> },
+    { name: 'Van', id: 3, icon: <Van /> },
+    { name: 'Truck', id: 4, icon: <Truck /> },
   ];
 
   const data2 = [
-    {name: 'Small_truck', id: 5, icon: <Bike />},
-    {name: 'Medium_truck', id: 6, icon: <Car />},
-    {name: 'Big_truck', id: 7, icon: <Van />},
+    { name: 'Small_truck', id: 5, icon: <Bike /> },
+    { name: 'Medium_truck', id: 6, icon: <Car /> },
+    { name: 'Big_truck', id: 7, icon: <Van /> },
   ];
-  const {token, colorScheme, loaction, saveLatAndLong, user} =
+  const { token, colorScheme, loaction, saveLatAndLong, user } =
     useContext(AuthContext);
 
   const [selectedItem, setSelectedItem] = useState(null);
@@ -68,9 +61,9 @@ export default AddDispatch = ({navigation}) => {
     state: user?.state || '',
     LandMark: '',
     ProductName: '',
-    city:user.city|| '',
-    senderlong:user.longitude|| '',
-    senderlat:user.latitude|| '',
+    city: user.city || '',
+    senderlong: user.longitude || '',
+    senderlat: user.latitude || '',
   });
 
   const [requestData2, setRequestData2] = useState({
@@ -94,11 +87,11 @@ export default AddDispatch = ({navigation}) => {
     // requestData.state.length > 2 &&
     requestData2.Phone.length === 11 &&
     requestData2.address.length > 2 &&
-    requestData2.fullname.length > 2 
-    // requestData2.state.length > 2;
+    requestData2.fullname.length > 2
+  // requestData2.state.length > 2;
 
   const setName = text => {
-    setRequestData({...requestData, fullname: text});
+    setRequestData({ ...requestData, fullname: text });
   };
 
 
@@ -130,7 +123,7 @@ export default AddDispatch = ({navigation}) => {
     response
       .json()
       .then(data => {
-        // console.log(data); // JSON data parsed by `data.json()` call
+        console.log("price", data); // JSON data parsed by `data.json()` call
 
         if (response.ok) {
           setRefreshing(false);
@@ -159,6 +152,7 @@ export default AddDispatch = ({navigation}) => {
   useEffect(() => {
     retreivePrice();
   }, []);
+  console.log()
 
   const getdistance = distance(
     loaction.lat || requestData.senderlat,
@@ -167,12 +161,13 @@ export default AddDispatch = ({navigation}) => {
     requestData2.receiverlong,
     'km',
   );
+  console.log("getdistance",selectedItem?.price)
   const total_fee = getdistance * selectedItem?.price;
 
   const handleItemPress = item => {
     setSelectedItem({
       ...item,
-      price: price[0][item.name.toLowerCase()],
+      price: price[0][item?.name?.toLowerCase()],
     });
 
     if (item.name === 'Truck') {
@@ -187,7 +182,7 @@ export default AddDispatch = ({navigation}) => {
       setSelectedTruck(true);
     }
   };
-  
+
   return (
     <View
       style={{
@@ -196,13 +191,13 @@ export default AddDispatch = ({navigation}) => {
       }}>
       {refreshing && step !== 2 && step !== 3 ? (
         <ActivityIndicator
-          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           animating={refreshing}
           size="large"
           color={colors[colorScheme].primary}
         />
       ) : (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               flex: 1,
@@ -286,7 +281,7 @@ export default AddDispatch = ({navigation}) => {
                 paddingHorizontal: 16,
                 paddingVertical: 16,
               }}
-              contentContainerStyle={{paddingBottom: 50}}>
+              contentContainerStyle={{ paddingBottom: 50 }}>
               <View>
                 <Text
                   style={{
@@ -348,7 +343,7 @@ export default AddDispatch = ({navigation}) => {
                       paddingVertical: 10,
                       backgroundColor:
                         selectedItem?.id === item.id ||
-                        (item.name === 'Truck' && selectedTruck)
+                          (item.name === 'Truck' && selectedTruck)
                           ? colors[appearance].black
                           : colors[appearance].primary,
                       borderRadius: 10,
@@ -598,7 +593,7 @@ export default AddDispatch = ({navigation}) => {
                       paddingVertical: 10,
                       backgroundColor:
                         selectedItem?.id === item.id ||
-                        (item.name === 'Truck' && selectedTruck)
+                          (item.name === 'Truck' && selectedTruck)
                           ? colors[appearance].black
                           : colors[appearance].primary,
                       borderRadius: 10,
@@ -616,7 +611,7 @@ export default AddDispatch = ({navigation}) => {
                         paddingVertical: 10,
                       }}>
                       {/* Assuming your icons are part of your data */}
-                      <Truck/>
+                      <Truck />
                     </View>
                     <Text
                       style={{
@@ -625,7 +620,7 @@ export default AddDispatch = ({navigation}) => {
                         color: colors.light.white,
                         marginTop: 10,
                       }}>
-                      {item?.name.replace('_',' ')}
+                      {item?.name.replace('_', ' ')}
                     </Text>
                   </TouchableOpacity>
                 ))}

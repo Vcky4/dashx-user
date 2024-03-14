@@ -298,8 +298,8 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                         </TouchableOpacity> */}
             <TouchableOpacity
               style={{marginTop: 30}}
-              onPress={() =>
-                props.navigation.navigate(profileRouts.orderHistory)
+              onPress={() =>{}
+                // props.navigation.navigate(profileRouts.orderHistory)
               }>
               <View style={styles.itemWrapper}>
                 <Image

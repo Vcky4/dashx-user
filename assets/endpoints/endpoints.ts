@@ -1,6 +1,6 @@
 const endpoints = {
     gg: process.env.GOOGLE_API_KEY,
-    baseUrl: process.env.NODE_ENV === 'development' ? process.env.BASE_URL_DEV : process.env.BASE_URL,
+    baseUrl: process.env.NODE_ENV === 'development' ? process.env.BASE_URL_DEV : process.env.BASE_URL_DEV,
     socketUrl: process.env.NODE_ENV === 'development' ? process.env.SOCKET_URL_DEV : process.env.SOCKET_URL,
     login: '/user/login',
     signup: '/user/signup',

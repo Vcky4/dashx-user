@@ -95,12 +95,12 @@ export default Home = ({goBack, requestData, setRequestData}) => {
         <View
           style={{
             paddingHorizontal: 20,
-            paddingTop: 20,
+            paddingTop: 10,
             flexDirection: 'row',
             alignItems: 'center',
           }}>
           <TouchableOpacity
-          style={{padding:20}}
+          style={{}}
             onPress={() => {
               goBack();
             }}>

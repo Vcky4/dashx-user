@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import Toast from "react-native-toast-message";
 import BackArrow from '../../../assets/icons/backIcon.svg';
+import Permissions, { PERMISSIONS, request } from 'react-native-permissions';
 
 export default Chat = ({ navigation }) => {
     const { colorScheme, user, token } = useContext(AuthContext)
@@ -163,65 +164,73 @@ export default Chat = ({ navigation }) => {
 
 
     const snapPic = async () => {
+        
         try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: "App Camera Permission",
-                    message: "App needs access to your camera ",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK"
-                }
-            );
-            // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            launchCamera({
-                mediaType: 'photo',
-                // includeBase64: true,
-                // maxHeight: 200,
-                // maxWidth: 200,
-            }, (res) => {
-                console.log(res);
-                if (res.didCancel) {
-                    console.log('User cancelled image picker');
-                    Toast.show({
-                        type: 'success',
-                        text1: 'Cancelled',
-                        text2: 'Process cancelled successfully'
-                    });
-                }
-                else if (res.error) {
-                    console.log('ImagePicker Error: ', res.error);
-                    Toast.show({
-                        type: 'error',
-                        text1: 'failed to get image',
-                        text2: res.error
-                    });
-                }
-                else if (res.assets) {
-                    // setChats([...chats, {
-                    //     "type": 'image',
-                    //     "usertype": "dispatch",
-                    //     "text": res.assets[0].uri,
-                    //     createdAt: new Date().toISOString()
-                    // }])
-                    uploadImage(res.assets[0], (url) => {
-                        console.log(url);
-                        sendChat(
-                            url,
-                            'image'
-                        )
-                    });
-                }
-            })
-            // else {
-            //     Toast.show({
-            //         type: "error",
-            //         text1: "Permission denied",
-            //         text2: "App needs access to your camera ",
-            //     });
-            //     console.log("Camera permission denied");
-            // }
+            let granted;
+            if (Platform.OS === 'android') {
+                granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: "App Camera Permission",
+                        message: "App needs access to your camera ",
+                        buttonNeutral: "Ask Me Later",
+                        buttonNegative: "Cancel",
+                        buttonPositive: "OK"
+                    }
+                );
+            } else if (Platform.OS === 'ios') {
+                const status = await request(PERMISSIONS.IOS.CAMERA);
+                //  console.log(status, 'status');
+                granted = status === 'granted';
+            }
+            if (granted === PermissionsAndroid.RESULTS.GRANTED || granted) {
+                launchCamera({
+                    mediaType: 'photo',
+                    // includeBase64: true,
+                    // maxHeight: 200,
+                    // maxWidth: 200,
+                }, (res) => {
+                    // console.log(res);
+                    if (res.didCancel) {
+                        console.log('User cancelled image picker');
+                        Toast.show({
+                            type: 'success',
+                            text1: 'Cancelled',
+                            text2: 'Process cancelled successfully'
+                        });
+                    }
+                    else if (res.error) {
+                        console.log('ImagePicker Error: ', res.error);
+                        Toast.show({
+                            type: 'error',
+                            text1: 'failed to get image',
+                            text2: res.error
+                        });
+                    }
+                    else if (res.assets) {
+                        // setChats([...chats, {
+                        //     "type": 'image',
+                        //     "usertype": "dispatch",
+                        //     "text": res.assets[0].uri,
+                        //     createdAt: new Date().toISOString()
+                        // }])
+                        uploadImage(res.assets[0], (url) => {
+                            // console.log(url);
+                            sendChat(
+                                url,
+                                'image'
+                            )
+                        });
+                    }
+                })
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1: "Permission denied",
+                    text2: "App needs access to your camera ",
+                });
+                console.log("Camera permission denied");
+            }
         } catch (err) {
             console.warn(err);
         }
@@ -254,7 +263,7 @@ export default Chat = ({ navigation }) => {
                         alignItems: 'center',
                     }}>
                         <TouchableOpacity
-                            style={{ padding: 20 }}
+                            style={{ padding: 10 }}
                             onPress={() => {
                                navigation.goBack()
                             }}>

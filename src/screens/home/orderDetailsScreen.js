@@ -102,6 +102,7 @@ export default Home = ({navigation, route}) => {
     retreivesingleOder();
   }, []);
 
+
   const CancelOrder = async id => {
     setLoading(true);
 
@@ -124,7 +125,7 @@ export default Home = ({navigation, route}) => {
     response
       .json()
       .then(data => {
-        console.log(data);
+        // console.log(data);
 
         if (response.ok) {
           setLoading(false);
@@ -190,7 +191,7 @@ export default Home = ({navigation, route}) => {
                   width: '100%',
                   
                 }}>
-                <TouchableOpacity style={{padding:20}} onPress={() => navigation.goBack()}>
+                <TouchableOpacity style={{}} onPress={() => navigation.goBack()}>
                   <ArrowBack fill={'#fff'} />
                 </TouchableOpacity>
 
@@ -676,6 +677,7 @@ export default Home = ({navigation, route}) => {
               width: '85%',
               borderRadius: 20,
               paddingVertical: 20,
+              paddingHorizontal:20
             }}>
             <Text
               style={{
