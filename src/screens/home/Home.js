@@ -174,7 +174,7 @@ export default Home = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  color: colors[appearance].darkText,
+                  color: colors[appearance].textDark,
                   fontFamily: 'Inter-Medium',
                   fontSize: 25,
                 }}>
