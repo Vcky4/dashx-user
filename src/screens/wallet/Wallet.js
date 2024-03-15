@@ -335,7 +335,7 @@ const onRefresh = () => {
           },
           container: {
             // backgroundColor: 'rgba(158, 176, 162, 0.5)',
-            backgroundColor: colors[colorScheme].white,
+            backgroundColor: colors[colorScheme].background,
             borderTopStartRadius: 20,
             borderTopRightRadius: 20,
             paddingHorizontal: 20,

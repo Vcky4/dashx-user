@@ -242,7 +242,7 @@ export default Profile = ({ navigation }) => {
                   style={{
                     fontSize: 16,
                     fontFamily: 'Inter-Medium',
-                    // color: colors[theme].textDark,
+                   color: colors[colorScheme].textDark,
                     width: '100%',
                   }}
                   onBlur={handleBlur('name')}
@@ -289,7 +289,7 @@ export default Profile = ({ navigation }) => {
                   style={{
                     fontSize: 16,
                     fontFamily: 'Inter-Medium',
-                    // color: colors[theme].textDark,
+                     color: colors[colorScheme].textDark,
                     width: '100%',
                   }}
                 //   cursorColor={colors[theme].primary}
@@ -337,7 +337,7 @@ export default Profile = ({ navigation }) => {
                   style={{
                     fontSize: 16,
                     fontFamily: 'Inter-Medium',
-                    // color: colors[theme].textDark,
+                     color: colors[colorScheme].textDark,
                     width: '100%',
                   }}
                 //   cursorColor={colors[theme].primary}
