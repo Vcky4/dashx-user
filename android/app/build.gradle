@@ -81,8 +81,8 @@ android {
         applicationId "com.dashx.user"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3003
-        versionName "1.7"
+        versionCode 3004
+        versionName "1.8"
         resConfigs "en", "US" /* insert this line */
     }
   

@@ -21,6 +21,7 @@ export default Chat = ({ navigation }) => {
         type: 'text',
         content: ''
     })
+   
 
     // //setup to socket
     const socket = io(endpoints.socketUrl, {
@@ -105,11 +106,11 @@ export default Chat = ({ navigation }) => {
                 'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify({
-                userid: user?._id,
+                'userid': user?._id,
             }),
         }).then(res => res.json())
             .then(resJson => {
-                // console.log('resJson', resJson.data)
+             console.log('messages', resJson.data)
                 setProcessing(false)
                 if (Array.isArray(resJson.data)) {
                     setChats(resJson.data)

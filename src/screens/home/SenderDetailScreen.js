@@ -99,7 +99,7 @@ export default SnderDetails = ({
             onPress={() => {
               goBack();
             }}>
-            <BackArrow fill={'#000'} />
+            <BackArrow fill={colors[appearance].textDark} />
           </TouchableOpacity>
           <Text
             style={{
@@ -152,7 +152,7 @@ export default SnderDetails = ({
                 style={{
                   fontSize: 16,
                   fontFamily: 'Inter-Medium',
-                  // color: colors[theme].textDark,
+                   color: colors[appearance].textDark,
                   width: '100%',
                 }}
                 placeholder="Full Name"
@@ -196,7 +196,7 @@ export default SnderDetails = ({
                 style={{
                   fontSize: 16,
                   fontFamily: 'Inter-Medium',
-                  // color: colors[theme].textDark,
+                   color: colors[appearance].textDark,
                   width: '100%',
                 }}
                 //   cursorColor={colors[theme].primary}

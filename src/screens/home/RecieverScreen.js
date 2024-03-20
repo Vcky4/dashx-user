@@ -104,7 +104,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
             onPress={() => {
               goBack();
             }}>
-            <BackArrow fill={'#000'} />
+            <BackArrow fill={colors[appearance].textDark} />
           </TouchableOpacity>
           <Text
             style={{
@@ -174,22 +174,8 @@ export default Home = ({goBack, requestData, setRequestData}) => {
               description
             </Text>
 
-            <View
-              style={{
-                borderColor:
-                  requestData.ProductName.length > 0
-                    ? colors[appearance].primary
-                    : colors[appearance].subText,
-                borderRadius: 50,
-                borderWidth: 1,
-                paddingHorizontal: 18,
-                height: 50,
-                flexDirection: 'row',
-                width: '100%',
-                alignItems: 'center',
-                marginTop: 10,
-              }}>
-              <TextInput
+           
+              <InputField
                 value={requestData.ProductName}
                 onChangeText={text =>
                   setRequestData(prevState => ({
@@ -206,7 +192,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
                 }}
                 //   cursorColor={colors[theme].primary}
               />
-            </View>
+         
 
             <Text
               style={{
