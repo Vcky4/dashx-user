@@ -26,7 +26,7 @@ export default Wallet = ({navigation}) => {
   const [isLoading, setIsLoading] = React.useState(false)
   const [amount, setAmount] = React.useState('')
   const [isOpen, setIsOpen] = React.useState(false)
-  const canproceed = amount.length >= 4 // Check if amount is greater than or equal to 4 digits
+  const canproceed = amount.length >= 3 // Check if amount is greater than or equal to 4 digits
 
   const deposit = () => {
     setIsLoading(true)
@@ -371,7 +371,7 @@ const onRefresh = () => {
                     />
                     {/* Note for amount */}
                     {
-                        amount.length > 1 && amount <= 1000 &&
+                        amount.length > 1 && amount <= 100 &&
                         <Text style={{
                             color: colors[colorScheme].error,
                         }}>Note: Amount cannot be less than #1000</Text>

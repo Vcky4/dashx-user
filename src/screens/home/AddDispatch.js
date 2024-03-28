@@ -161,8 +161,13 @@ export default AddDispatch = ({ navigation }) => {
     requestData2.receiverlong,
     'km',
   );
-  console.log("getdistance",selectedItem?.price)
+  // console.log("getdistance",selectedItem?.price)
+
   const total_fee = getdistance * selectedItem?.price;
+const feePercentage = 1.5;
+const additionalFee = total_fee * (feePercentage / 100); 
+// console.log(total_fee)// Calculate 1.5% of the total fee
+const totalWithAdditionalFee = total_fee + additionalFee; 
 
   const handleItemPress = item => {
     setSelectedItem({
@@ -472,7 +477,7 @@ export default AddDispatch = ({ navigation }) => {
                   }}>
                   Total Price:
                 </Text>{' '}
-                ₦ {isNaN(total_fee) ? '0' : formatNumber(total_fee)}
+                ₦ {isNaN(totalWithAdditionalFee) ? '0' : formatNumber(totalWithAdditionalFee)}
               </Text>
 
               <Button
@@ -534,7 +539,7 @@ export default AddDispatch = ({ navigation }) => {
               selectedItem={selectedItem?.name}
               setRequestData2={setRequestData2}
               setSelectedItem={setSelectedItem}
-              total_fee={total_fee}
+              total_fee={totalWithAdditionalFee}
               navigation={navigation}
               goBack={() => setStep(1)}
             />
