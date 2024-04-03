@@ -73,6 +73,25 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                 resizeMode: 'contain',
               }}
             />
+            <View style={{width: '100%',alignItems:'flex-end',  paddingHorizontal:20}}>
+              <TouchableOpacity onPress={() => toggleTheme()}>
+                <Image
+                  source={
+                    colorScheme === 'light'
+                      ? require('../../../assets/images/night.png')
+                      : require('../../../assets/images/light.png')
+                  }
+                  style={{
+                    width: 22,
+                    height: 22,
+                  
+                    resizeMode: 'contain',
+                    alignSelf:'flex-end',
+                    tintColor: colors[colorScheme].textDark,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <ScrollView
             vertical
@@ -127,22 +146,6 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                   </Text>
                 </View>
               </View>
-
-              <TouchableOpacity onPress={() => toggleTheme()}>
-                <Image
-                  source={
-                    colorScheme === 'light'
-                      ? require('../../../assets/images/night.png')
-                      : require('../../../assets/images/light.png')
-                  }
-                  style={{
-                    width: 22,
-                    height: 22,
-                    resizeMode: 'contain',
-                    tintColor: colors[colorScheme].textDark,
-                  }}
-                />
-              </TouchableOpacity>
             </TouchableOpacity>
             <View
               style={{
@@ -298,7 +301,8 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
                         </TouchableOpacity> */}
             <TouchableOpacity
               style={{marginTop: 30}}
-              onPress={() =>{}
+              onPress={
+                () => {}
                 // props.navigation.navigate(profileRouts.orderHistory)
               }>
               <View style={styles.itemWrapper}>

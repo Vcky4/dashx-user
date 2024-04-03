@@ -101,8 +101,8 @@ export default AddDispatch = ({ navigation }) => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
         saveLatAndLong(
-          callback.position.coords.latitude,
-          callback.position.coords.longitude,
+          callback?.position?.coords?.latitude,
+          callback?.position?.coords?.longitude,
         );
       }
     });
@@ -155,10 +155,10 @@ export default AddDispatch = ({ navigation }) => {
   console.log()
 
   const getdistance = distance(
-    loaction.lat || requestData.senderlat,
-    loaction.lng || requestData.senderlong,
-    requestData2.receiverlat,
-    requestData2.receiverlong,
+    loaction?.lat || requestData?.senderlat,
+    loaction?.lng || requestData?.senderlong,
+    requestData2?.receiverlat,
+    requestData2?.receiverlong,
     'km',
   );
   // console.log("getdistance",selectedItem?.price)
