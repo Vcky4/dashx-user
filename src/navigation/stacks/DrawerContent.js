@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import mainRoute from '../routs/mainRouts';
 import profileRouts from '../routs/profileRouts';
 import formatNumber from '../../../utils/formatNumber';
 import endpoints from '../../../assets/endpoints/endpoints';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function DrawerContent(props, onPendingOrderPress = () => {}) {
   const {logout, user, colorScheme, toggleTheme, token} =
@@ -46,9 +47,18 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
       });
   };
 
-  useEffect(() => {
-    getBalance();
-  }, []);
+
+useFocusEffect(
+  useCallback(() => {
+      onRefresh()
+  }, [])
+)
+
+const onRefresh = () => {
+    getBalance()
+  
+}
+
   return (
     <>
       <View

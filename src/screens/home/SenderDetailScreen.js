@@ -73,7 +73,7 @@ export default SnderDetails = ({
 
   useEffect(() => {
     setLoading(true);
-    SearchAddress(searchLocation, loaction.lat, loaction.lng, data => {
+    SearchAddress(searchLocation, loaction?.lat, loaction?.lng, data => {
       setListofLocation(data);
     });
 

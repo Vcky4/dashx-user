@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext, useRef} from 'react';
+import React, {useEffect, useState, useContext, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -36,6 +36,7 @@ import LocationIcon from '../../../assets/icons/loaction.svg';
 
 import OrderItem from './orderItem';
 import Toast from 'react-native-toast-message';
+import { useFocusEffect } from '@react-navigation/native';
 var Sound = require('react-native-sound');
 
 export default Home = ({
@@ -162,6 +163,42 @@ export default Home = ({
         console.log('Login error:', error);
       });
   };
+
+  const [wallet, setWallet] = useState({});
+  const getBalance = () => {
+    fetch(endpoints.baseUrl + endpoints.retreive, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        userid: user?._id,
+      }),
+    })
+      .then(res => res.json())
+      .then(resJson => {
+        console.log('resJson', resJson);
+        if (resJson.status) {
+          setWallet(resJson.data);
+        }
+      })
+      .catch(err => {
+        console.log('error', err);
+      });
+  };
+
+
+useFocusEffect(
+  useCallback(() => {
+      onRefresh()
+  }, [])
+)
+
+const onRefresh = () => {
+    getBalance()
+  
+}
 
   return (
     <>
@@ -455,8 +492,8 @@ export default Home = ({
                 {data.map(item => (
                   <TouchableOpacity
                     onPress={() => {
-                      setSelected(item.anme);
-                      if (item.anme === 'Pay on Delivery') {
+                      setSelected(item?.anme);
+                      if (item?.anme === 'Pay on Delivery') {
                         setPaymementMethod(false);
                       } else {
                         setPaymementMethod(true);
@@ -488,7 +525,7 @@ export default Home = ({
                             height: 10,
                             width: 10,
                             display: selected == item.anme ? 'flex' : 'none',
-                            backgroundColor: colors[appearance].background,
+                            backgroundColor: colors[appearance].white,
                             borderRadius: 6,
                           }}></View>
                       </View>
@@ -499,18 +536,22 @@ export default Home = ({
                           color: colors[appearance].textDark,
                           paddingStart: 10,
                         }}>
-                        {item.anme}
+                        {item?.anme}
                       </Text>
-                    </View>
-
-                    <Text
+                      <Text
                       style={{
                         fontFamily: 'Inter-Medium',
                         fontSize: 14,
+                        marginStart:10,
+                        display:item?.anme == 'Wallet'?'flex':'none',
                         color: colors[appearance].textDark,
                       }}>
-                      {/* {order && order?.pickuptime} */}
+                      {wallet?.balance}
                     </Text>
+
+                    </View>
+
+                 
                   </TouchableOpacity>
                 ))}
 

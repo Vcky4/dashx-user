@@ -77,7 +77,7 @@ export default Home = ({goBack, requestData, setRequestData}) => {
   useEffect(() => {
     setLoading(true);
 
-    SearchAddress(searchLocation, loaction.lat, loaction.lng, data => {
+    SearchAddress(searchLocation, loaction?.lat, loaction?.lng, data => {
       setListofLocation(data);
     });
 

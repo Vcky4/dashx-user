@@ -96,12 +96,12 @@ export default Home = ({navigation}) => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
         saveLatAndLong(
-          callback?.position?.coords?.latitude,
-          callback?.position?.coords?.longitude,
+          callback.position.coords.latitude,
+          callback.position.coords.longitude,
         );
         getAddress(
-          callback?.position?.coords?.latitude,
-          callback?.position?.coords?.longitude,
+          callback.position.coords.latitude,
+          callback.position.coords.longitude,
           results => {
             setCurrentAddress(
               results[0]?.formatted_address || 'Address not found',
@@ -113,7 +113,7 @@ export default Home = ({navigation}) => {
     });
   }, []);
 
-
+console.log("gdhd",currentAddress)
   return (
     <>
       <View
@@ -268,12 +268,12 @@ export default Home = ({navigation}) => {
                 borderRadius: 10,
               }}></View>
             <Text
-              numberOfLines={1}
+              numberOfLines={2}
               style={{
                 fontFamily: 'Inter-Medium',
                 fontSize: 16,
                 color: colors.dark.black,
-                maxWidth: '80%',
+                maxWidth: '90%',
                 paddingVertical: 5,
               }}>
               My Location:{' '}
