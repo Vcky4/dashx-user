@@ -96,12 +96,12 @@ export default Home = ({navigation}) => {
     getCurrentPosition(callback => {
       if (callback?.position?.coords) {
         saveLatAndLong(
-          callback.position.coords.latitude,
-          callback.position.coords.longitude,
+          callback?.position?.coords?.latitude,
+          callback?.position?.coords?.longitude,
         );
         getAddress(
-          callback.position.coords.latitude,
-          callback.position.coords.longitude,
+          callback?.position?.coords?.latitude,
+          callback?.position?.coords?.longitude,
           results => {
             setCurrentAddress(
               results[0]?.formatted_address || 'Address not found',

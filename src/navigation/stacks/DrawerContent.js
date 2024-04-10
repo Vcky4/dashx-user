@@ -142,7 +142,7 @@ const onRefresh = () => {
                       color: colors[colorScheme].textDark,
                       fontSize: 18,
                       fontFamily: 'Inter-Bold',
-                      overflow: 'hidden',
+                      width:'95%'
                     }}>
                     {user?.name}
                   </Text>
