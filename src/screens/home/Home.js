@@ -154,10 +154,13 @@ console.log("gdhd",currentAddress)
             />
           </TouchableOpacity>
           <Text
+          numberOfLines={1}
             style={{
               fontFamily: 'Inter-Regular',
               fontSize: 24,
               color: colors.light.white,
+              flex:1,
+              textAlign:'center'
             }}>
             {user?.name}
           </Text>
