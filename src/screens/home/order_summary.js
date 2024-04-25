@@ -1,4 +1,10 @@
-import React, {useEffect, useState, useContext, useRef, useCallback} from 'react';
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+  useCallback,
+} from 'react';
 import {
   View,
   Text,
@@ -32,11 +38,12 @@ import Time from '../../../assets/icons/time.svg';
 import Wallet from '../../../assets/icons/wallet.svg';
 import Chart from '../../../assets/icons/cart.svg';
 import Scotter from '../../../assets/icons/scooter.svg';
-import LocationIcon from '../../../assets/icons/loaction.svg';
+import CheckIcon from '../../../assets/icons/check.svg';
 
 import OrderItem from './orderItem';
 import Toast from 'react-native-toast-message';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
+import formatNumber from '../../../utils/formatNumber';
 var Sound = require('react-native-sound');
 
 export default Home = ({
@@ -74,7 +81,7 @@ export default Home = ({
     // Allow the default back action to occur
     return false;
   };
-  
+
   const AddDispatch = async () => {
     setProcessing(true);
     const response = await fetch(endpoints.baseUrl + endpoints.addDispatch, {
@@ -188,17 +195,15 @@ export default Home = ({
       });
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, []),
+  );
 
-useFocusEffect(
-  useCallback(() => {
-      onRefresh()
-  }, [])
-)
-
-const onRefresh = () => {
-    getBalance()
-  
-}
+  const onRefresh = () => {
+    getBalance();
+  };
 
   return (
     <>
@@ -522,12 +527,13 @@ const onRefresh = () => {
                         }}>
                         <View
                           style={{
-                            height: 10,
-                            width: 10,
+                        
                             display: selected == item.anme ? 'flex' : 'none',
-                            backgroundColor: colors[appearance].white,
-                            borderRadius: 6,
-                          }}></View>
+
+                           
+                          }}>
+                          <CheckIcon />
+                        </View>
                       </View>
                       <Text
                         style={{
@@ -539,19 +545,16 @@ const onRefresh = () => {
                         {item?.anme}
                       </Text>
                       <Text
-                      style={{
-                        fontFamily: 'Inter-Medium',
-                        fontSize: 14,
-                        marginStart:10,
-                        display:item?.anme == 'Wallet'?'flex':'none',
-                        color: colors[appearance].textDark,
-                      }}>
-                      {wallet?.balance}
-                    </Text>
-
+                        style={{
+                          fontFamily: 'Inter-Medium',
+                          fontSize: 14,
+                          marginStart: 10,
+                          display: item?.anme == 'Wallet' ? 'flex' : 'none',
+                          color: colors[appearance].textDark,
+                        }}>
+                        ₦ ({formatNumber(wallet?.balance)})
+                      </Text>
                     </View>
-
-                 
                   </TouchableOpacity>
                 ))}
 

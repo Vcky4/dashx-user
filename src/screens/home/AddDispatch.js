@@ -152,7 +152,7 @@ export default AddDispatch = ({ navigation }) => {
   useEffect(() => {
     retreivePrice();
   }, []);
-  console.log()
+
 
   const getdistance = distance(
     loaction?.lat || requestData?.senderlat,

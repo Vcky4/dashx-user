@@ -1,14 +1,27 @@
-import React, {useContext, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, FlatList} from 'react-native';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+} from 'react-native';
 import colors from '../../../assets/colors/colors';
 import {AuthContext} from '../../../context/AuthContext';
 import endpoints from '../../../assets/endpoints/endpoints';
 import {RefreshControl} from 'react-native-gesture-handler';
-import BackArrow from '../../../assets/icons/backIcon.svg';
+import FilterIcon from '../../../assets/icons/filterIcon.svg';
+import mainRouts from '../../navigation/routs/mainRouts';
+import Bottomsheet from 'react-native-raw-bottom-sheet';
+
 export default History = ({navigation}) => {
   const {colorScheme, user, token} = useContext(AuthContext);
   const [orders, setOrders] = React.useState([]);
   const [processing, setProcessing] = React.useState(false);
+  const bottomSheetRef = useRef();
+  const appearance = colorScheme;
+  const [selectedStatus, setSelectedStatus] = useState(null); // Step 1: State for selected status
 
   const getOrders = async () => {
     setProcessing(true);
@@ -24,15 +37,22 @@ export default History = ({navigation}) => {
     });
     const json = await response.json();
     setProcessing(false);
-    // console.log(json)
-    //check if array
+    console.log(json);
+    // Filter orders based on selected status, or show all if selectedStatus is "All"
     if (Array.isArray(json.data)) {
-      setOrders(json.data);
+      let filteredOrders = json.data;
+      if (selectedStatus && selectedStatus !== 'All') {
+        filteredOrders = filteredOrders.filter(
+          order => order.order_status === selectedStatus,
+        );
+      }
+      setOrders(filteredOrders);
     }
   };
   useEffect(() => {
     getOrders();
-  }, []);
+  }, [selectedStatus]);
+
   return (
     <View
       style={{
@@ -52,15 +72,9 @@ export default History = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
             width: '100%',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
           }}>
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              left: 0,
-              
-            }}
-            onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={{}} onPress={() => navigation.goBack()}>
             <Image
               source={require('../../../assets/images/back.png')}
               style={{
@@ -79,6 +93,12 @@ export default History = ({navigation}) => {
             }}>
             History
           </Text>
+          <TouchableOpacity
+            onPress={() => {
+              bottomSheetRef.current.open();
+            }}>
+            <FilterIcon />
+          </TouchableOpacity>
         </View>
         {/* <Text
           style={{
@@ -104,8 +124,31 @@ export default History = ({navigation}) => {
         refreshControl={
           <RefreshControl refreshing={processing} onRefresh={getOrders} />
         }
-        renderItem={({item}) => (
+        ListEmptyComponent={
           <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingTop: 250,
+            }}>
+            <Text
+              style={{
+                color: colors[colorScheme].textDark,
+                fontSize: 15,
+                fontFamily: 'Inter-Regular',
+              }}>
+              No history available yet
+            </Text>
+          </View>
+        }
+        renderItem={({item}) => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate(mainRouts.dispatchDetails, {
+                item: item,
+              });
+            }}
             style={{
               paddingHorizontal: 20,
               paddingVertical: 10,
@@ -186,25 +229,10 @@ export default History = ({navigation}) => {
                       fontSize: 16,
                       fontFamily: 'Inter-SemiBold',
                     }}>
-                    {item?.productname}
+                    {item?.sendername}
                   </Text>
 
-                  <View
-                    style={{
-                      backgroundColor: colors[colorScheme].primary,
-                      paddingHorizontal: 20,
-                      paddingVertical: 4,
-                      borderRadius: 10,
-                    }}>
-                    <Text
-                      style={{
-                        color: colors[colorScheme].white,
-                        fontSize: 12,
-                        fontFamily: 'Inter-Regular',
-                      }}>
-                      Paid
-                    </Text>
-                  </View>
+                  
                 </View>
                 <View
                   style={{
@@ -242,9 +270,163 @@ export default History = ({navigation}) => {
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
+
+      <Bottomsheet
+        height={340}
+        animationType="fade"
+        ref={bottomSheetRef}
+        closeOnDragDown={false}
+        closeOnPressMask={true}
+        closeOnPressBack={true}
+        onClose={() => {}}
+        customStyles={{
+          wrapper: {},
+          draggableIcon: {
+            backgroundColor: colors.primary,
+            width: 50,
+            height: 5,
+          },
+          container: {
+            // backgroundColor: 'rgba(158, 176, 162, 0.5)',
+            backgroundColor: colors[appearance].background,
+
+            borderTopEndRadius: 10,
+            borderTopStartRadius: 10,
+          },
+        }}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <View>
+            <View
+              style={{
+                width: '100%',
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                paddingTop: 20,
+              }}>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 15,
+                  fontFamily: 'Inter-Medium',
+                }}>
+                Filter by status
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedStatus('All'); // Update selectedStatus to 'All'
+                bottomSheetRef.current.close();
+              }}
+              style={{
+                width: '100%',
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                borderTopWidth: 1,
+                borderColor: colors[appearance].textGray,
+              }}>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 15,
+                  fontFamily: 'Inter-Medium',
+                }}>
+                All
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedStatus('pending');
+                bottomSheetRef.current.close();
+              }}
+              style={{
+                width: '100%',
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                borderTopWidth: 1,
+                borderColor: colors[appearance].textGray,
+              }}>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 15,
+                  fontFamily: 'Inter-Medium',
+                }}>
+                Pending
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedStatus('pickup');
+                bottomSheetRef.current.close();
+              }}
+              style={{
+                width: '100%',
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                borderTopWidth: 1,
+                borderColor: colors[appearance].textGray,
+              }}>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 15,
+                  fontFamily: 'Inter-Medium',
+                }}>
+                Picked-Up
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedStatus('shipping');
+                bottomSheetRef.current.close();
+              }}
+              style={{
+                width: '100%',
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                borderTopWidth: 1,
+                borderColor: colors[appearance].textGray,
+              }}>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 15,
+                  fontFamily: 'Inter-Medium',
+                }}>
+                Shipping
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedStatus('delivered');
+                bottomSheetRef.current.close();
+              }}
+              style={{
+                width: '100%',
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                borderTopWidth: 1,
+                borderColor: colors[appearance].textGray,
+              }}>
+              <Text
+                style={{
+                  color: colors[colorScheme].textDark,
+                  fontSize: 15,
+                  fontFamily: 'Inter-Medium',
+                }}>
+                Delivered
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </Bottomsheet>
     </View>
   );
 };

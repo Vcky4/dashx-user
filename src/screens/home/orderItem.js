@@ -152,9 +152,9 @@ export default OrderItem = ({item, index, onPress, cancel}) => {
           style={{
             backgroundColor:
               item?.order_status == 'pickup'
-                ? '#31D0AA'
-                : item?.order_status === 'accepted'
                 ? '#A10F7E'
+                : item?.order_status === 'delivered'
+                ? '#31D0AA'
                 : item?.order_status === 'shipping'
                 ? '#31D0AA'
                 : '#868686',
@@ -270,7 +270,7 @@ export default OrderItem = ({item, index, onPress, cancel}) => {
               ? 0
               : item && item?.order_status === 'pickup'
               ? 0.5
-              : item && item?.order_status === 'accepted'
+              : item && item?.order_status === 'delivered'
               ? 0.2
               : item && item?.order_status === 'shipping'
               ? 0.8
@@ -279,9 +279,9 @@ export default OrderItem = ({item, index, onPress, cancel}) => {
           style={{width: width * 0.56, marginHorizontal: 10}}
           color={
             item && item?.order_status == 'pickup'
-              ? '#31D0AA'
-              : item && item?.order_status === 'accepted'
               ? '#A10F7E'
+              : item && item?.order_status === 'delivered'
+              ? '#31D0AA'
               : item && item?.order_status === 'shipping'
               ? '#31D0AA'
               : '#868686'
