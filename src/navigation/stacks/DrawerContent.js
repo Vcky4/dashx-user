@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  RefreshControl,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
@@ -23,8 +24,10 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
     useContext(AuthContext);
   // console.log('from drawer', user);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [wallet, setWallet] = useState({});
   const getBalance = () => {
+    setLoading(true)
     fetch(endpoints.baseUrl + endpoints.retreive, {
       method: 'POST',
       headers: {
@@ -37,13 +40,16 @@ export default function DrawerContent(props, onPendingOrderPress = () => {}) {
     })
       .then(res => res.json())
       .then(resJson => {
-        console.log('resJson', resJson);
+        setLoading(false)
+        console.log('ndknkzmz', resJson);
         if (resJson.status) {
           setWallet(resJson.data);
+          
         }
       })
       .catch(err => {
         console.log('error', err);
+        setLoading(false)
       });
   };
 
@@ -105,6 +111,7 @@ const onRefresh = () => {
           </View>
           <ScrollView
             vertical
+             refreshControl={<RefreshControl refreshing={loading} onRefresh={()=>{onRefresh()}}/>}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               flexGrow: 1,
@@ -180,7 +187,7 @@ const onRefresh = () => {
                     fontSize: 25,
                     fontFamily: 'Inter-SemiBold',
                   }}>
-                  ₦{formatNumber(wallet.balance)}
+                  ₦{formatNumber(wallet?.balance)}
                 </Text>
               </View>
               <Image

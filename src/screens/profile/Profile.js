@@ -193,7 +193,7 @@ export default Profile = ({ navigation }) => {
             }}>
             {user?.name}
           </Text>
-          <Text
+          {/* <Text
             style={{
               color: colors[colorScheme].white,
               fontSize: 12,
@@ -201,7 +201,7 @@ export default Profile = ({ navigation }) => {
               alignSelf: 'center',
             }}>
             {user.online_status ? 'Online' : 'Offline'}
-          </Text>
+          </Text> */}
         </View>
         <Formik
           initialValues={{ name: user?.name || '', email: user?.email || '', Phone: user?.phone || '' }}

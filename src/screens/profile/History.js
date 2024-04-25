@@ -80,7 +80,7 @@ export default History = ({navigation}) => {
             History
           </Text>
         </View>
-        <Text
+        {/* <Text
           style={{
             color: colors[colorScheme].primary,
             fontSize: 12,
@@ -93,7 +93,7 @@ export default History = ({navigation}) => {
             marginTop: 6,
           }}>
           {user.online_status ? 'Online' : 'Offline'}
-        </Text>
+        </Text> */}
       </View>
 
       <FlatList
