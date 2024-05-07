@@ -309,8 +309,8 @@ export default History = ({navigation}) => {
               <Text
                 style={{
                   color: colors[colorScheme].textDark,
-                  fontSize: 15,
-                  fontFamily: 'Inter-Medium',
+                  fontSize: 20,
+                  fontFamily: 'Inter-Bold',
                 }}>
                 Filter by status
               </Text>

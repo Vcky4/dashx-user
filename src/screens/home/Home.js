@@ -166,55 +166,45 @@ console.log("gdhd",currentAddress)
           </Text>
         </View>
         <FlatList
-          data={order && [...order].reverse()}
-          contentContainerStyle={{paddingBottom: 30}}
-          ListEmptyComponent={
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingTop: 300,
-              }}>
-              <Text
-                style={{
-                  color: colors[appearance].textDark,
-                  fontFamily: 'Inter-Medium',
-                  fontSize: 25,
-                }}>
-                no order yet{' '}
-              </Text>
-            </View>
-          }
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={retrieveOrder} />
-          }
-          renderItem={({item, index}) => (
-            <OrderItem
-              item={item}
-              index={index + 1}
-              onPress={() => {
-                // if (
-                //   item &&
-                //   item?.order_status !== 'accpected' &&
-                //   item?.order_status !== 'pending'
-                // ) {
-                  navigation.navigate(mainRouts.dispatchDetails, {
-                    item: item,
-                  });
-                // }
-              }}
-              disabled={
-                item?.order_status === 'accpected' ||
-                item?.order_status === 'pending'
-              }
-              // cancel={() => {
-              //   setIsVisible(true);
-              //   setId(item?._id);
+  data={order && [...order].reverse().filter(item => item.order_status !== 'delivered')}
+  contentContainerStyle={{paddingBottom: 30}}
+  ListEmptyComponent={
+    <View
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 300,
+      }}>
+      <Text
+        style={{
+          color: colors[appearance].textDark,
+          fontFamily: 'Inter-Medium',
+          fontSize: 25,
+        }}>
+        no order yet{' '}
+      </Text>
+    </View>
+  }
+  refreshControl={
+    <RefreshControl refreshing={refreshing} onRefresh={retrieveOrder} />
+  }
+  renderItem={({item, index}) => (
+    <OrderItem
+      item={item}
+      index={index + 1}
+      onPress={() => {
+        navigation.navigate(mainRouts.dispatchDetails, {
+          item: item,
+        });
+      }}
+      disabled={
+        item?.order_status === 'accpected' ||
+        item?.order_status === 'pending'
+      }
+    />
+  )}
+/>
 
-              // }}
-            />
-          )}
-        />
 
       <View
         style={{
